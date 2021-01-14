@@ -1,10 +1,19 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.services;
 
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Section;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
 
 public interface SectionService {
+    /**
+     * Returns a paginated list of sections
+     * @param pageRequest
+     * @return Page<Section>
+     */
+    Page<Section> findAll(PageRequest pageRequest);
+
     /**
      * creates a new section in the database
      *

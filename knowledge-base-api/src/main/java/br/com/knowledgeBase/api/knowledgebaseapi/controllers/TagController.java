@@ -50,6 +50,7 @@ public class TagController {
 
             this.tagService.persist(tag);
             response.setData(this.convertTagToTagDto(tag));
+
             return ResponseEntity.ok(response);
         }catch (ValidationException err){
             LOG.error("Error validating tag: {}", result.getAllErrors());
@@ -71,7 +72,7 @@ public class TagController {
     @PutMapping(value = "/update/{id}")
     public ResponseEntity<Response<TagDto>> update(@PathVariable("id") Long id,
                                                         @Valid @RequestBody TagDto tagDto,  BindingResult result) throws NoSuchAlgorithmException {
-        LOG.info("Updating tag: {}", tagDto.toString());
+        LOG.info("Updating tag id {}, {}", id, tagDto.toString());
         Response<TagDto> response = new Response<TagDto>();
 
         try{
@@ -164,7 +165,7 @@ public class TagController {
     }
 
     /**
-     * Validate a tag. Check if the name has unique words, no special characters and has no errors
+     * Validate a tag. Checks if the name has unique words, no special characters and has no errors
      *
      * @param tagDto
      * @param result

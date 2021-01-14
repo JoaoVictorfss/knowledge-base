@@ -6,6 +6,8 @@ import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,6 +18,11 @@ public class SectionServiceImpl implements SectionService {
 
     @Autowired
     private SectionRepository sectionRepository;
+
+    @Override
+    public Page<Section> findAll(PageRequest pageRequest) {
+        return  this.sectionRepository.findAll(pageRequest);
+    }
 
     @Override
     public Section persist(Section section) {
