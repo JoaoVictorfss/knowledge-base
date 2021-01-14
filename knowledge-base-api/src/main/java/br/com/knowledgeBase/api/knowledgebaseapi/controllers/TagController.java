@@ -92,10 +92,12 @@ public class TagController {
 
             this.tagService.persist(tagExists.get());
             response.setData(this.convertTagToTagDto(tagExists.get()));
+
             return ResponseEntity.ok(response);
         }catch (ValidationException err){
             LOG.error("Error validating tag\n: {}", result.getAllErrors());
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -116,9 +118,11 @@ public class TagController {
         if (!tag.isPresent()) {
             LOG.info("Error removing tag ID: {} Nonexistent tag.", id);
             response.getErrors().add("Error removing tag. Nonexistent tag!");
+
             return ResponseEntity.badRequest().body(response);
         }else{
             this.tagService.delete(id);
+
             return ResponseEntity.ok(new Response<String>());
         }
     }

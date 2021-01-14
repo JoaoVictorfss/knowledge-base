@@ -1,6 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class CategoryDto {
@@ -15,9 +16,9 @@ public class CategoryDto {
     @NotEmpty(message = "The name of the author who updated the tag cannot be empty.")
     private String updated_by;
 
-    private Optional<String> subtitle;
+    private String subtitle;
 
-    private Optional<String> slug;
+    private String slug;
 
     public Long getId() {
         return id;
@@ -34,20 +35,20 @@ public class CategoryDto {
     public void setTitle(String title) {
         this.title = title;
     }
-
-    public Optional<String> getSubtitle() {
+    
+    public String getSubtitle() {
         return subtitle;
     }
 
-    public void setSubtitle(Optional<String> subtitle) {
+    public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
     }
 
-    public Optional<String> getSlug() {
+    public String getSlug() {
         return slug;
     }
 
-    public void setSlug(Optional<String> slug) {
+    public void setSlug(String slug) {
         this.slug = slug;
     }
 
