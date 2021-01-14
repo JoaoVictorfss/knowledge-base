@@ -92,4 +92,17 @@ public class Category {
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", subtitle='" + subtitle + '\'' +
+                ", slug='" + slug + '\'' +
+                ", created_by='" + created_by + '\'' +
+                ", updated_by='" + updated_by + '\'' +
+                ", tags=" + tags +
+                '}';
+    }
 }

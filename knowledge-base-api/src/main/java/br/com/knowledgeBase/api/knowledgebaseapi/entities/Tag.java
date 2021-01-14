@@ -64,4 +64,15 @@ public class Tag {
     public void setUpdated_by(String updated_by) {
         this.updated_by = updated_by;
     }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", slug='" + slug + '\'' +
+                ", created_by='" + created_by + '\'' +
+                ", updated_by='" + updated_by + '\'' +
+                '}';
+    }
 }

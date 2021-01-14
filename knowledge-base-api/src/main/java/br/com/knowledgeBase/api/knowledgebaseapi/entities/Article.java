@@ -143,5 +143,22 @@ public class Article implements Serializable {
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", subtitle='" + subtitle + '\'' +
+                ", status=" + status +
+                ", liked=" + liked +
+                ", views=" + views +
+                ", slug='" + slug + '\'' +
+                ", created_by='" + created_by + '\'' +
+                ", updated_by='" + updated_by + '\'' +
+                ", content='" + content + '\'' +
+                ", tags=" + tags +
+                '}';
+    }
 }
 
