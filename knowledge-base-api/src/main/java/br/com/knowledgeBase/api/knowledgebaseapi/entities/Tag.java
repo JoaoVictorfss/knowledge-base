@@ -1,6 +1,10 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "tags")
@@ -16,7 +20,7 @@ public class Tag {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "slug", nullable = true)
+    @Column(name = "slug", nullable = false)
     private String slug;
 
     @Column(name = "created_by", nullable = false)
@@ -24,6 +28,14 @@ public class Tag {
 
     @Column(name = "updated_by", nullable = false)
     private String updated_by;
+
+    /*@CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDate created_at;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
+    private LocalDate updated_at;**/
 
     public Long getId() {
         return id;
@@ -65,6 +77,22 @@ public class Tag {
         this.updated_by = updated_by;
     }
 
+    /*public LocalDate getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(LocalDate created_at) {
+        this.created_at = created_at;
+    }
+
+    public LocalDate getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(LocalDate updated_at) {
+        this.updated_at = updated_at;
+    }*/
+
     @Override
     public String toString() {
         return "Tag{" +
@@ -73,6 +101,8 @@ public class Tag {
                 ", slug='" + slug + '\'' +
                 ", created_by='" + created_by + '\'' +
                 ", updated_by='" + updated_by + '\'' +
+                /*", created_at=" + created_at +
+                ", updated_at=" + updated_at +*/
                 '}';
     }
 }
