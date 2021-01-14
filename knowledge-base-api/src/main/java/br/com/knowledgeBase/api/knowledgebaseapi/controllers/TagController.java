@@ -160,7 +160,7 @@ public class TagController {
     }
 
     /**
-     * Validate a tag. Check if the name has unique words and no special characters and has no errors
+     * Validate a tag. Check if the name has unique words, no special characters and has no errors
      *
      * @param tagDto
      * @param result

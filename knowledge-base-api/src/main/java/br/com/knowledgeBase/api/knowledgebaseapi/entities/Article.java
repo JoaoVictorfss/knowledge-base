@@ -28,7 +28,6 @@ public class Article implements Serializable {
     @Enumerated(EnumType.STRING)
     private StatusType status;
 
-
     @Column(name="Liked", columnDefinition="enum('POOR', 'AVERAGE', 'GREAT')", nullable = true)
     @Enumerated(EnumType.STRING)
     private LikedType liked;
