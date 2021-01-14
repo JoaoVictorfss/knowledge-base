@@ -6,6 +6,8 @@ import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,6 +18,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Override
+    public Page<Category> findAll(PageRequest pageRequest) {
+        LOG.info("Searching categories");
+
+        return this.categoryRepository.findAll(pageRequest);
+    }
 
     @Override
     public Category persist(Category category) {

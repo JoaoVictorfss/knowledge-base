@@ -1,8 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
 
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
-import java.util.Optional;
 
 public class CategoryDto {
     private Long id;
@@ -35,7 +33,7 @@ public class CategoryDto {
     public void setTitle(String title) {
         this.title = title;
     }
-    
+
     public String getSubtitle() {
         return subtitle;
     }

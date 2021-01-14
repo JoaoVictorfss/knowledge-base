@@ -4,9 +4,13 @@ import br.com.knowledgeBase.api.knowledgebaseapi.dtos.CategoryDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
+import org.springframework.data.domain.Sort.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -25,6 +29,32 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Value("${pagination.qtt_per_page}")
+    private int qttPerPage;
+
+    /**
+     * Returns a paginated list of categories
+     *
+     * @return ResponseEntity<Response<CategoryDto>>
+     */
+    @GetMapping(value = "/list")
+    public ResponseEntity<Response<Page<CategoryDto>>> index(
+            @RequestParam(value = "pag", defaultValue = "0") int pag,
+            @RequestParam(value = "ord", defaultValue = "id") String ord,
+            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
+    {
+        LOG.info("Searching categories, page: {}", pag);
+        Response<Page<CategoryDto>> response = new Response<Page<CategoryDto>>();
+
+        PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Direction.valueOf(dir), ord);
+
+        Page<Category>categories = this.categoryService.findAll(pageRequest);
+        Page<CategoryDto> categoriesDto = categories.map(this::convertCategoryToCategoryDto);
+
+        response.setData(categoriesDto);
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * Add a new category

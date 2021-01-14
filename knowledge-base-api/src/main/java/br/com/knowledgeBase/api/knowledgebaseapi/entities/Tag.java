@@ -29,7 +29,8 @@ public class Tag {
     @Column(name = "updated_by", nullable = false)
     private String updated_by;
 
-    /*@CreatedDate
+   /* @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)
     private LocalDate created_at;
 
