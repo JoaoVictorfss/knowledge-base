@@ -12,28 +12,28 @@ import java.util.Optional;
 
 @Service
 public class SectionServiceImpl implements SectionService {
-    private static final Logger log = LoggerFactory.getLogger(TagServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TagServiceImpl.class);
 
     @Autowired
     private SectionRepository sectionRepository;
 
     @Override
     public Section persist(Section section) {
-        log.info("Persisting section: {}", section);
+        LOG.info("Persisting section: {}", section);
 
         return this.sectionRepository.save(section);
     }
 
     @Override
     public Optional<Section> findById(Long id) {
-        log.info("searching section ID {}", id);
+        LOG.info("searching section ID {}", id);
 
         return this.sectionRepository.findById(id);
     }
 
     @Override
     public void delete(Long id) {
-        log.info("Removing section ID {}", id);
+        LOG.info("Removing section ID {}", id);
 
         this.sectionRepository.deleteById(id);
     }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/knowledgeBase-api/sections")
 @CrossOrigin(origins = "*")
 public class SectionController {
-    private static final Logger log = LoggerFactory.getLogger(SectionController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
 
     @Autowired
     private SectionService sectionService;

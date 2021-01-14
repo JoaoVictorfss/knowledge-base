@@ -12,28 +12,28 @@ import java.util.Optional;
 
 @Service
 public class TagServiceImpl implements TagService {
-    private static final Logger log = LoggerFactory.getLogger(TagServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TagServiceImpl.class);
 
     @Autowired
     private TagRepository tagRepository;
 
     @Override
     public Tag persist(Tag tag) {
-        log.info("Persisting tag: {}", tag);
+        LOG.info("Persisting tag: {}", tag);
 
         return this.tagRepository.save(tag);
     }
 
     @Override
     public Optional<Tag> findById(Long id) {
-        log.info("searching tag ID {}", id);
+        LOG.info("searching tag ID {}", id);
 
         return this.tagRepository.findById(id);
     }
 
     @Override
     public void delete(Long id) {
-        log.info("Removing tag ID {}", id);
+        LOG.info("Removing tag ID {}", id);
 
         this.tagRepository.deleteById(id);
     }

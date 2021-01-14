@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 @RequestMapping("/knowledgeBase-api/tags")
 @CrossOrigin(origins = "*")
 public class TagController {
-    private static final Logger log = LoggerFactory.getLogger(TagController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TagController.class);
 
     @Autowired
     private TagService tagService;
@@ -40,7 +40,7 @@ public class TagController {
     @PostMapping("/create")
     public ResponseEntity<Response<TagDto>> store(@Valid @RequestBody TagDto tagDto,
                                                   BindingResult result) throws ParseException {
-        log.info("Adding tag: {}", tagDto.toString());
+        LOG.info("Adding tag: {}", tagDto.toString());
         Response<TagDto> response = new Response<TagDto>();
 
 
@@ -52,7 +52,7 @@ public class TagController {
             response.setData(this.convertTagToTagDto(tag));
             return ResponseEntity.ok(response);
         }catch (ValidationException err){
-            log.error("Error validating tag: {}", result.getAllErrors());
+            LOG.error("Error validating tag: {}", result.getAllErrors());
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
             return ResponseEntity.badRequest().body(response);
@@ -71,7 +71,7 @@ public class TagController {
     @PutMapping(value = "/update/{id}")
     public ResponseEntity<Response<TagDto>> update(@PathVariable("id") Long id,
                                                         @Valid @RequestBody TagDto tagDto,  BindingResult result) throws NoSuchAlgorithmException {
-        log.info("Updating tag: {}", tagDto.toString());
+        LOG.info("Updating tag: {}", tagDto.toString());
         Response<TagDto> response = new Response<TagDto>();
 
         try{
@@ -94,7 +94,7 @@ public class TagController {
             response.setData(this.convertTagToTagDto(tagExists.get()));
             return ResponseEntity.ok(response);
         }catch (ValidationException err){
-            log.error("Error validating tag\n: {}", result.getAllErrors());
+            LOG.error("Error validating tag\n: {}", result.getAllErrors());
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(response);
         }
@@ -108,13 +108,13 @@ public class TagController {
      */
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
-        log.info("Deleting tag: {}", id);
+        LOG.info("Deleting tag: {}", id);
         Response<String> response = new Response<String>();
 
         Optional<Tag> tag = this.tagService.findById(id);
 
         if (!tag.isPresent()) {
-            log.info("Error removing tag ID: {} Nonexistent tag.", id);
+            LOG.info("Error removing tag ID: {} Nonexistent tag.", id);
             response.getErrors().add("Error removing tag. Nonexistent tag!");
             return ResponseEntity.badRequest().body(response);
         }else{
