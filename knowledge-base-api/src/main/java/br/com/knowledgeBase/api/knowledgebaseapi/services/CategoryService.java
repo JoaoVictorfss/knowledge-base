@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface CategoryService {
     /**
      * Returns a paginated list of categories
+     *
      * @param pageRequest
      * @return Page<Category>
      */
@@ -24,6 +25,7 @@ public interface CategoryService {
 
     /**
      *find category by id
+     *
      * @param id
      * @return Optional<Category>
      */

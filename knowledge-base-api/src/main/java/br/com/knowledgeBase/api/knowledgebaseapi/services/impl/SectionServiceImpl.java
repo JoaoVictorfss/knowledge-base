@@ -25,6 +25,11 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
+    public Page<Section> findAllByCategoryId(Long id, PageRequest pageRequest) {
+        return  this.sectionRepository.findAllByCategoryId(id, pageRequest);
+    }
+
+    @Override
     public Section persist(Section section) {
         LOG.info("Persisting section: {}", section);
 
@@ -41,6 +46,7 @@ public class SectionServiceImpl implements SectionService {
     @Override
     public void delete(Long id) {
         LOG.info("Removing section ID {}", id);
+
 
         this.sectionRepository.deleteById(id);
     }

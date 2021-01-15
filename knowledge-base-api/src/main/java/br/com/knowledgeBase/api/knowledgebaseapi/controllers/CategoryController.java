@@ -4,6 +4,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.dtos.CategoryDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
+import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
 import org.springframework.data.domain.Sort.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private SectionService sectionService;
 
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;

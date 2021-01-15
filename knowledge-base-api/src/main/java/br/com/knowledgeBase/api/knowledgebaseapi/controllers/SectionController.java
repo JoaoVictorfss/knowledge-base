@@ -19,7 +19,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.Optional;
@@ -62,6 +61,34 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping(value = "/list/{categoryId}")
+    public ResponseEntity<Response<Page<SectionDto>>> listSectoinsByCategoryId(
+            @PathVariable("categoryId") Long categoryId,
+            @RequestParam(value = "pag", defaultValue = "0") int pag,
+            @RequestParam(value = "ord", defaultValue = "id") String ord,
+            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
+    {
+
+        LOG.info("Searching sections by category {}, page: {}", categoryId, pag);
+        Response<Page<SectionDto>> response = new Response<Page<SectionDto>>();
+
+        Optional<Category> category = this.categoryService.findById(categoryId);
+        if(!category.isPresent()){
+            LOG.info("Error. Nonexistent category.");
+            response.getErrors().add("Error. Nonexistent category.");
+            return  ResponseEntity.badRequest().body(response);
+        }
+        
+        PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
+
+        Page<Section>sections = this.sectionService.findAllByCategoryId(categoryId, pageRequest);
+        Page<SectionDto> sectionsDto = sections.map(this::convertSectionToSectionDto);
+
+        response.setData(sectionsDto);
+        return ResponseEntity.ok(response);
+    }
+
+
     /**
      * Add a new section
      *
@@ -77,22 +104,26 @@ public class SectionController {
         LOG.info("Adding section: {}, category id {}", sectionDto.toString(), categoryId);
         Response<SectionDto> response = new Response<SectionDto>();
 
-       try{
-            this.sectionValidation(categoryId, result);
-            Section section = this.convertDtoToSection(sectionDto);
+        Optional<Category> category = this.categoryService.findById(categoryId);
+        if(!category.isPresent()){
+           result.addError(new ObjectError("section", "Nonexistent category."));
+        }
 
-            this.sectionService.persist(section);
-           //TODO adicionar sessão à categoria
-           response.setData(this.convertSectionToSectionDto(section));
-
-           return ResponseEntity.ok(response);
-
-       }catch (ValidationException err){
+        if(result.hasErrors()){
            LOG.error("Error validating section: {}", result.getAllErrors());
            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
            return ResponseEntity.badRequest().body(response);
-       }
+        }
+
+        Section section = this.convertDtoToSection(sectionDto);
+        section.getCategories().add(category.get());
+        category.get().getSections().add(section);
+
+        this.sectionService.persist(section);
+        response.setData(this.convertSectionToSectionDto(section));
+
+       return ResponseEntity.ok(response);
     }
 
     /**
@@ -110,32 +141,31 @@ public class SectionController {
                                                       BindingResult result, @PathVariable("id") Long id, @PathVariable("categoryId") Long categoryId) throws NoSuchAlgorithmException {
         LOG.info("Updating section id {}, section: {}, category id {}",id, sectionDto.toString(), categoryId);
         Response<SectionDto> response = new Response<SectionDto>();
-         //TODO veriifcar se a seção pertene a categoria
-        try{
-            Optional<Section>sectionExists = this.sectionService.findById(id);
 
-            if(!sectionExists.isPresent()){
-                result.addError(new ObjectError("section", "Nonexistent section."));
-            }
+        Optional<Section>sectionExists = this.sectionService.findById(id);
+        if(!sectionExists.isPresent()){
+            result.addError(new ObjectError("section", "Nonexistent section."));
+        }else{
+             this.belongValidation(categoryId, sectionExists.get(), result);
+        }
 
-            this.sectionValidation(categoryId, result);
-
-            sectionExists.get().setTitle(sectionDto.getTitle());
-            sectionExists.get().setSubtitle(sectionDto.getSubtitle());
-            sectionExists.get().setUpdated_by(sectionDto.getUpdated_by());
-            sectionExists.get().setCreated_by(sectionDto.getCreated_by());
-            sectionExists.get().setSlug(sectionDto.getSlug());
-
-            this.sectionService.persist(sectionExists.get());
-            response.setData(this.convertSectionToSectionDto(sectionExists.get()));
-
-            return ResponseEntity.ok(response);
-        }catch (ValidationException err){
+        if(result.hasErrors()){
             LOG.error("Error validating section: {}", result.getAllErrors());
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
             return ResponseEntity.badRequest().body(response);
         }
+
+        sectionExists.get().setTitle(sectionDto.getTitle());
+        sectionExists.get().setSubtitle(sectionDto.getSubtitle());
+        sectionExists.get().setUpdated_by(sectionDto.getUpdated_by());
+        sectionExists.get().setCreated_by(sectionDto.getCreated_by());
+        sectionExists.get().setSlug(sectionDto.getSlug());
+
+        this.sectionService.persist(sectionExists.get());
+        response.setData(this.convertSectionToSectionDto(sectionExists.get()));
+
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -150,7 +180,6 @@ public class SectionController {
         Response<String> response = new Response<String>();
 
         Optional<Section> section = this.sectionService.findById(id);
-
         if (!section.isPresent()) {
             LOG.info("Error removing section ID: {} Nonexistent section.", id);
             response.getErrors().add("Error removing section. Nonexistent section!");
@@ -202,22 +231,20 @@ public class SectionController {
     }
 
     /**
-     * Validate a section. Checks if that there are no errors or that the category exists.
+     * Search category by id and check if the section belongs to it
      *
+     * @param section
      * @param categoryId
      * @param result
      */
-    private void sectionValidation(Long categoryId, BindingResult result){
-
-        if(result.hasErrors()){
-            throw new ValidationException();
-        }
-
+    private void belongValidation(Long categoryId, Section section, BindingResult result){
         Optional<Category> category = this.categoryService.findById(categoryId);
         if(!category.isPresent()){
-            result.addError(new ObjectError("section", "Nonexistent category."));
-            throw new ValidationException();
+            result.addError(new ObjectError("category", "Nonexistent category."));
+        }else{
+            if(!category.get().getSections().contains(section)){
+                result.addError(new ObjectError("section", "Section does not belong to category."));
+            }
         }
-
     }
 }

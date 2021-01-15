@@ -1,7 +1,9 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,7 +38,10 @@ public class Category {
     @Column(name = "updated_at", nullable = false)
     private Date updated_at;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "categories", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
+    private List<Section> sections = new ArrayList<Section>();
+
+    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "category_tags",
             joinColumns = @JoinColumn(name = "category_tag", referencedColumnName = "id"),
@@ -114,6 +119,14 @@ public class Category {
 
     public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    public void setSections(List<Section> sections) {
+        this.sections = sections;
     }
 
     @PreUpdate

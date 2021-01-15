@@ -2,8 +2,7 @@ package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "sections")
@@ -36,6 +35,14 @@ public class Section implements Serializable {
 
     @Column(name = "updated_at", nullable = false)
     private Date updated_at;
+
+    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+           name = "section_categories",
+           joinColumns = @JoinColumn(name = "section_id"),
+           inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories = new ArrayList<Category>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -118,6 +125,14 @@ public class Section implements Serializable {
         this.updated_at = updated_at;
     }
 
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
     @PreUpdate
     public void preUpdate() {
         updated_at = new Date();
@@ -128,6 +143,19 @@ public class Section implements Serializable {
         final Date atual = new Date();
         created_at = atual;
         updated_at = atual;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return id.equals(section.id) && title.equals(section.title) && subtitle.equals(section.subtitle) && slug.equals(section.slug) && created_by.equals(section.created_by) && updated_by.equals(section.updated_by) && created_at.equals(section.created_at) && updated_at.equals(section.updated_at) && categories.equals(section.categories) && tags.equals(section.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, subtitle, slug, created_by, updated_by, created_at, updated_at, categories, tags);
     }
 
     @Override

@@ -9,10 +9,20 @@ import java.util.Optional;
 public interface SectionService {
     /**
      * Returns a paginated list of sections
+     *
      * @param pageRequest
      * @return Page<Section>
      */
     Page<Section> findAll(PageRequest pageRequest);
+
+    /**
+     * Returns a paginated list of sections by category
+     *
+     * @param pageRequest
+     * @param id
+     * @return Page<Section>
+     */
+    Page<Section> findAllByCategoryId(Long id, PageRequest pageRequest);
 
     /**
      * creates a new section in the database
@@ -24,6 +34,7 @@ public interface SectionService {
 
     /**
      *find section by id
+     *
      * @param id
      * @return Optional<Section>
      */
