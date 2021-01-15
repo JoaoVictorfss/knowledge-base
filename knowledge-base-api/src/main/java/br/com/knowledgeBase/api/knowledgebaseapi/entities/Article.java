@@ -6,6 +6,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusType;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -54,7 +55,7 @@ public class Article implements Serializable {
     @Column(name = "updated_at", nullable = false)
     private Date updated_at;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "article_tags",
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
@@ -177,6 +178,19 @@ public class Article implements Serializable {
         final Date atual = new Date();
         created_at = atual;
         updated_at = atual;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Article article = (Article) o;
+        return id.equals(article.id) && title.equals(article.title) && subtitle.equals(article.subtitle) && status == article.status && liked == article.liked && views.equals(article.views) && slug.equals(article.slug) && created_by.equals(article.created_by) && updated_by.equals(article.updated_by) && content.equals(article.content) && created_at.equals(article.created_at) && updated_at.equals(article.updated_at) && Objects.equals(tags, article.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, subtitle, status, liked, views, slug, created_by, updated_by, content, created_at, updated_at, tags);
     }
 
     @Override

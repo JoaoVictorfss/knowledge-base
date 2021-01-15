@@ -1,18 +1,18 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 public class CategoryDto {
     private Long id;
 
-    @NotEmpty(message = "The title cannot be empty.")
+    @NotBlank(message = "The title cannot be empty.")
     private String title;
 
-    @NotEmpty(message = "The name of the author who created the tag cannot be empty.")
+    @NotBlank(message = "The name of the author who created the tag cannot be empty.")
     private String created_by;
 
-    @NotEmpty(message = "The name of the author who updated the tag cannot be empty.")
+    @NotBlank(message = "The name of the author who updated the tag cannot be empty.")
     private String updated_by;
 
     private String subtitle;

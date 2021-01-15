@@ -27,10 +27,10 @@ public interface SectionService {
     /**
      * creates a new section in the database
      *
-     * @param tag
-     * @return Tag
+     * @param section
+     * @return Section
      */
-    Section persist(Section tag);
+    Section persist(Section section);
 
     /**
      *find section by id

@@ -21,11 +21,15 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public Page<Section> findAll(PageRequest pageRequest) {
+        LOG.info("searching sections");
+
         return  this.sectionRepository.findAll(pageRequest);
     }
 
     @Override
     public Page<Section> findAllByCategoryId(Long id, PageRequest pageRequest) {
+        LOG.info("searching sections by category id {}", id);
+
         return  this.sectionRepository.findAllByCategoryId(id, pageRequest);
     }
 
@@ -46,7 +50,6 @@ public class SectionServiceImpl implements SectionService {
     @Override
     public void delete(Long id) {
         LOG.info("Removing section ID {}", id);
-
 
         this.sectionRepository.deleteById(id);
     }

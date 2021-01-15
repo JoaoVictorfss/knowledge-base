@@ -44,7 +44,7 @@ public class Section implements Serializable {
     )
     private List<Category> categories = new ArrayList<Category>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "section_tags",
             joinColumns = @JoinColumn(name = "section_id", referencedColumnName = "id"),
