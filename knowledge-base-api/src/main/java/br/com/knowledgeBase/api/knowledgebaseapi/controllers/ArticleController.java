@@ -78,6 +78,30 @@ public class ArticleController {
     }
 
     /**
+     * Delete article by id
+     *
+     * @param id
+     * @return ResponseEntity<Response<String>>
+     */
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
+        LOG.info("Deleting article: {}", id);
+        Response<String> response = new Response<String>();
+
+        Optional<Article> article = this.articleService.findById(id);
+        if (!article.isPresent()) {
+            LOG.info("Error removing article ID: {} Nonexistent article.", id);
+            response.getErrors().add("Error removing article. Nonexistent article!");
+
+            return ResponseEntity.badRequest().body(response);
+        }else{
+            this.articleService.delete(id);
+
+            return ResponseEntity.ok(new Response<String>());
+        }
+    }
+
+    /**
      *Convert article to ArticleDto
      *
      * @param article
@@ -139,6 +163,9 @@ public class ArticleController {
     private void categoriesValidation(List<Long> categories, BindingResult result){
         if(result.hasErrors()){
             throw new ValidationException();
+        }else if(categories.isEmpty()){
+            result.addError(new ObjectError("categories", "Categories cannot be empty"));
+            throw new ValidationException();
         }else{
             categories.forEach(categoryId -> {
                 Optional<Category> category = this.categoryService.findById(categoryId);
@@ -159,7 +186,7 @@ public class ArticleController {
                 LikedType likedTypeType = LikedType.valueOf(liked);
             }
 
-        } catch (java.lang.IllegalArgumentException ex) {
+        } catch (java.lang.IllegalArgumentException err) {
             result.addError(new ObjectError("status", "Invalid status type or liked type. " +
                     "Accepted values for the liked field: POOR, AVERAGE and GREAT." +
                     "Accepted values for the status field: CANCEL, PUBLISH and DRAFT(Default)"));
