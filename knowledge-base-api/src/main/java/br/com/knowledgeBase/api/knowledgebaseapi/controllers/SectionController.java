@@ -61,6 +61,11 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Returns a paginated list of sections by category id
+     *
+     * @return ResponseEntity<Response<SectionDto>>
+     */
     @GetMapping(value = "/list/{categoryId}")
     public ResponseEntity<Response<Page<SectionDto>>> listSectonsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
@@ -143,11 +148,11 @@ public class SectionController {
         Response<SectionDto> response = new Response<SectionDto>();
 
         Optional<Section>sectionExists = this.sectionService.findById(id);
-        if(!sectionExists.isPresent()){
+        if(!sectionExists.isPresent())
             result.addError(new ObjectError("section", "Nonexistent section."));
-        }else{
+        else
              this.belongValidation(categoryId, sectionExists.get(), result);
-        }
+
 
         if(result.hasErrors()){
             LOG.error("Error validating section: {}", result.getAllErrors());
@@ -159,7 +164,6 @@ public class SectionController {
         sectionExists.get().setTitle(sectionDto.getTitle());
         sectionExists.get().setSubtitle(sectionDto.getSubtitle());
         sectionExists.get().setUpdated_by(sectionDto.getUpdated_by());
-        sectionExists.get().setCreated_by(sectionDto.getCreated_by());
         sectionExists.get().setSlug(sectionDto.getSlug());
 
         this.sectionService.persist(sectionExists.get());

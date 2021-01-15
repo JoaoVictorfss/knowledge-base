@@ -116,7 +116,6 @@ public class CategoryController {
             categoryExists.get().setTitle(categoryDto.getTitle());
             categoryExists.get().setSubtitle(categoryDto.getSubtitle());
             categoryExists.get().setSlug(categoryDto.getSlug());
-            categoryExists.get().setCreated_by(categoryDto.getCreated_by());
             categoryExists.get().setUpdated_by(categoryDto.getCreated_by());
 
             this.categoryService.persist(categoryExists.get());

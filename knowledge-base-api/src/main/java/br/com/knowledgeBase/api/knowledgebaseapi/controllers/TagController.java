@@ -43,7 +43,6 @@ public class TagController {
         LOG.info("Adding tag: {}", tagDto.toString());
         Response<TagDto> response = new Response<TagDto>();
 
-
         try {
             this.tagValidation(tagDto, result);
             Tag tag = this.convertDtoToTag(tagDto);
@@ -77,18 +76,13 @@ public class TagController {
 
         try{
             Optional<Tag>tagExists = this.tagService.findById(id);
-
-            if(!tagExists.isPresent()){
+            if(!tagExists.isPresent())
                 result.addError(new ObjectError("tag", "Nonexistent tag."));
-            }
 
             tagValidation(tagDto, result);
 
-            //Todo informar a quantidade de artigos afetados
-
             tagExists.get().setTitle(tagDto.getTitle());
             tagExists.get().setSlug(tagDto.getSlug());
-            tagExists.get().setCreated_by(tagDto.getCreated_by());
             tagExists.get().setUpdated_by(tagDto.getUpdated_by());
 
             this.tagService.persist(tagExists.get());
@@ -115,7 +109,6 @@ public class TagController {
         Response<String> response = new Response<String>();
 
         Optional<Tag> tag = this.tagService.findById(id);
-
         if (!tag.isPresent()) {
             LOG.info("Error removing tag ID: {} Nonexistent tag.", id);
             response.getErrors().add("Error removing tag. Nonexistent tag!");
@@ -171,7 +164,6 @@ public class TagController {
      * @param result
      */
     private void tagValidation(TagDto tagDto, BindingResult result){
-
         if(result.hasErrors()){
             throw new ValidationException();
         }

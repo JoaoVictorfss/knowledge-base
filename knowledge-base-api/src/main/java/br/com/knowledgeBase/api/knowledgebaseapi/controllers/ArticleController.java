@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +65,11 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Returns a paginated list of articles by category id
+     *
+     * @return ResponseEntity<Response<ArticleDto>>
+     */
     @GetMapping(value = "/list/{categoryId}")
     public ResponseEntity<Response<Page<ArticleDto>>> listSectonsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
@@ -106,7 +112,7 @@ public class ArticleController {
         Response<ArticleDto> response = new Response<ArticleDto>();
 
        try {
-           categoriesValidation(articleDto.getCategoriesId(), result);
+           categoriesAndErrorsValidation(articleDto.getCategoriesId(), result);
            typeValidation(articleDto.getStatus(), articleDto.getLiked(),result);
 
            Article article = this.convertArticleDtoToArticle(articleDto);
@@ -130,7 +136,49 @@ public class ArticleController {
        }
     }
 
-    
+    /**
+     * Update an article
+     *
+     * @param articleDto
+     * @param id
+     * @param result
+     * @return ResponseEntity<Response<ArticleDto>>
+     * @throws NoSuchAlgorithmException
+     */
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Response<ArticleDto>> update(@Valid @RequestBody ArticleDto articleDto,
+                                                       BindingResult result, @PathVariable("id") Long id) throws NoSuchAlgorithmException {
+        LOG.info("Updating article id {}, article: {}",id, articleDto.toString());
+        Response<ArticleDto> response = new Response<ArticleDto>();
+
+        Optional<Article>articleExists = this.articleService.findById(id);
+        if(!articleExists.isPresent())
+            result.addError(new ObjectError("article", "Nonexistent article."));
+
+        try{
+            this.updatedArticleDtoValidation(articleDto, result);
+
+            articleExists.get().setTitle(articleDto.getTitle());
+            articleExists.get().setSubtitle(articleDto.getSubtitle());
+            articleExists.get().setUpdated_by(articleDto.getUpdated_by());
+            articleExists.get().setContent(articleDto.getContent());
+            articleExists.get().setStatus(StatusType.valueOf(articleDto.getStatus()));
+            articleExists.get().setLiked(articleDto.getLiked());
+            articleExists.get().setViews(articleDto.getViews());
+            articleExists.get().setSlug(articleDto.getSlug());
+
+            this.articleService.persist(articleExists.get());
+            response.setData(this.convertArticleToArticleDto(articleExists.get()));
+
+            return ResponseEntity.ok(response);
+        }catch (ValidationException err){
+            LOG.error("Error validating article: {}", result.getAllErrors());
+            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
     /**
      * Delete article by id
      *
@@ -165,19 +213,15 @@ public class ArticleController {
         ArticleDto articleDto = new ArticleDto();
 
         articleDto.setId(article.getId());
-
         articleDto.setTitle(article.getTitle());
         articleDto.setSubtitle(article.getSubtitle());
         articleDto.setContent(article.getContent());
-
         articleDto.setStatus(article.getStatus().toString());
         articleDto.setLiked(article.getLiked());
-
         articleDto.setViews(article.getViews());
         articleDto.setSlug(article.getSlug());
         articleDto.setCreated_by(article.getCreated_by());
         articleDto.setUpdated_by(article.getUpdated_by());
-
         articleDto.setCreated_at(article.getCreated_at());
         articleDto.setUpdated_at(article.getUpdated_at());
 
@@ -196,10 +240,8 @@ public class ArticleController {
         article.setTitle(articleDto.getTitle());
         article.setSubtitle(articleDto.getSubtitle());
         article.setContent(articleDto.getContent());
-
         article.setStatus(StatusType.valueOf(articleDto.getStatus()));
         article.setLiked(articleDto.getLiked());
-
         article.setViews(articleDto.getViews());
         article.setSlug(articleDto.getSlug());
         article.setCreated_by(articleDto.getCreated_by());
@@ -214,9 +256,10 @@ public class ArticleController {
      * @param categories
      * @param result
      */
-    private void categoriesValidation(List<Long> categories, BindingResult result){
+    private void categoriesAndErrorsValidation(List<Long> categories, BindingResult result){
         if(result.hasErrors()){
             throw new ValidationException();
+
         }else if(categories.isEmpty()){
             result.addError(new ObjectError("categories", "Categories cannot be empty"));
             throw new ValidationException();
@@ -232,6 +275,14 @@ public class ArticleController {
         }
     }
 
+
+    /**
+     * Check if the enum types are valid
+     *
+     * @param status
+     * @param liked
+     * @param result
+     */
     private void typeValidation(String status, String liked, BindingResult result){
         try {
             StatusType statusType = StatusType.valueOf(status);
@@ -244,7 +295,22 @@ public class ArticleController {
             result.addError(new ObjectError("status", "Invalid status type or liked type. " +
                     "Accepted values for the liked field: POOR, AVERAGE and GREAT." +
                     "Accepted values for the status field: CANCEL, PUBLISH and DRAFT(Default)"));
+
             throw new ValidationException();
         }
+    }
+
+    /**
+     * Check if the updated article has no errors and the status type and liked type are valid
+     *
+     * @param articleDto
+     * @param result
+     */
+    private void updatedArticleDtoValidation(ArticleDto articleDto, BindingResult result){
+        if (result.hasErrors()){
+            throw new ValidationException();
+        }
+
+        this.typeValidation(articleDto.getStatus(), articleDto.getLiked(), result);
     }
 }

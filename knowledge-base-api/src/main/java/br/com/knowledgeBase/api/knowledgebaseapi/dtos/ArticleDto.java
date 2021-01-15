@@ -1,6 +1,5 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -37,9 +36,6 @@ public class ArticleDto {
 
     @NotNull
     private List<Long> categoriesId;
-
-    //@NotNull
-    //private List<Long> sectionsId;
 
     private String liked;
 
