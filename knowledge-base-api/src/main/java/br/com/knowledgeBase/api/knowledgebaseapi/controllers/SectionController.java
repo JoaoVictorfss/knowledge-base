@@ -41,7 +41,7 @@ public class SectionController {
     /**
      * Returns a paginated list of sections
      *
-     * @return ResponseEntity<Response<CategoryDto>>
+     * @return ResponseEntity<Response<SectionDto>>
      */
     @GetMapping(value = "/list")
     public ResponseEntity<Response<Page<SectionDto>>> index(
@@ -62,7 +62,7 @@ public class SectionController {
     }
 
     @GetMapping(value = "/list/{categoryId}")
-    public ResponseEntity<Response<Page<SectionDto>>> listSectoinsByCategoryId(
+    public ResponseEntity<Response<Page<SectionDto>>> listSectonsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "id") String ord,

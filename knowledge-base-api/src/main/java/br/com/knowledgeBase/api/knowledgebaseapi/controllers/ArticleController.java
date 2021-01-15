@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -37,6 +40,56 @@ public class ArticleController {
 
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
+
+    /**
+     * Returns a paginated list of articles
+     *
+     * @return ResponseEntity<Response<ArticleDto>>
+     */
+    @GetMapping(value = "/list")
+    public ResponseEntity<Response<Page<ArticleDto>>> index(
+            @RequestParam(value = "pag", defaultValue = "0") int pag,
+            @RequestParam(value = "ord", defaultValue = "id") String ord,
+            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
+    {
+        LOG.info("Searching articles, page: {}", pag);
+        Response<Page<ArticleDto>> response = new Response<Page<ArticleDto>>();
+
+        PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
+
+        Page<Article>articles = this.articleService.findAll(pageRequest);
+        Page<ArticleDto> articlesDto = articles.map(this::convertArticleToArticleDto);
+
+        response.setData(articlesDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/list/{categoryId}")
+    public ResponseEntity<Response<Page<ArticleDto>>> listSectonsByCategoryId(
+            @PathVariable("categoryId") Long categoryId,
+            @RequestParam(value = "pag", defaultValue = "0") int pag,
+            @RequestParam(value = "ord", defaultValue = "id") String ord,
+            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
+    {
+
+        LOG.info("Searching articles by category {}, page: {}", categoryId, pag);
+        Response<Page<ArticleDto>> response = new Response<Page<ArticleDto>>();
+
+        Optional<Category> category = this.categoryService.findById(categoryId);
+        if(!category.isPresent()){
+            LOG.info("Error. Nonexistent category.");
+            response.getErrors().add("Error. Nonexistent category.");
+            return  ResponseEntity.badRequest().body(response);
+        }
+
+        PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
+
+        Page<Article>articles = this.articleService.findAllByCategoryId(categoryId, pageRequest);
+        Page<ArticleDto> articlesDto = articles.map(this::convertArticleToArticleDto);
+
+        response.setData(articlesDto);
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * Add a new article
@@ -77,6 +130,7 @@ public class ArticleController {
        }
     }
 
+    
     /**
      * Delete article by id
      *
