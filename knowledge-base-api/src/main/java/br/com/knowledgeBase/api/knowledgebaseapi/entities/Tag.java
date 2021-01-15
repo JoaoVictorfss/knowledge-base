@@ -2,7 +2,6 @@ package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Entity

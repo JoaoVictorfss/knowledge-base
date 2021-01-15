@@ -41,6 +41,9 @@ public class Category {
     @ManyToMany(fetch=FetchType.LAZY, mappedBy = "categories", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
     private List<Section> sections = new ArrayList<Section>();
 
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "articleCategories", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
+    private List<Article> articles = new ArrayList<Article>();
+
     @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "category_tags",
@@ -127,6 +130,14 @@ public class Category {
 
     public void setSections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
     }
 
     @PreUpdate

@@ -5,9 +5,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusType;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "articles")
@@ -54,6 +52,14 @@ public class Article implements Serializable {
 
     @Column(name = "updated_at", nullable = false)
     private Date updated_at;
+
+    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "article_categories",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> articleCategories = new ArrayList<Category>();
 
     @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -166,6 +172,14 @@ public class Article implements Serializable {
 
     public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public List<Category> getCategories() {
+        return articleCategories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.articleCategories = categories;
     }
 
     @PreUpdate

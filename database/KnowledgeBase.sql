@@ -176,6 +176,53 @@ DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
+-- -----------------------------------------------------
+-- Table `knowledgeBase`.`article_categories`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `knowledgeBase`.`article_categories` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `article_id` INT NOT NULL,
+  `category_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_section_categories_2_idx` (`category_id` ASC) VISIBLE,
+  INDEX `fk_section_categories_10_idx` (`article_id` ASC) VISIBLE,
+  CONSTRAINT `fk_section_categories_10`
+    FOREIGN KEY (`article_id`)
+    REFERENCES `knowledgeBase`.`articles` (`id`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT,
+  CONSTRAINT `fk_section_categories_20`
+    FOREIGN KEY (`category_id`)
+    REFERENCES `knowledgeBase`.`categories` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `knowledgeBase`.`article_sections`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `knowledgeBase`.`article_sections` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `article_id` INT NOT NULL,
+  `section_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_section_categories_10_idx` (`article_id` ASC) VISIBLE,
+  INDEX `fk_section_categories_200_idx` (`section_id` ASC) VISIBLE,
+  CONSTRAINT `fk_section_categories_100`
+    FOREIGN KEY (`article_id`)
+    REFERENCES `knowledgeBase`.`articles` (`id`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT,
+  CONSTRAINT `fk_section_categories_200`
+    FOREIGN KEY (`section_id`)
+    REFERENCES `knowledgeBase`.`sections` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
