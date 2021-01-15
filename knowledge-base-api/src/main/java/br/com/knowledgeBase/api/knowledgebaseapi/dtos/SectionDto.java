@@ -16,10 +16,10 @@ public class SectionDto {
     @NotBlank(message = "The slug cannot be empty.")
     private String slug;
 
-    @NotBlank(message = "The name of the author who created the tag cannot be empty.")
+    @NotBlank(message = "The name of the author who created the category cannot be empty.")
     private String created_by;
 
-    @NotBlank(message = "The name of the author who updated the tag cannot be empty.")
+    @NotBlank(message = "The name of the author who updated the category cannot be empty.")
     private String updated_by;
 
     private Date updated_at;

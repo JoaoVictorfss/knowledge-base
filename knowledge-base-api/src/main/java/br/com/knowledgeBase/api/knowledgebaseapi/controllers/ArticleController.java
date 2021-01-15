@@ -3,6 +3,8 @@ package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 import br.com.knowledgeBase.api.knowledgebaseapi.dtos.ArticleDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Article;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
+import br.com.knowledgeBase.api.knowledgebaseapi.enums.LikedType;
+import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusType;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.ArticleService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
@@ -16,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
@@ -49,28 +52,29 @@ public class ArticleController {
         LOG.info("Adding article: {}", articleDto.toString());
         Response<ArticleDto> response = new Response<ArticleDto>();
 
-        categoriesValidation(articleDto.getCategoriesId(), result);
+       try {
+           categoriesValidation(articleDto.getCategoriesId(), result);
+           typeValidation(articleDto.getStatus(), articleDto.getLiked(),result);
 
-        if(result.hasErrors()){
-            LOG.error("Error validating article: {}", result.getAllErrors());
-            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+           Article article = this.convertArticleDtoToArticle(articleDto);
+           List<Category> categories = article.getCategories();
 
-            return ResponseEntity.badRequest().body(response);
-        }
+           articleDto.getCategoriesId().forEach(id -> {
+               Category category = this.categoryService.findById(id).get();
+               article.getCategories().add(category);
+               category.getArticles().add(article);
+           });
 
-        Article article = this.convertArticleDtoToArticle(articleDto);
-        List<Category> categories = article.getCategories();
+           this.articleService.persist(article);
+           response.setData(this.convertArticleToArticleDto(article));
 
-        articleDto.getCategoriesId().forEach(id -> {
-            Category category = this.categoryService.findById(id).get();
-            article.getCategories().add(category);
-            category.getArticles().add(article);
-        });
+           return ResponseEntity.ok(response);
+       }catch (ValidationException err){
+           LOG.error("Error validating article: {}", result.getAllErrors());
+           result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
-        this.articleService.persist(article);
-        response.setData(this.convertArticleToArticleDto(article));
-
-        return ResponseEntity.ok(response);
+           return ResponseEntity.badRequest().body(response);
+       }
     }
 
     /**
@@ -88,8 +92,9 @@ public class ArticleController {
         articleDto.setSubtitle(article.getSubtitle());
         articleDto.setContent(article.getContent());
 
-        articleDto.setStatus(article.getStatus());
-        articleDto.setLiked(Optional.of(article.getLiked()));
+        articleDto.setStatus(article.getStatus().toString());
+        articleDto.setLiked(article.getLiked());
+
         articleDto.setViews(article.getViews());
         articleDto.setSlug(article.getSlug());
         articleDto.setCreated_by(article.getCreated_by());
@@ -114,8 +119,9 @@ public class ArticleController {
         article.setSubtitle(articleDto.getSubtitle());
         article.setContent(articleDto.getContent());
 
-        article.setStatus(articleDto.getStatus());
-        article.setLiked(articleDto.getLiked().orElse(null));
+        article.setStatus(StatusType.valueOf(articleDto.getStatus()));
+        article.setLiked(articleDto.getLiked());
+
         article.setViews(articleDto.getViews());
         article.setSlug(articleDto.getSlug());
         article.setCreated_by(articleDto.getCreated_by());
@@ -131,15 +137,33 @@ public class ArticleController {
      * @param result
      */
     private void categoriesValidation(List<Long> categories, BindingResult result){
+        if(result.hasErrors()){
+            throw new ValidationException();
+        }else{
+            categories.forEach(categoryId -> {
+                Optional<Category> category = this.categoryService.findById(categoryId);
 
-        //TODO validar enums
-        categories.forEach(categoryId -> {
-            Optional<Category> category = this.categoryService.findById(categoryId);
-
-            if(!category.isPresent()){
-                result.addError(new ObjectError("category", "Nonexistent category id " + categoryId));
-            }
-        });
+                if(!category.isPresent()){
+                    result.addError(new ObjectError("category", "Nonexistent category id " + categoryId));
+                    throw new ValidationException();
+                }
+            });
+        }
     }
 
+    private void typeValidation(String status, String liked, BindingResult result){
+        try {
+            StatusType statusType = StatusType.valueOf(status);
+
+            if(liked != null){
+                LikedType likedTypeType = LikedType.valueOf(liked);
+            }
+
+        } catch (java.lang.IllegalArgumentException ex) {
+            result.addError(new ObjectError("status", "Invalid status type or liked type. " +
+                    "Accepted values for the liked field: POOR, AVERAGE and GREAT." +
+                    "Accepted values for the status field: CANCEL, PUBLISH and DRAFT(Default)"));
+            throw new ValidationException();
+        }
+    }
 }

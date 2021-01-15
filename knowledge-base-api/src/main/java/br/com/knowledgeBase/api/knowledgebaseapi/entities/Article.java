@@ -1,6 +1,5 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.enums.LikedType;
 import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusType;
 
 import javax.persistence.*;
@@ -24,13 +23,12 @@ public class Article implements Serializable {
     @Column(name = "subtitle", nullable = false)
     private String subtitle;
 
-    @Column(name="status", columnDefinition="enum('DRAFT', 'PUBLISH', 'CANCEL')", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(name="status", columnDefinition="enum('DRAFT', 'PUBLISH', 'CANCEL')", nullable = false)
     private StatusType status;
 
-    @Column(name="Liked", columnDefinition="enum('POOR', 'AVERAGE', 'GREAT')", nullable = true)
-    @Enumerated(EnumType.STRING)
-    private LikedType liked;
+    @Column(name = "liked", nullable = true)
+    private String liked;
 
     @Column(name = "viewers", nullable = false)
     private Long views;
@@ -102,11 +100,11 @@ public class Article implements Serializable {
         this.status = status;
     }
 
-    public LikedType getLiked() {
+    public String getLiked() {
         return liked;
     }
 
-    public void setLiked(LikedType liked) {
+    public void setLiked(String liked) {
         this.liked = liked;
     }
 

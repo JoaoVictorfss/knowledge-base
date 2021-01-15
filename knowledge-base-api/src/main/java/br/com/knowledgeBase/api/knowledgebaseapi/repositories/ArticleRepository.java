@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ArticleRepository extends JpaRepository<Article, Long>{
-    @Query("SELECT s FROM Article a "
-            + "JOIN a.categories c "
+    @Query("SELECT a FROM Article a "
+            + "JOIN a.articleCategories c "
             + "WHERE c.id = :categoryId")
     Page<Article> findAllByCategoryId(Long categoryId, Pageable pageable);
 }

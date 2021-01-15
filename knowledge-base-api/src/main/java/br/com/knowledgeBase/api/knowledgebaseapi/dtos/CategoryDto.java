@@ -9,10 +9,10 @@ public class CategoryDto {
     @NotBlank(message = "The title cannot be empty.")
     private String title;
 
-    @NotBlank(message = "The name of the author who created the tag cannot be empty.")
+    @NotBlank(message = "The name of the author who created the category cannot be empty.")
     private String created_by;
 
-    @NotBlank(message = "The name of the author who updated the tag cannot be empty.")
+    @NotBlank(message = "The name of the author who updated the category cannot be empty.")
     private String updated_by;
 
     private String subtitle;
