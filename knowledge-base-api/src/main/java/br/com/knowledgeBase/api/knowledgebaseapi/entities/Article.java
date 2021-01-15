@@ -5,6 +5,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -47,6 +48,12 @@ public class Article implements Serializable {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "created_at", nullable = false)
+    private Date created_at;
+
+    @Column(name = "updated_at", nullable = false)
+    private Date updated_at;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "article_tags",
@@ -54,6 +61,7 @@ public class Article implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
     )
     private Set<Tag> tags;
+
 
     public Long getId() {
         return id;
@@ -143,6 +151,34 @@ public class Article implements Serializable {
         this.tags = tags;
     }
 
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(Date updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updated_at = new Date();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        final Date atual = new Date();
+        created_at = atual;
+        updated_at = atual;
+    }
+
     @Override
     public String toString() {
         return "Article{" +
@@ -156,7 +192,8 @@ public class Article implements Serializable {
                 ", created_by='" + created_by + '\'' +
                 ", updated_by='" + updated_by + '\'' +
                 ", content='" + content + '\'' +
-                ", tags=" + tags +
+                ", created_at=" + created_at +
+                ", updated_at=" + updated_at +
                 '}';
     }
 }

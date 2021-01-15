@@ -140,8 +140,8 @@ public class TagController {
         tagDto.setId(tag.getId());
         tagDto.setTitle(tag.getTitle());
         tagDto.setSlug(tag.getSlug());
-        //tagDto.setCreated_at(Optional.of(tag.getCreated_at()));
-        //tagDto.setUpdated_at(Optional.of(tag.getUpdated_at()));
+        tagDto.setCreated_at(tag.getCreated_at());
+        tagDto.setUpdated_at(tag.getUpdated_at());
         tagDto.setCreated_by(tag.getCreated_by());
         tagDto.setUpdated_by(tag.getUpdated_by());
 

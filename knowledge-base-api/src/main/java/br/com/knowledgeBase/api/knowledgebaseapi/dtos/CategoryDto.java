@@ -1,6 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.Date;
 
 public class CategoryDto {
     private Long id;
@@ -17,6 +18,10 @@ public class CategoryDto {
     private String subtitle;
 
     private String slug;
+
+    private Date updated_at;
+
+    private Date created_at;
 
     public Long getId() {
         return id;
@@ -66,6 +71,22 @@ public class CategoryDto {
         this.updated_by = updated_by;
     }
 
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(Date updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
     @Override
     public String toString() {
         return "CategoryDto{" +
@@ -73,8 +94,10 @@ public class CategoryDto {
                 ", title='" + title + '\'' +
                 ", created_by='" + created_by + '\'' +
                 ", updated_by='" + updated_by + '\'' +
-                ", subtitle=" + subtitle +
-                ", slug=" + slug +
+                ", subtitle='" + subtitle + '\'' +
+                ", slug='" + slug + '\'' +
+                ", updated_at=" + updated_at +
+                ", created_at=" + created_at +
                 '}';
     }
 }

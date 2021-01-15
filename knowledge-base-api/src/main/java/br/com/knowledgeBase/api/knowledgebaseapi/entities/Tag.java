@@ -1,10 +1,9 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "tags")
@@ -29,14 +28,11 @@ public class Tag {
     @Column(name = "updated_by", nullable = false)
     private String updated_by;
 
-   /* @CreatedDate
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)
-    private LocalDate created_at;
+    private Date created_at;
 
-    @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private LocalDate updated_at;**/
+    private Date updated_at;
 
     public Long getId() {
         return id;
@@ -78,21 +74,33 @@ public class Tag {
         this.updated_by = updated_by;
     }
 
-    /*public LocalDate getCreated_at() {
+    public Date getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(LocalDate created_at) {
+    public void setCreated_at(Date created_at) {
         this.created_at = created_at;
     }
 
-    public LocalDate getUpdated_at() {
+    public Date getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(LocalDate updated_at) {
+    public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
-    }*/
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updated_at = new Date();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        final Date atual = new Date();
+        created_at = atual;
+        updated_at = atual;
+    }
 
     @Override
     public String toString() {
@@ -102,8 +110,8 @@ public class Tag {
                 ", slug='" + slug + '\'' +
                 ", created_by='" + created_by + '\'' +
                 ", updated_by='" + updated_by + '\'' +
-                /*", created_at=" + created_at +
-                ", updated_at=" + updated_at +*/
+                ", created_at=" + created_at +
+                ", updated_at=" + updated_at +
                 '}';
     }
 }

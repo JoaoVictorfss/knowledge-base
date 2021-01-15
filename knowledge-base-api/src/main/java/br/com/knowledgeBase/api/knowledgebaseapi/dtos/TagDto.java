@@ -2,6 +2,7 @@ package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
 
 public class TagDto {
@@ -19,9 +20,9 @@ public class TagDto {
     @NotEmpty(message = "The name of the author who updated the tag cannot be empty.")
     private String updated_by;
 
-    private Optional<LocalDate> updated_at;
+    private Date updated_at;
 
-    private Optional<LocalDate> created_at;
+    private Date created_at;
 
     public Long getId() {
         return id;
@@ -63,19 +64,19 @@ public class TagDto {
         this.updated_by = updated_by;
     }
 
-    public Optional<LocalDate> getUpdated_at() {
+    public Date getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(Optional<LocalDate> updated_at) {
+    public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
     }
 
-    public Optional<LocalDate> getCreated_at() {
+    public Date getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Optional<LocalDate> created_at) {
+    public void setCreated_at(Date created_at) {
         this.created_at = created_at;
     }
 

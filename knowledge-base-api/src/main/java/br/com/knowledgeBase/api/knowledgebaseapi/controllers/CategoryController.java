@@ -162,8 +162,8 @@ public class CategoryController {
         categoryDto.setTitle(category.getTitle());
         categoryDto.setSubtitle(category.getSubtitle());
         categoryDto.setSlug(category.getSlug());
-        //categoryDto.setCreated_at(Optional.of(category.getCreated_at()));
-        //categoryDto.setUpdated_at(Optional.of(category.getUpdated_at()));
+        categoryDto.setCreated_at(category.getCreated_at());
+        categoryDto.setUpdated_at(category.getUpdated_at());
         categoryDto.setCreated_by(category.getCreated_by());
         categoryDto.setUpdated_by(category.getUpdated_by());
 

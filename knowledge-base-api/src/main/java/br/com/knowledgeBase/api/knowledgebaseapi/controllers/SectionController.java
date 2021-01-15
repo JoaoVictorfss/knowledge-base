@@ -176,8 +176,8 @@ public class SectionController {
         sectionDto.setTitle(section.getTitle());
         sectionDto.setSubtitle(section.getSubtitle());
         sectionDto.setSlug(section.getSlug());
-        //sectionDto.setCreated_at(Optional.of(section.getCreated_at()));
-        //sectionDto.setUpdated_at(Optional.of(section.getUpdated_at()));
+        sectionDto.setCreated_at(section.getCreated_at());
+        sectionDto.setUpdated_at(section.getUpdated_at());
         sectionDto.setCreated_by(section.getCreated_by());
         sectionDto.setUpdated_by(section.getUpdated_by());
 
