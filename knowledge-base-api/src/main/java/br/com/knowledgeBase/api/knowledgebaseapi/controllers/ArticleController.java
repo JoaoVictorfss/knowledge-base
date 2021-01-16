@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,7 @@ public class ArticleController {
      * @return ResponseEntity<Response<ArticleDto>>
      */
     @GetMapping(value = "/list/{categoryId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<Page<ArticleDto>>> listSectonsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
@@ -106,6 +108,7 @@ public class ArticleController {
      * @throws ParseException
      */
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<ArticleDto>> store(@Valid @RequestBody ArticleDto articleDto,
                                                       BindingResult result) throws ParseException {
         LOG.info("Adding article: {}", articleDto.toString());
@@ -146,6 +149,7 @@ public class ArticleController {
      * @throws NoSuchAlgorithmException
      */
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<ArticleDto>> update(@Valid @RequestBody ArticleDto articleDto,
                                                        BindingResult result, @PathVariable("id") Long id) throws NoSuchAlgorithmException {
         LOG.info("Updating article id {}, article: {}",id, articleDto.toString());
@@ -186,6 +190,7 @@ public class ArticleController {
      * @return ResponseEntity<Response<String>>
      */
     @DeleteMapping(value = "/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting article: {}", id);
         Response<String> response = new Response<String>();

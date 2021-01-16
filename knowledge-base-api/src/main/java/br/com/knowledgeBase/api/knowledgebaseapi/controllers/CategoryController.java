@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -69,6 +72,7 @@ public class CategoryController {
      * @throws ParseException
      */
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<CategoryDto>> store(@Valid @RequestBody CategoryDto categoryDto,
                                                   BindingResult result) throws ParseException {
         LOG.info("Adding category: {}", categoryDto.toString());
@@ -97,6 +101,7 @@ public class CategoryController {
      * @throws NoSuchAlgorithmException
      */
     @PutMapping(value = "/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<CategoryDto>> update(@PathVariable("id") Long id,
                                                    @Valid @RequestBody CategoryDto categoryDto, BindingResult result) throws NoSuchAlgorithmException {
         LOG.info("Updating category: {}", categoryDto.toString());
@@ -133,6 +138,7 @@ public class CategoryController {
      * @return ResponseEntity<Response<String>>
      */
     @DeleteMapping(value = "/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting category: {}", id);
         Response<String> response = new Response<String>();

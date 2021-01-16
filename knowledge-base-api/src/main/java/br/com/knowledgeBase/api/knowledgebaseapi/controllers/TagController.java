@@ -6,6 +6,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ public class TagController {
      * @throws ParseException
      */
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<TagDto>> store(@Valid @RequestBody TagDto tagDto,
                                                   BindingResult result) throws ParseException {
         LOG.info("Adding tag: {}", tagDto.toString());
@@ -69,6 +71,7 @@ public class TagController {
      * @throws NoSuchAlgorithmException
      */
     @PutMapping(value = "/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<TagDto>> update(@PathVariable("id") Long id,
                                                         @Valid @RequestBody TagDto tagDto,  BindingResult result) throws NoSuchAlgorithmException {
         LOG.info("Updating tag id {}, {}", id, tagDto.toString());
@@ -104,6 +107,7 @@ public class TagController {
      * @return ResponseEntity<Response<String>>
      */
     @DeleteMapping(value = "/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting tag: {}", id);
         Response<String> response = new Response<String>();

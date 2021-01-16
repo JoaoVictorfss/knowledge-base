@@ -1,4 +1,4 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.security.controller;
+package br.com.knowledgeBase.api.knowledgebaseapi.security.controllers;
 
 import java.util.Optional;
 

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -67,6 +68,7 @@ public class SectionController {
      * @return ResponseEntity<Response<SectionDto>>
      */
     @GetMapping(value = "/list/{categoryId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<Page<SectionDto>>> listSectonsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
@@ -104,6 +106,7 @@ public class SectionController {
      * @throws ParseException
      */
     @PostMapping("/create/category/{categoryId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<SectionDto>> store(@Valid @RequestBody SectionDto sectionDto,
                                                        BindingResult result, @PathVariable("categoryId") Long categoryId) throws ParseException {
         LOG.info("Adding section: {}, category id {}", sectionDto.toString(), categoryId);
@@ -142,6 +145,7 @@ public class SectionController {
      * @throws NoSuchAlgorithmException
      */
     @PutMapping("/update/{id}/category/{categoryId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<SectionDto>> update(@Valid @RequestBody SectionDto sectionDto,
                                                       BindingResult result, @PathVariable("id") Long id, @PathVariable("categoryId") Long categoryId) throws NoSuchAlgorithmException {
         LOG.info("Updating section id {}, section: {}, category id {}",id, sectionDto.toString(), categoryId);
@@ -179,6 +183,7 @@ public class SectionController {
      * @return ResponseEntity<Response<String>>
      */
     @DeleteMapping(value = "/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting section: {}", id);
         Response<String> response = new Response<String>();
