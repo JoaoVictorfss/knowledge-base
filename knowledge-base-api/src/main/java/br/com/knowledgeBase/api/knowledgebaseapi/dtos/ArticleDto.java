@@ -38,7 +38,7 @@ public class ArticleDto {
     @NotBlank(message = "The status cannot be empty.")
     private String status;
 
-    @NotNull
+    @NotNull(message = "The categories id cannot be null")
     private List<Long> categoriesId;
 
     private String liked;

@@ -5,6 +5,9 @@ import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/knowledgeBase-api/categories")
 @CrossOrigin(origins = "*")
+@Cacheable("categories")
 public class CategoryController {
     private static final Logger LOG = LoggerFactory.getLogger(CategoryController.class);
 
@@ -94,6 +98,7 @@ public class CategoryController {
      */
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    @CachePut("categories")
     public ResponseEntity<Response<CategoryDto>> store(@Valid @RequestBody CategoryDto categoryDto,
                                                   BindingResult result) throws ParseException {
         LOG.info("Adding category: {}", categoryDto.toString());
@@ -123,6 +128,7 @@ public class CategoryController {
      */
     @PutMapping(value = "/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    @CacheEvict(value = "categories", allEntries = true)
     public ResponseEntity<Response<CategoryDto>> update(@PathVariable("id") Long id,
                                                    @Valid @RequestBody CategoryDto categoryDto, BindingResult result) throws NoSuchAlgorithmException {
         LOG.info("Updating category: {}", categoryDto.toString());
@@ -160,6 +166,7 @@ public class CategoryController {
      */
     @DeleteMapping(value = "/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    @CacheEvict(value = "categories", allEntries = true)
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting category: {}", id);
         Response<String> response = new Response<String>();

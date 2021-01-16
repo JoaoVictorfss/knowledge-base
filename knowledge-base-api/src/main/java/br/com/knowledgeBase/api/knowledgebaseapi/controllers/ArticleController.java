@@ -22,7 +22,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.List;
