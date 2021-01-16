@@ -230,6 +230,7 @@ CREATE TABLE IF NOT EXISTS `knowledgeBase`.`users` (
   `email` VARCHAR(150) NOT NULL,
   `password` VARCHAR(150) NOT NULL,
   `profile` VARCHAR(15) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;

@@ -14,6 +14,9 @@ public class User implements Serializable {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @Column(name = "email", nullable = false)
     private String email;
 
@@ -54,5 +57,13 @@ public class User implements Serializable {
 
     public void setProfile(ProfileEnum profile) {
         this.profile = profile;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
