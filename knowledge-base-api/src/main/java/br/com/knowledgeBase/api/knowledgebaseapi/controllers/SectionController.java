@@ -1,5 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
+import br.com.knowledgeBase.api.knowledgebaseapi.dtos.CategoryDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.dtos.SectionDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Section;
@@ -95,6 +96,28 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Return a section by id
+     *
+     * @param id
+     * @return ResponseEntity<Response<SectionDto>>
+     */
+    @GetMapping(value = "/section/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<Response<SectionDto>> showById(@PathVariable("id") Long id){
+        LOG.info("Searching section id {}", id);
+        Response<SectionDto> response = new Response<SectionDto>();
+
+        Optional<Section>sectionExists = this.sectionService.findById(id);
+        if(!sectionExists.isPresent()) {
+            LOG.info("Error. Nonexistent section.");
+            response.getErrors().add("Error. Nonexistent section.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        response.setData(this.convertSectionToSectionDto(sectionExists.get()));
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * Add a new section

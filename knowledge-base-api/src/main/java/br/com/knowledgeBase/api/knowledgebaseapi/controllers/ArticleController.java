@@ -85,8 +85,8 @@ public class ArticleController {
 
         Optional<Category> category = this.categoryService.findById(categoryId);
         if(!category.isPresent()){
-            LOG.info("Error. Nonexistent category.");
-            response.getErrors().add("Error. Nonexistent category.");
+            LOG.info("Error. Nonexistent article.");
+            response.getErrors().add("Error. Nonexistent article.");
             return  ResponseEntity.badRequest().body(response);
         }
 
@@ -96,6 +96,29 @@ public class ArticleController {
         Page<ArticleDto> articlesDto = articles.map(this::convertArticleToArticleDto);
 
         response.setData(articlesDto);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Return an article by id
+     *
+     * @param id
+     * @return ResponseEntity<Response<ArticleDto>>
+     */
+    @GetMapping(value = "/article/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<Response<ArticleDto>> showById(@PathVariable("id") Long id){
+        LOG.info("Searching article id {}", id);
+        Response<ArticleDto> response = new Response<ArticleDto>();
+
+        Optional<Article>articleExists = this.articleService.findById(id);
+        if(!articleExists.isPresent()) {
+            LOG.info("Error. Nonexistent article.");
+            response.getErrors().add("Error. Nonexistent article.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        response.setData(this.convertArticleToArticleDto(articleExists.get()));
         return ResponseEntity.ok(response);
     }
 

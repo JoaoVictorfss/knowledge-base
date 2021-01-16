@@ -62,6 +62,29 @@ public class CategoryController {
     }
 
     /**
+     * Return a category by id
+     *
+     * @param id
+     * @return ResponseEntity<Response<CategoryDto>>
+     */
+    @GetMapping(value = "/category/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<Response<CategoryDto>> showById(@PathVariable("id") Long id){
+        LOG.info("Searching category id {}", id);
+        Response<CategoryDto> response = new Response<CategoryDto>();
+
+        Optional<Category>categoryExists = this.categoryService.findById(id);
+        if(!categoryExists.isPresent()) {
+            LOG.info("Error. Nonexistent category.");
+            response.getErrors().add("Error. Nonexistent category.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        response.setData(this.convertCategoryToCategoryDto(categoryExists.get()));
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * Add a new category
      *
      * @param categoryDto
