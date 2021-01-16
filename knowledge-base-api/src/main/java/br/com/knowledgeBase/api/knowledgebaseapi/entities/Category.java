@@ -1,6 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "categories")
-public class Category {
+public class Category implements Serializable {
     private static final long serialVersionUID = -5754246207015712518L;
 
     public Category(){ }

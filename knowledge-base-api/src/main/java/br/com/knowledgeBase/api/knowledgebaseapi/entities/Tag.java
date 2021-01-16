@@ -2,11 +2,12 @@ package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "tags")
-public class Tag {
+public class Tag implements Serializable {
     private static final long serialVersionUID = -5754246207015712518L;
 
     public Tag(){ }
