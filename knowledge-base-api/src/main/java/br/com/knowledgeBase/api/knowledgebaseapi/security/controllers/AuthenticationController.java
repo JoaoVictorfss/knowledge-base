@@ -5,11 +5,14 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import br.com.knowledgeBase.api.knowledgebaseapi.security.dto.AuthenticationDto;
+import br.com.knowledgeBase.api.knowledgebaseapi.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -46,36 +49,46 @@ public class AuthenticationController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * Generate and returns a new JWT token.
      *
      * @param authenticationDto
      * @param result
-     * @return ResponseEntity<Response<TokenDto>>
+     * @return ResponseEntity<Response<AuthenticationDto>>
      * @throws AuthenticationException
      */
     @PostMapping
-    public ResponseEntity<Response<TokenDto>> generateTokenJwt(
+    public ResponseEntity<Response<AuthenticationDto>> generateTokenJwt(
             @Valid @RequestBody JwtAuthenticationDto authenticationDto, BindingResult result)
             throws AuthenticationException {
-        Response<TokenDto> response = new Response<TokenDto>();
+        Response<AuthenticationDto> response = new Response<AuthenticationDto>();
 
         if (result.hasErrors()) {
             LOG.error("Error validating user\n: {}", result.getAllErrors());
+
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(response);
         }
 
-        LOG.info("Generating token for email {}.", authenticationDto.getEmail());
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                authenticationDto.getEmail(), authenticationDto.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try{
+            LOG.info("Generating token for email {}.", authenticationDto.getEmail());
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    authenticationDto.getEmail(), authenticationDto.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationDto.getEmail());
-        String token = jwtTokenUtil.getToken(userDetails);
-        response.setData(new TokenDto(token));
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(authenticationDto.getEmail());
+            String token = jwtTokenUtil.getToken(userDetails);
+            String userName = this.userService.findByEmail(authenticationDto.getEmail()).get().getName();
+            response.setData(new AuthenticationDto(userName, token));
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
+        }catch (BadCredentialsException err){
+            response.getErrors().add("Error. User or password does not exist");
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     /**
