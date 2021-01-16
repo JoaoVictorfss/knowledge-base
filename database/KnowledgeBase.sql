@@ -235,6 +235,7 @@ CREATE TABLE IF NOT EXISTS `knowledgeBase`.`users` (
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;
 
+INSERT INTO users(name, email, password, profile) VALUES ('first admin', 'firstadmin@knowledgebase.com', '$2b$10$pEMqrMJK8J8U2wQ4W0etAO2ouCOA/m7JiVpLAa3Y1sLCy94QouUkm', 'ROLE_ADMIN');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
