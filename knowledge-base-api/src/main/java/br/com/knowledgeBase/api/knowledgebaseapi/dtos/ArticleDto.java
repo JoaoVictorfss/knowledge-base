@@ -21,9 +21,9 @@ public class ArticleDto {
     @NotBlank(message = "The slug cannot be empty.")
     private String slug;
 
-    @PositiveOrZero(message = "The views cannot be negative.")
-    @NotNull(message = "The views cannot be null.")
-    private Long views;
+    @PositiveOrZero(message = "The viewers field cannot be negative.")
+    @NotNull(message = "The viewers cannot be null.")
+    private Long viewers;
 
     @NotBlank(message = "The name of the author who created the article cannot be empty.")
     private String created_by;
@@ -83,12 +83,12 @@ public class ArticleDto {
         this.slug = slug;
     }
 
-    public Long getViews() {
-        return views;
+    public Long getViewers() {
+        return viewers;
     }
 
-    public void setViews(Long views) {
-        this.views = views;
+    public void setViewers(Long viewers) {
+        this.viewers = viewers;
     }
 
     public String getCreated_by() {
@@ -155,7 +155,7 @@ public class ArticleDto {
                 ", subtitle='" + subtitle + '\'' +
                 ", content='" + content + '\'' +
                 ", slug='" + slug + '\'' +
-                ", views=" + views +
+                ", viewers=" + viewers +
                 ", created_by='" + created_by + '\'' +
                 ", updated_by='" + updated_by + '\'' +
                 ", liked=" + liked +

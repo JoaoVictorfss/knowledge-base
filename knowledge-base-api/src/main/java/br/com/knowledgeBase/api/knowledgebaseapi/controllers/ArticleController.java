@@ -43,7 +43,7 @@ public class ArticleController {
     private int qttPerPage;
 
     /**
-     * Returns a paginated list of articles
+     * Returns a paginated list of published articles
      *
      * @return ResponseEntity<Response<ArticleDto>>
      */
@@ -164,7 +164,7 @@ public class ArticleController {
             articleExists.get().setContent(articleDto.getContent());
             articleExists.get().setStatus(StatusType.valueOf(articleDto.getStatus()));
             articleExists.get().setLiked(articleDto.getLiked());
-            articleExists.get().setViews(articleDto.getViews());
+            articleExists.get().setViewers(articleDto.getViewers());
             articleExists.get().setSlug(articleDto.getSlug());
 
             this.articleService.persist(articleExists.get());
@@ -218,7 +218,7 @@ public class ArticleController {
         articleDto.setContent(article.getContent());
         articleDto.setStatus(article.getStatus().toString());
         articleDto.setLiked(article.getLiked());
-        articleDto.setViews(article.getViews());
+        articleDto.setViewers(article.getViewers());
         articleDto.setSlug(article.getSlug());
         articleDto.setCreated_by(article.getCreated_by());
         articleDto.setUpdated_by(article.getUpdated_by());
@@ -242,7 +242,7 @@ public class ArticleController {
         article.setContent(articleDto.getContent());
         article.setStatus(StatusType.valueOf(articleDto.getStatus()));
         article.setLiked(articleDto.getLiked());
-        article.setViews(articleDto.getViews());
+        article.setViewers(articleDto.getViewers());
         article.setSlug(articleDto.getSlug());
         article.setCreated_by(articleDto.getCreated_by());
         article.setUpdated_by(articleDto.getCreated_by());

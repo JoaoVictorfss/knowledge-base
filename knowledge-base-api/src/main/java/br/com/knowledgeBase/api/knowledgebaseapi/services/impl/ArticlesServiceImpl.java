@@ -23,7 +23,7 @@ public class ArticlesServiceImpl implements ArticleService {
     public Page<Article> findAll(PageRequest pageRequest) {
         LOG.info("searching articles");
 
-        return this.articleRepository.findAll(pageRequest);
+        return this.articleRepository.findAllPublished(pageRequest);
     }
 
     @Override

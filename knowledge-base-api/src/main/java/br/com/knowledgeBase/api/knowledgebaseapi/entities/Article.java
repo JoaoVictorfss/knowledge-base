@@ -31,7 +31,7 @@ public class Article implements Serializable {
     private String liked;
 
     @Column(name = "viewers", nullable = false)
-    private Long views;
+    private Long viewers;
 
     @Column(name = "slug", nullable = false)
     private String slug;
@@ -108,12 +108,12 @@ public class Article implements Serializable {
         this.liked = liked;
     }
 
-    public Long getViews() {
-        return views;
+    public Long getViewers() {
+        return viewers;
     }
 
-    public void setViews(Long views) {
-        this.views = views;
+    public void setViewers(Long viewers) {
+        this.viewers = viewers;
     }
 
     public String getSlug() {
@@ -197,12 +197,12 @@ public class Article implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Article article = (Article) o;
-        return id.equals(article.id) && title.equals(article.title) && subtitle.equals(article.subtitle) && status == article.status && liked == article.liked && views.equals(article.views) && slug.equals(article.slug) && created_by.equals(article.created_by) && updated_by.equals(article.updated_by) && content.equals(article.content) && created_at.equals(article.created_at) && updated_at.equals(article.updated_at) && Objects.equals(tags, article.tags);
+        return id.equals(article.id) && title.equals(article.title) && subtitle.equals(article.subtitle) && status == article.status && liked == article.liked && viewers.equals(article.viewers) && slug.equals(article.slug) && created_by.equals(article.created_by) && updated_by.equals(article.updated_by) && content.equals(article.content) && created_at.equals(article.created_at) && updated_at.equals(article.updated_at) && Objects.equals(tags, article.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, subtitle, status, liked, views, slug, created_by, updated_by, content, created_at, updated_at, tags);
+        return Objects.hash(id, title, subtitle, status, liked, viewers, slug, created_by, updated_by, content, created_at, updated_at, tags);
     }
 
     @Override
@@ -213,7 +213,7 @@ public class Article implements Serializable {
                 ", subtitle='" + subtitle + '\'' +
                 ", status=" + status +
                 ", liked=" + liked +
-                ", views=" + views +
+                ", viewers=" + viewers +
                 ", slug='" + slug + '\'' +
                 ", created_by='" + created_by + '\'' +
                 ", updated_by='" + updated_by + '\'' +
