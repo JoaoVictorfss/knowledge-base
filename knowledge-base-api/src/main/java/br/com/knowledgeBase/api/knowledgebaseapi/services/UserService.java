@@ -12,4 +12,27 @@ public interface UserService {
      * @return Optional(User)
      */
     Optional<User> findByEmail(String email);
+
+    /**
+     * creates a new user in the database
+     *
+     * @param user
+     * @return user
+     */
+    User persist(User user);
+
+    /**
+     *find user by id
+     *
+     * @param id
+     * @return Optional<User>
+     */
+    Optional<User> findById(Long id);
+
+    /**
+     * remove a user in the database
+     *
+     * @param id
+     */
+    void delete(Long id);
 }

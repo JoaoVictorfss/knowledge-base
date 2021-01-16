@@ -1,6 +1,5 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.dtos.CategoryDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.dtos.SectionDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Section;
