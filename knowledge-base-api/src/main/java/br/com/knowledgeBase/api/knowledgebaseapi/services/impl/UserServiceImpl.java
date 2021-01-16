@@ -30,18 +30,4 @@ public class UserServiceImpl implements UserService {
 
         return this.userRepository.save(user);
     }
-
-    @Override
-    public Optional<User> findById(Long id) {
-        LOG.info("searching user ID {}", id);
-
-        return this.userRepository.findById(id);
-    }
-
-    @Override
-    public void delete(Long id) {
-        LOG.info("Removing user ID {}", id);
-
-        this.userRepository.deleteById(id);
-    }
 }

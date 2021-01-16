@@ -1,5 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -10,12 +12,14 @@ public class ArticleDto {
     private Long id;
 
     @NotBlank(message = "The title cannot be empty.")
+    @Length(min = 5, message = "The title must contain at least 5 characters.")
     private String title;
 
     @NotBlank(message = "The subtitle cannot be empty.")
     private String subtitle;
 
     @NotBlank(message = "The content cannot be empty.")
+    @Length(min = 15, message = "The content must contain at least 15 characters.")
     private String content;
 
     @NotBlank(message = "The slug cannot be empty.")

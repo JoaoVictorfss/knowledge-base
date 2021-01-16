@@ -45,20 +45,19 @@ public class TagController {
         LOG.info("Adding tag: {}", tagDto.toString());
         Response<TagDto> response = new Response<TagDto>();
 
-        try {
-            this.tagValidation(tagDto, result);
-            Tag tag = this.convertDtoToTag(tagDto);
-
-            this.tagService.persist(tag);
-            response.setData(this.convertTagToTagDto(tag));
-
-            return ResponseEntity.ok(response);
-        }catch (ValidationException err){
-            LOG.error("Error validating tag: {}", result.getAllErrors());
+        this.tagValidation(tagDto, result);
+        if(result.hasErrors()) {
+            LOG.error("Error validating tag\n: {}", result.getAllErrors());
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
             return ResponseEntity.badRequest().body(response);
         }
+
+        Tag tag = this.convertDtoToTag(tagDto);
+        this.tagService.persist(tag);
+        response.setData(this.convertTagToTagDto(tag));
+
+        return ResponseEntity.ok(response);
 
     }
 
@@ -77,28 +76,28 @@ public class TagController {
         LOG.info("Updating tag id {}, {}", id, tagDto.toString());
         Response<TagDto> response = new Response<TagDto>();
 
-        try{
-            Optional<Tag>tagExists = this.tagService.findById(id);
-            if(!tagExists.isPresent())
-                result.addError(new ObjectError("tag", "Nonexistent tag."));
+        Optional<Tag>tagExists = this.tagService.findById(id);
+        if(!tagExists.isPresent())
+            result.addError(new ObjectError("tag", "Nonexistent tag."));
 
-            tagValidation(tagDto, result);
-
-            tagExists.get().setTitle(tagDto.getTitle());
-            tagExists.get().setSlug(tagDto.getSlug());
-            tagExists.get().setUpdated_by(tagDto.getUpdated_by());
-
-            this.tagService.persist(tagExists.get());
-            response.setData(this.convertTagToTagDto(tagExists.get()));
-
-            return ResponseEntity.ok(response);
-        }catch (ValidationException err){
+        tagValidation(tagDto, result);
+        if(result.hasErrors()) {
             LOG.error("Error validating tag\n: {}", result.getAllErrors());
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
             return ResponseEntity.badRequest().body(response);
         }
+
+        tagExists.get().setTitle(tagDto.getTitle());
+        tagExists.get().setSlug(tagDto.getSlug());
+        tagExists.get().setUpdated_by(tagDto.getUpdated_by());
+
+        this.tagService.persist(tagExists.get());
+        response.setData(this.convertTagToTagDto(tagExists.get()));
+
+        return ResponseEntity.ok(response);
     }
+
 
     /**
      * Delete tag by id
@@ -167,18 +166,13 @@ public class TagController {
      * @param tagDto
      * @param result
      */
-    private void tagValidation(TagDto tagDto, BindingResult result){
-        if(result.hasErrors()){
-            throw new ValidationException();
+    private void tagValidation(TagDto tagDto, BindingResult result) {
+        if (!result.hasErrors()) {
+            Pattern notAllowed = Pattern.compile("[1-9A-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ']");
+            Matcher m = notAllowed.matcher(tagDto.getTitle());
+
+            if (m.find())
+                result.addError(new ObjectError("tag", "Invalid title."));
         }
-
-        Pattern notAllowed = Pattern.compile("[1-9A-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ']");
-        Matcher m = notAllowed.matcher(tagDto.getTitle());
-
-        if(m.find()){
-            result.addError(new ObjectError("tag", "Invalid title."));
-            throw new ValidationException();
-        };
-
     }
 }

@@ -85,8 +85,8 @@ public class ArticleController {
 
         Optional<Category> category = this.categoryService.findById(categoryId);
         if(!category.isPresent()){
-            LOG.info("Error. Nonexistent article.");
-            response.getErrors().add("Error. Nonexistent article.");
+            LOG.info("Error. Nonexistent category.");
+            response.getErrors().add("Error. Nonexistent category.");
             return  ResponseEntity.badRequest().body(response);
         }
 
@@ -137,29 +137,28 @@ public class ArticleController {
         LOG.info("Adding article: {}", articleDto.toString());
         Response<ArticleDto> response = new Response<ArticleDto>();
 
-       try {
-           categoriesAndErrorsValidation(articleDto.getCategoriesId(), result);
-           typeValidation(articleDto.getStatus(), articleDto.getLiked(),result);
-
-           Article article = this.convertArticleDtoToArticle(articleDto);
-           List<Category> categories = article.getCategories();
-
-           articleDto.getCategoriesId().forEach(id -> {
-               Category category = this.categoryService.findById(id).get();
-               article.getCategories().add(category);
-               category.getArticles().add(article);
-           });
-
-           this.articleService.persist(article);
-           response.setData(this.convertArticleToArticleDto(article));
-
-           return ResponseEntity.ok(response);
-       }catch (ValidationException err){
+        articleDtoValidation(articleDto, result);
+        categoriesValidation(articleDto.getCategoriesId(), result);
+        if(result.hasErrors()){
            LOG.error("Error validating article: {}", result.getAllErrors());
            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
            return ResponseEntity.badRequest().body(response);
-       }
+        }
+
+        Article article = this.convertArticleDtoToArticle(articleDto);
+        List<Category> categories = article.getCategories();
+
+        articleDto.getCategoriesId().forEach(id -> {
+           Category category = this.categoryService.findById(id).get();
+           article.getCategories().add(category);
+           category.getArticles().add(article);
+        });
+
+        this.articleService.persist(article);
+        response.setData(this.convertArticleToArticleDto(article));
+
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -182,28 +181,27 @@ public class ArticleController {
         if(!articleExists.isPresent())
             result.addError(new ObjectError("article", "Nonexistent article."));
 
-        try{
-            this.updatedArticleDtoValidation(articleDto, result);
-
-            articleExists.get().setTitle(articleDto.getTitle());
-            articleExists.get().setSubtitle(articleDto.getSubtitle());
-            articleExists.get().setUpdated_by(articleDto.getUpdated_by());
-            articleExists.get().setContent(articleDto.getContent());
-            articleExists.get().setStatus(StatusType.valueOf(articleDto.getStatus()));
-            articleExists.get().setLiked(articleDto.getLiked());
-            articleExists.get().setViewers(articleDto.getViewers());
-            articleExists.get().setSlug(articleDto.getSlug());
-
-            this.articleService.persist(articleExists.get());
-            response.setData(this.convertArticleToArticleDto(articleExists.get()));
-
-            return ResponseEntity.ok(response);
-        }catch (ValidationException err){
+        articleDtoValidation(articleDto, result);
+        if(result.hasErrors()){
             LOG.error("Error validating article: {}", result.getAllErrors());
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
             return ResponseEntity.badRequest().body(response);
         }
+
+        articleExists.get().setTitle(articleDto.getTitle());
+        articleExists.get().setSubtitle(articleDto.getSubtitle());
+        articleExists.get().setUpdated_by(articleDto.getUpdated_by());
+        articleExists.get().setContent(articleDto.getContent());
+        articleExists.get().setStatus(StatusType.valueOf(articleDto.getStatus()));
+        articleExists.get().setLiked(articleDto.getLiked());
+        articleExists.get().setViewers(articleDto.getViewers());
+        articleExists.get().setSlug(articleDto.getSlug());
+
+        this.articleService.persist(articleExists.get());
+        response.setData(this.convertArticleToArticleDto(articleExists.get()));
+
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -284,61 +282,43 @@ public class ArticleController {
      * @param categories
      * @param result
      */
-    private void categoriesAndErrorsValidation(List<Long> categories, BindingResult result){
-        if(result.hasErrors()){
-            throw new ValidationException();
-
-        }else if(categories.isEmpty()){
-            result.addError(new ObjectError("categories", "Categories cannot be empty"));
-            throw new ValidationException();
-        }else{
-            categories.forEach(categoryId -> {
-                Optional<Category> category = this.categoryService.findById(categoryId);
-
-                if(!category.isPresent()){
-                    result.addError(new ObjectError("category", "Nonexistent category id " + categoryId));
-                    throw new ValidationException();
-                }
-            });
-        }
-    }
-
-
-    /**
-     * Check if the enum types are valid
-     *
-     * @param status
-     * @param liked
-     * @param result
-     */
-    private void typeValidation(String status, String liked, BindingResult result){
-        try {
-            StatusType statusType = StatusType.valueOf(status);
-
-            if(liked != null){
-                LikedType likedTypeType = LikedType.valueOf(liked);
+    private void categoriesValidation(List<Long> categories, BindingResult result) {
+        if (!result.hasErrors()) {
+            if (categories.isEmpty()){
+                result.addError(new ObjectError("categories", "Categories cannot be empty"));
             }
+            else {
+                categories.forEach(categoryId -> {
+                    Optional<Category> category = this.categoryService.findById(categoryId);
 
-        } catch (java.lang.IllegalArgumentException err) {
-            result.addError(new ObjectError("status", "Invalid status type or liked type. " +
-                    "Accepted values for the liked field: POOR, AVERAGE and GREAT." +
-                    "Accepted values for the status field: CANCEL, PUBLISH and DRAFT(Default)"));
-
-            throw new ValidationException();
+                    if (!category.isPresent()) {
+                        result.addError(new ObjectError("category", "Nonexistent category id " + categoryId));
+                    }
+                });
+            }
         }
     }
 
     /**
-     * Check if the updated article has no errors and the status type and liked type are valid
+     * Check if the article has no errors and the status type and liked type are valid
      *
      * @param articleDto
      * @param result
      */
-    private void updatedArticleDtoValidation(ArticleDto articleDto, BindingResult result){
-        if (result.hasErrors()){
-            throw new ValidationException();
-        }
+    private void articleDtoValidation(ArticleDto articleDto, BindingResult result){
+        if (!result.hasErrors()){
+            try {
+                StatusType statusType = StatusType.valueOf(articleDto.getStatus());
 
-        this.typeValidation(articleDto.getStatus(), articleDto.getLiked(), result);
+                if(articleDto.getLiked() != null){
+                    LikedType likedTypeType = LikedType.valueOf(articleDto.getLiked());
+                }
+
+            } catch (java.lang.IllegalArgumentException err) {
+                result.addError(new ObjectError("status", "Invalid status type or liked type. " +
+                        "Accepted values for the liked field: POOR, AVERAGE and GREAT." +
+                        "Accepted values for the status field: CANCEL, PUBLISH and DRAFT(Default)"));
+            }
+        }
     }
 }
