@@ -70,15 +70,6 @@ public class Article implements Serializable {
     )
     private List<Section> sections = new ArrayList<Section>();
 
-    @JsonIgnore
-    @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(
-            name = "article_tags",
-            joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
-    )
-    private Set<Tag> tags;
-
     public Long getId() {
         return id;
     }
@@ -159,14 +150,6 @@ public class Article implements Serializable {
         this.content = content;
     }
 
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
     public Date getCreated_at() {
         return created_at;
     }
@@ -216,12 +199,12 @@ public class Article implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Article article = (Article) o;
-        return id.equals(article.id) && title.equals(article.title) && subtitle.equals(article.subtitle) && status == article.status && liked == article.liked && viewers.equals(article.viewers) && slug.equals(article.slug) && created_by.equals(article.created_by) && updated_by.equals(article.updated_by) && content.equals(article.content) && created_at.equals(article.created_at) && updated_at.equals(article.updated_at) && Objects.equals(tags, article.tags);
+        return id.equals(article.id) && title.equals(article.title) && subtitle.equals(article.subtitle) && status == article.status && liked == article.liked && viewers.equals(article.viewers) && slug.equals(article.slug) && created_by.equals(article.created_by) && updated_by.equals(article.updated_by) && content.equals(article.content) && created_at.equals(article.created_at) && updated_at.equals(article.updated_at);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, subtitle, status, liked, viewers, slug, created_by, updated_by, content, created_at, updated_at, tags);
+        return Objects.hash(id, title, subtitle, status, liked, viewers, slug, created_by, updated_by, content, created_at, updated_at);
     }
 
     @Override

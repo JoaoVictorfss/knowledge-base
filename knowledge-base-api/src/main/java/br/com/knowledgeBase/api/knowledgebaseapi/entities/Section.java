@@ -51,16 +51,6 @@ public class Section implements Serializable {
     )
     private List<Category> categories = new ArrayList<Category>();
 
-    @JsonIgnore
-    @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(
-            name = "section_tags",
-            joinColumns = @JoinColumn(name = "section_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
-    )
-
-    private Set<Tag> tags;
-
     public Long getId() {
         return id;
     }
@@ -107,14 +97,6 @@ public class Section implements Serializable {
 
     public void setUpdated_by(String updated_by) {
         this.updated_by = updated_by;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
     }
 
     public Date getCreated_at() {
@@ -166,12 +148,12 @@ public class Section implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return id.equals(section.id) && title.equals(section.title) && subtitle.equals(section.subtitle) && slug.equals(section.slug) && created_by.equals(section.created_by) && updated_by.equals(section.updated_by) && created_at.equals(section.created_at) && updated_at.equals(section.updated_at) && categories.equals(section.categories) && tags.equals(section.tags);
+        return id.equals(section.id) && title.equals(section.title) && subtitle.equals(section.subtitle) && slug.equals(section.slug) && created_by.equals(section.created_by) && updated_by.equals(section.updated_by) && created_at.equals(section.created_at) && updated_at.equals(section.updated_at) && categories.equals(section.categories);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, subtitle, slug, created_by, updated_by, created_at, updated_at, categories, tags);
+        return Objects.hash(id, title, subtitle, slug, created_by, updated_by, created_at, updated_at, categories);
     }
 
     @Override

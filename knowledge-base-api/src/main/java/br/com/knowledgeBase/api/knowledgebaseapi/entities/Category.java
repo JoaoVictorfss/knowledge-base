@@ -49,15 +49,6 @@ public class Category implements Serializable {
     @ManyToMany(fetch=FetchType.LAZY, mappedBy = "articleCategories", cascade = {CascadeType.REMOVE})
     private List<Article> articles = new ArrayList<Article>();
 
-    @JsonIgnore
-    @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(
-            name = "category_tags",
-            joinColumns = @JoinColumn(name = "category_tag", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
-    )
-    private Set<Tag> tags;
-
     public Long getId() {
         return id;
     }
@@ -104,14 +95,6 @@ public class Category implements Serializable {
 
     public void setUpdated_by(String updated_by) {
         this.updated_by = updated_by;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
     }
 
     public Date getCreated_at() {
