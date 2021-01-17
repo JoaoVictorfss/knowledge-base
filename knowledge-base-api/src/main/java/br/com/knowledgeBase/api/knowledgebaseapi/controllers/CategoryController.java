@@ -203,6 +203,8 @@ public class CategoryController {
         categoryDto.setUpdated_at(category.getUpdated_at());
         categoryDto.setCreated_by(category.getCreated_by());
         categoryDto.setUpdated_by(category.getUpdated_by());
+        categoryDto.setArticlesQtt(category.getArticles().size());
+        categoryDto.setSectionsQtt(category.getSections().size());
 
         return  categoryDto;
     }

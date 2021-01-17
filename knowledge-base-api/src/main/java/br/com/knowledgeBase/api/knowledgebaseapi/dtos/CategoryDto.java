@@ -23,6 +23,10 @@ public class CategoryDto {
 
     private Date created_at;
 
+    private int articlesQtt = 0;
+
+    private int sectionsQtt = 0;
+
     public Long getId() {
         return id;
     }
@@ -87,6 +91,22 @@ public class CategoryDto {
         this.created_at = created_at;
     }
 
+    public int getArticlesQtt() {
+        return articlesQtt;
+    }
+
+    public void setArticlesQtt(int articlesQtt) {
+        this.articlesQtt = articlesQtt;
+    }
+
+    public int getSectionsQtt() {
+        return sectionsQtt;
+    }
+
+    public void setSectionsQtt(int sectionsQtt) {
+        this.sectionsQtt = sectionsQtt;
+    }
+
     @Override
     public String toString() {
         return "CategoryDto{" +
@@ -98,6 +118,8 @@ public class CategoryDto {
                 ", slug='" + slug + '\'' +
                 ", updated_at=" + updated_at +
                 ", created_at=" + created_at +
+                ", articlesQtt=" + articlesQtt +
+                ", sectionsQtt=" + sectionsQtt +
                 '}';
     }
 }

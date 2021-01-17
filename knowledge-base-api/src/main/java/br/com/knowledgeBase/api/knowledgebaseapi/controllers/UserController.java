@@ -84,7 +84,7 @@ public class UserController {
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
         user.setPassword(PasswordUtils.generateBCrypt(userDto.getPassword()));
-        user.setProfile(ProfileEnum.ROLE_ADMIN);
+        user.setProfile(ProfileEnum.ROLE_USER);
 
         return user;
     }

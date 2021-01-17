@@ -11,6 +11,7 @@ import java.util.List;
 public class ArticleDto {
     private Long id;
 
+    //TODO colocar um campo para cada tipo de liked
     @NotBlank(message = "The title cannot be empty.")
     @Length(min = 5, message = "The title must contain at least 5 characters.")
     private String title;
