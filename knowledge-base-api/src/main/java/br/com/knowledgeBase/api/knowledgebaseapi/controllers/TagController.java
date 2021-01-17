@@ -5,6 +5,9 @@ import br.com.knowledgeBase.api.knowledgebaseapi.entities.Tag;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -14,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.Optional;
@@ -24,6 +26,7 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/knowledgeBase-api/tags")
 @CrossOrigin(origins = "*")
+@Cacheable("tags")
 public class TagController {
     private static final Logger LOG = LoggerFactory.getLogger(TagController.class);
 
@@ -40,6 +43,7 @@ public class TagController {
      */
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    @CachePut("tags")
     public ResponseEntity<Response<TagDto>> store(@Valid @RequestBody TagDto tagDto,
                                                   BindingResult result) throws ParseException {
         LOG.info("Adding tag: {}", tagDto.toString());
@@ -71,6 +75,7 @@ public class TagController {
      */
     @PutMapping(value = "/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    @CacheEvict(value = "tafs", allEntries = true)
     public ResponseEntity<Response<TagDto>> update(@PathVariable("id") Long id,
                                                         @Valid @RequestBody TagDto tagDto,  BindingResult result) throws NoSuchAlgorithmException {
         LOG.info("Updating tag id {}, {}", id, tagDto.toString());
@@ -107,6 +112,7 @@ public class TagController {
      */
     @DeleteMapping(value = "/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    @CacheEvict(value = "tags", allEntries = true)
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting tag: {}", id);
         Response<String> response = new Response<String>();

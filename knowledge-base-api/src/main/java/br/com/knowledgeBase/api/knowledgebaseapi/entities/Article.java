@@ -1,6 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
 import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -51,7 +52,8 @@ public class Article implements Serializable {
     @Column(name = "updated_at", nullable = false)
     private Date updated_at;
 
-    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnore
+    @ManyToMany(fetch=FetchType.LAZY)
     @JoinTable(
             name = "article_categories",
             joinColumns = @JoinColumn(name = "article_id"),
@@ -59,7 +61,8 @@ public class Article implements Serializable {
     )
     private List<Category> articleCategories = new ArrayList<Category>();
 
-    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnore
+    @ManyToMany(fetch=FetchType.LAZY)
     @JoinTable(
             name = "article_tags",
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),

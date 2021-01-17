@@ -1,5 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,13 +41,16 @@ public class Category implements Serializable {
     @Column(name = "updated_at", nullable = false)
     private Date updated_at;
 
-    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "categories", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
+    @JsonIgnore
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "categories", cascade = {CascadeType.REMOVE})
     private List<Section> sections = new ArrayList<Section>();
 
-    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "articleCategories", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
+    @JsonIgnore
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "articleCategories", cascade = {CascadeType.REMOVE})
     private List<Article> articles = new ArrayList<Article>();
 
-    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnore
+    @ManyToMany(fetch=FetchType.LAZY)
     @JoinTable(
             name = "category_tags",
             joinColumns = @JoinColumn(name = "category_tag", referencedColumnName = "id"),

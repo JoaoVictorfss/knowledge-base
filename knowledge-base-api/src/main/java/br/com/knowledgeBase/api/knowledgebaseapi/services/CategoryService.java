@@ -16,7 +16,7 @@ public interface CategoryService {
     Page<Category> findAll(PageRequest pageRequest);
 
     /**
-     * creates a new category in the database
+     * Creates a new category in the database
      *
      * @param category
      * @return Tag
@@ -24,7 +24,7 @@ public interface CategoryService {
     Category persist(Category category);
 
     /**
-     *find category by id
+     * Find category by id
      *
      * @param id
      * @return Optional<Category>
@@ -32,7 +32,7 @@ public interface CategoryService {
     Optional<Category> findById(Long id);
 
     /**
-     * remove a category in the database
+     * Remove a category in the database
      *
      * @param id
      */

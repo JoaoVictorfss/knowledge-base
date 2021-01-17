@@ -15,4 +15,13 @@ public interface ArticleRepository extends JpaRepository<Article, Long>{
     @Query("SELECT a FROM Article a "
             + "WHERE a.status = 'PUBLISH'")
     Page<Article>findAllPublished(Pageable pageable);
+
+    @Query("SELECT a FROM Article a "
+            + "JOIN a.articleCategories c "
+            + "WHERE c.id = :categoryId AND a.status = 'PUBLISH'")
+    Page<Article>findAllPublishedByCategoryId(Long categoryId, Pageable pageable);
+
+    @Query("SELECT a FROM Article a " +
+            "WHERE (a.title LIKE '%' || :param || '%' OR a.subtitle LIKE '%' || :param || '%' OR a.slug LIKE '%' || :param || '%') AND a.status='PUBLISH'")
+    Page<Article>findByParam(String param, Pageable pageable);
 }

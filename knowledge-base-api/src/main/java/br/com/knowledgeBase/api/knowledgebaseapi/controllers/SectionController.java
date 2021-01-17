@@ -69,7 +69,7 @@ public class SectionController {
      */
     @GetMapping(value = "/list/{categoryId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<Page<SectionDto>>> listSectonsByCategoryId(
+    public ResponseEntity<Response<Page<SectionDto>>> listSectionsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "id") String ord,

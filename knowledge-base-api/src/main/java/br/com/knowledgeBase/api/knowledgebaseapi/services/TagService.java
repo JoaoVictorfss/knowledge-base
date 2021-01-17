@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface TagService {
     /**
-     * creates a new tag in the database
+     * Creates a new tag in the database
      *
      * @param tag
      * @return Tag
@@ -14,7 +14,7 @@ public interface TagService {
     Tag persist(Tag tag);
 
     /**
-     *find tag by id
+     * Find tag by id
      *
      * @param id
      * @return Optional<Tag>
@@ -22,7 +22,7 @@ public interface TagService {
     Optional<Tag> findById(Long id);
 
     /**
-     * remove a tag in the database
+     * Remove a tag in the database
      *
      * @param id
      */

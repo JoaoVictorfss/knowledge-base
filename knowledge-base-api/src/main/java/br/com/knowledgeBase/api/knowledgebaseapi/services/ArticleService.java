@@ -7,13 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import java.util.Optional;
 
 public interface ArticleService {
-    /**
-     * Returns a paginated list of articles
-     *
-     * @param pageRequest
-     * @return Page<Article>
-     */
-    Page<Article> findAll(PageRequest pageRequest);
 
     /**
      * Returns a paginated list of articles by category
@@ -25,15 +18,24 @@ public interface ArticleService {
     Page<Article> findAllByCategoryId(Long id, PageRequest pageRequest);
 
     /**
-     * creates a new article in the database
+     * Returns a paginated list of published articles by category id
      *
-     * @param article
-     * @return Article
+     * @param pageRequest
+     * @param id
+     * @return Page<Article>
      */
-    Article persist(Article article);
+    Page<Article> findAllPublishedByCategoryId(Long id, PageRequest pageRequest);
 
     /**
-     *find article by id
+     *Return articles by param
+     *
+     * @param param
+     * @return Optional<Article>
+     */
+    Page<Article>findAllByParam(String param, PageRequest pageRequest);
+
+    /**
+     *Find article by id
      *
      * @param id
      * @return Optional<Article>
@@ -41,7 +43,15 @@ public interface ArticleService {
     Optional<Article> findById(Long id);
 
     /**
-     * remove a article in the database
+     * Creates a new article in the database
+     *
+     * @param article
+     * @return Article
+     */
+    Article persist(Article article);
+
+    /**
+     * Remove a article in the database
      *
      * @param id
      */

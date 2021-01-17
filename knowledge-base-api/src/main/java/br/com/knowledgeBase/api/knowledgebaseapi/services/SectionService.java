@@ -25,7 +25,7 @@ public interface SectionService {
     Page<Section> findAllByCategoryId(Long id, PageRequest pageRequest);
 
     /**
-     * creates a new section in the database
+     * Creates a new section in the database
      *
      * @param section
      * @return Section
@@ -33,7 +33,7 @@ public interface SectionService {
     Section persist(Section section);
 
     /**
-     *find section by id
+     * Find section by id
      *
      * @param id
      * @return Optional<Section>
@@ -41,7 +41,7 @@ public interface SectionService {
     Optional<Section> findById(Long id);
 
     /**
-     * remove a section in the database
+     * Remove a section in the database
      *
      * @param id
      */

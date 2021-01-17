@@ -56,7 +56,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/knowledgeBase-api/sections/list",
                         "/knowledge-base/auth",
                         "/knowledgeBase-api/categories/list",
-                        "/knowledgeBase-api/articles/list",
+                        "/knowledgeBase-api/articles/search/{param}",
+                        "/knowledgeBase-api/articles/list/category/{categoryId}",
                         "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll()
 
                 .anyRequest().authenticated();

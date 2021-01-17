@@ -14,7 +14,7 @@ public interface UserService {
     Optional<User> findByEmail(String email);
 
     /**
-     * creates a new user in the database
+     * Creates a new user in the database
      *
      * @param user
      * @return user

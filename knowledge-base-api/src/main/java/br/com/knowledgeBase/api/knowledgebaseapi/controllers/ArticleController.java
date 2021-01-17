@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,6 +34,8 @@ import java.util.Optional;
 public class ArticleController {
     private static final Logger LOG = LoggerFactory.getLogger(ArticleController.class);
 
+    //TODO adicionar cadastro de artigo por seção, adicionar artigo dentro da categoria também(para obter o size total)
+    //TODO adicionar método para adicionar uma tag a um artigo
     @Autowired
     private ArticleService articleService;
 
@@ -42,37 +45,16 @@ public class ArticleController {
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
+
+    //Public requests
+
     /**
-     * Returns a paginated list of published articles
+     * Returns a paginated list of all published articles by category id
      *
      * @return ResponseEntity<Response<ArticleDto>>
      */
-    @GetMapping(value = "/list")
-    public ResponseEntity<Response<Page<ArticleDto>>> index(
-            @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "id") String ord,
-            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
-    {
-        LOG.info("Searching articles, page: {}", pag);
-        Response<Page<ArticleDto>> response = new Response<Page<ArticleDto>>();
-
-        PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
-
-        Page<Article>articles = this.articleService.findAll(pageRequest);
-        Page<ArticleDto> articlesDto = articles.map(this::convertArticleToArticleDto);
-
-        response.setData(articlesDto);
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Returns a paginated list of articles by category id
-     *
-     * @return ResponseEntity<Response<ArticleDto>>
-     */
-    @GetMapping(value = "/list/{categoryId}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<Page<ArticleDto>>> listSectonsByCategoryId(
+    @GetMapping(value = "/list/category/{categoryId}")
+    public ResponseEntity<Response<Page<ArticleDto>>> listAllPublishedArticlesByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "id") String ord,
@@ -90,11 +72,61 @@ public class ArticleController {
         }
 
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
+        response.setData(this.listAllArticles(categoryId, pageRequest, false));
 
-        Page<Article>articles = this.articleService.findAllByCategoryId(categoryId, pageRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Returns a list of articles by parameter
+     *
+     * @return ResponseEntity<Response<ArticleDto>>
+     */
+    @GetMapping(value = "/search/{param}")
+    public ResponseEntity<Response<Page<ArticleDto>>> search(
+            @PathVariable("param") String param)
+    {
+        LOG.info("Searching articles by {}", param);
+        Response<Page<ArticleDto>> response = new Response<Page<ArticleDto>>();
+
+        PageRequest pageRequest = PageRequest.of(0, 6, Sort.Direction.DESC, "title");
+
+        Page<Article>articles = this.articleService.findAllByParam(param, pageRequest);
         Page<ArticleDto> articlesDto = articles.map(this::convertArticleToArticleDto);
 
         response.setData(articlesDto);
+        return ResponseEntity.ok(response);
+    }
+
+    //Private requests
+
+    /**
+     * Returns a paginated list of all articles by category id
+     *
+     * @return ResponseEntity<Response<ArticleDto>>
+     */
+    @GetMapping(value = "/list/{categoryId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<Response<Page<ArticleDto>>> listAllArticlesByCategoryId(
+            @PathVariable("categoryId") Long categoryId,
+            @RequestParam(value = "pag", defaultValue = "0") int pag,
+            @RequestParam(value = "ord", defaultValue = "id") String ord,
+            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
+    {
+
+        LOG.info("Searching articles by category {}, page: {}", categoryId, pag);
+        Response<Page<ArticleDto>> response = new Response<Page<ArticleDto>>();
+
+        Optional<Category> category = this.categoryService.findById(categoryId);
+        if(!category.isPresent()){
+            LOG.info("Error. Nonexistent category.");
+            response.getErrors().add("Error. Nonexistent category.");
+            return  ResponseEntity.badRequest().body(response);
+        }
+
+        PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
+        response.setData(this.listAllArticles(categoryId, pageRequest, true));
+
         return ResponseEntity.ok(response);
     }
 
@@ -226,6 +258,26 @@ public class ArticleController {
 
             return ResponseEntity.ok(new Response<String>());
         }
+    }
+
+    //Private methods
+
+    /**
+     * Returns a paginated list of all articles by category id, depending on the view (public or private)
+     *
+     * @param id
+     * @param pageRequest
+     * @param isPrivate
+     * @return Page<ArticleDto>
+     */
+    private Page<ArticleDto> listAllArticles(Long id, PageRequest pageRequest, boolean isPrivate){
+        Page<Article> articles;
+
+        if(isPrivate){
+            articles = this.articleService.findAllByCategoryId(id, pageRequest);
+        }else articles = this.articleService.findAllPublishedByCategoryId(id, pageRequest);
+
+        return articles.map(this::convertArticleToArticleDto);
     }
 
     /**
