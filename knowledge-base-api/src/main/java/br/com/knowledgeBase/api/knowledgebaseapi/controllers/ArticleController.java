@@ -263,7 +263,9 @@ public class ArticleController {
         articleExists.get().setUpdated_by(articleDto.getUpdated_by());
         articleExists.get().setContent(articleDto.getContent());
         articleExists.get().setStatus(StatusType.valueOf(articleDto.getStatus()));
-        articleExists.get().setLiked(articleDto.getLiked());
+        articleExists.get().setAverageLiked(articleDto.getAverage_liked());
+        articleExists.get().setGreatLiked(articleDto.getGreat_liked());
+        articleExists.get().setPoorLiked(articleDto.getPoor_liked());
         articleExists.get().setViewers(articleDto.getViewers());
         articleExists.get().setSlug(articleDto.getSlug());
 
@@ -372,7 +374,9 @@ public class ArticleController {
         articleDto.setSubtitle(article.getSubtitle());
         articleDto.setContent(article.getContent());
         articleDto.setStatus(article.getStatus().toString());
-        articleDto.setLiked(article.getLiked());
+        articleDto.setAverage_liked(article.getAverageLiked());
+        articleDto.setGreat_liked(article.getGreatLiked());
+        articleDto.setPoor_liked(article.getPoorLiked());
         articleDto.setViewers(article.getViewers());
         articleDto.setSlug(article.getSlug());
         articleDto.setCreated_by(article.getCreated_by());
@@ -396,7 +400,9 @@ public class ArticleController {
         article.setSubtitle(articleDto.getSubtitle());
         article.setContent(articleDto.getContent());
         article.setStatus(StatusType.valueOf(articleDto.getStatus()));
-        article.setLiked(articleDto.getLiked());
+        article.setAverageLiked(articleDto.getAverage_liked());
+        article.setGreatLiked(articleDto.getGreat_liked());
+        article.setPoorLiked(articleDto.getPoor_liked());
         article.setViewers(articleDto.getViewers());
         article.setSlug(articleDto.getSlug());
         article.setCreated_by(articleDto.getCreated_by());

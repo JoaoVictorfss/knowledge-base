@@ -5,7 +5,6 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +12,6 @@ import java.util.Optional;
 public class ArticleDto {
     private Long id;
 
-    //TODO colocar um campo para cada tipo de liked
     @NotBlank(message = "The title cannot be empty.")
     @Length(min = 5, message = "The title must contain at least 5 characters.")
     private String title;
@@ -46,7 +44,17 @@ public class ArticleDto {
 
     private Optional<Long> sectionId = Optional.empty();
 
-    private String liked;
+    @PositiveOrZero(message = "The average_like field cannot be negative.")
+    @NotNull(message = "The average_like cannot be null.")
+    private Long average_liked;
+
+    @PositiveOrZero(message = "The great_like field cannot be negative.")
+    @NotNull(message = "The great_like cannot be null.")
+    private Long great_liked;
+
+    @PositiveOrZero(message = "The poor_liked field cannot be negative.")
+    @NotNull(message = "The poor_like cannot be null.")
+    private Long poor_liked;
 
     private Date updated_at;
 
@@ -116,14 +124,6 @@ public class ArticleDto {
         this.updated_by = updated_by;
     }
 
-    public String getLiked() {
-        return liked;
-    }
-
-    public void setLiked(String liked) {
-        this.liked = liked;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -164,6 +164,30 @@ public class ArticleDto {
         this.sectionId = sectionId;
     }
 
+    public Long getAverage_liked() {
+        return average_liked;
+    }
+
+    public void setAverage_liked(Long average_liked) {
+        this.average_liked = average_liked;
+    }
+
+    public Long getGreat_liked() {
+        return great_liked;
+    }
+
+    public void setGreat_liked(Long great_liked) {
+        this.great_liked = great_liked;
+    }
+
+    public Long getPoor_liked() {
+        return poor_liked;
+    }
+
+    public void setPoor_liked(Long poor_liked) {
+        this.poor_liked = poor_liked;
+    }
+
     @Override
     public String toString() {
         return "ArticleDto{" +
@@ -175,8 +199,10 @@ public class ArticleDto {
                 ", viewers=" + viewers +
                 ", created_by='" + created_by + '\'' +
                 ", updated_by='" + updated_by + '\'' +
-                ", liked=" + liked +
-                ", status=" + status +
+                ", status='" + status + '\'' +
+                ", average_liked=" + average_liked +
+                ", great_liked=" + great_liked +
+                ", poor_liked=" + poor_liked +
                 ", updated_at=" + updated_at +
                 ", created_at=" + created_at +
                 '}';
