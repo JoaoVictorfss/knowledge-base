@@ -18,6 +18,15 @@ public interface ArticleService {
     Page<Article> findAllByCategoryId(Long id, PageRequest pageRequest);
 
     /**
+     * Returns a paginated list of articles by section
+     *
+     * @param pageRequest
+     * @param id
+     * @return Page<Article>
+     */
+    Page<Article> findAllBySectionId(Long id, PageRequest pageRequest);
+
+    /**
      * Returns a paginated list of published articles by category id
      *
      * @param pageRequest
@@ -25,6 +34,15 @@ public interface ArticleService {
      * @return Page<Article>
      */
     Page<Article> findAllPublishedByCategoryId(Long id, PageRequest pageRequest);
+
+    /**
+     * Returns a paginated list of published articles by section id
+     *
+     * @param pageRequest
+     * @param id
+     * @return Page<Article>
+     */
+    Page<Article> findAllPublishedBySectionId(Long id, PageRequest pageRequest);
 
     /**
      *Return articles by param

@@ -64,12 +64,20 @@ public class Article implements Serializable {
     @JsonIgnore
     @ManyToMany(fetch=FetchType.LAZY)
     @JoinTable(
+            name = "article_sections",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "section_id")
+    )
+    private List<Section> sections = new ArrayList<Section>();
+
+    @JsonIgnore
+    @ManyToMany(fetch=FetchType.LAZY)
+    @JoinTable(
             name = "article_tags",
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
     )
     private Set<Tag> tags;
-
 
     public Long getId() {
         return id;
@@ -181,6 +189,14 @@ public class Article implements Serializable {
 
     public void setCategories(List<Category> categories) {
         this.articleCategories = categories;
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    public void setSections(List<Section> sections) {
+        this.sections = sections;
     }
 
     @PreUpdate

@@ -27,10 +27,24 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public Page<Article> findAllBySectionId(Long id, PageRequest pageRequest) {
+        LOG.info("Searching articles by section id {}", id);
+
+        return this.articleRepository.findAllBySectionId(id, pageRequest);
+    }
+
+    @Override
     public Page<Article> findAllPublishedByCategoryId(Long id, PageRequest pageRequest) {
         LOG.info("Searching published articles by category id {}", id);
 
         return this.articleRepository.findAllPublishedByCategoryId(id, pageRequest);
+    }
+
+    @Override
+    public Page<Article> findAllPublishedBySectionId(Long id, PageRequest pageRequest) {
+        LOG.info("Searching published articles by section id {}", id);
+
+        return this.articleRepository.findAllPublishedBySectionId(id, pageRequest);
     }
 
     @Override

@@ -39,6 +39,10 @@ public class Section implements Serializable {
     private Date updated_at;
 
     @JsonIgnore
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "sections", cascade = {CascadeType.REMOVE})
+    private List<Article> articles = new ArrayList<Article>();
+
+    @JsonIgnore
     @ManyToMany(fetch=FetchType.LAZY)
     @JoinTable(
            name = "section_categories",
@@ -135,6 +139,14 @@ public class Section implements Serializable {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
     }
 
     @PreUpdate

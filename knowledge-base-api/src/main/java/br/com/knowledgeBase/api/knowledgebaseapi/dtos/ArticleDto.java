@@ -5,8 +5,10 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class ArticleDto {
     private Long id;
@@ -41,6 +43,8 @@ public class ArticleDto {
 
     @NotNull(message = "The categories id cannot be null")
     private List<Long> categoriesId;
+
+    private Optional<Long> sectionId = Optional.empty();
 
     private String liked;
 
@@ -150,6 +154,14 @@ public class ArticleDto {
 
     public void setCategoriesId(List<Long> categoriesId) {
         this.categoriesId = categoriesId;
+    }
+
+    public Optional<Long> getSectionId() {
+        return sectionId;
+    }
+
+    public void setSectionId(Optional<Long> sectionId) {
+        this.sectionId = sectionId;
     }
 
     @Override
