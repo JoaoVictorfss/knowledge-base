@@ -54,6 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //public access
                 .antMatchers( "/v2/api-docs",
                         "/knowledgeBase-api/sections/list",
+                        "/knowledgeBase-api/sections/list/{categoryId}",
                         "/knowledge-base/auth",
                         "/knowledgeBase-api/categories/list",
                         "/knowledgeBase-api/articles/search/{param}",
