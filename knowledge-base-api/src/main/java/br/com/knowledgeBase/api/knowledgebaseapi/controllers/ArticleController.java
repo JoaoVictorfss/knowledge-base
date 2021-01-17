@@ -4,7 +4,6 @@ import br.com.knowledgeBase.api.knowledgebaseapi.dtos.ArticleDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Article;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Section;
-import br.com.knowledgeBase.api.knowledgebaseapi.enums.LikedType;
 import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusType;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.ArticleService;
@@ -429,7 +428,7 @@ public class ArticleController {
     }
 
     /**
-     * Check if the article has no errors, the section exists and the liked type is valid
+     * Check if the article has no errors, the section exists and the status type is valid
      *
      * @param articleDto
      * @param result
