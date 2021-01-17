@@ -22,6 +22,8 @@ public class SectionDto {
     @NotBlank(message = "The name of the author who updated the category cannot be empty.")
     private String updated_by;
 
+    private int articlesQtt = 0;
+
     private Date updated_at;
 
     private Date created_at;
@@ -88,6 +90,14 @@ public class SectionDto {
 
     public void setCreated_at(Date created_at) {
         this.created_at = created_at;
+    }
+
+    public int getArticlesQtt() {
+        return articlesQtt;
+    }
+
+    public void setArticlesQtt(int articlesQtt) {
+        this.articlesQtt = articlesQtt;
     }
 
     @Override

@@ -46,8 +46,8 @@ public class CategoryController {
     @GetMapping(value = "/list")
     public ResponseEntity<Response<Page<CategoryDto>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "id") String ord,
-            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
+            @RequestParam(value = "ord", defaultValue = "title") String ord,
+            @RequestParam(value = "dir", defaultValue = "ASC") String dir)
     {
         LOG.info("Searching categories, page: {}", pag);
         Response<Page<CategoryDto>> response = new Response<Page<CategoryDto>>();

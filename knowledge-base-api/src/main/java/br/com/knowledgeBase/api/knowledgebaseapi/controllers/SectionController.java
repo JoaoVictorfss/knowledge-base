@@ -47,7 +47,7 @@ public class SectionController {
     @GetMapping(value = "/list")
     public ResponseEntity<Response<Page<SectionDto>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "id") String ord,
+            @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "DESC") String dir)
     {
         LOG.info("Searching sections, page: {}", pag);
@@ -72,7 +72,7 @@ public class SectionController {
     public ResponseEntity<Response<Page<SectionDto>>> listSectionsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "id") String ord,
+            @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "DESC") String dir)
     {
 
@@ -240,6 +240,7 @@ public class SectionController {
         sectionDto.setUpdated_at(section.getUpdated_at());
         sectionDto.setCreated_by(section.getCreated_by());
         sectionDto.setUpdated_by(section.getUpdated_by());
+        sectionDto.setArticlesQtt(section.getArticles().size());
 
         return  sectionDto;
     }
