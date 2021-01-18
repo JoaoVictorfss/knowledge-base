@@ -54,6 +54,7 @@ Knowledge Base é um sistema de gerenciamento de artigos, estes divididos em cat
   - Spring Security
   - Spring Data JPA
   - jjwt
+  - Flyway
 
  ## Database
 - MySQL  
