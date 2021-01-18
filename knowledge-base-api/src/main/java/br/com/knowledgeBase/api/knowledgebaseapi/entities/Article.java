@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.entities;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusType;
+import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -26,7 +26,7 @@ public class Article implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name="status", columnDefinition="enum('DRAFT', 'PUBLISH', 'CANCEL')", nullable = false)
-    private StatusType status;
+    private StatusEnum status;
 
     @Column(name = "average_liked", nullable = false)
     private Long averageLiked;
@@ -100,11 +100,11 @@ public class Article implements Serializable {
         this.subtitle = subtitle;
     }
 
-    public StatusType getStatus() {
+    public StatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(StatusType status) {
+    public void setStatus(StatusEnum status) {
         this.status = status;
     }
 

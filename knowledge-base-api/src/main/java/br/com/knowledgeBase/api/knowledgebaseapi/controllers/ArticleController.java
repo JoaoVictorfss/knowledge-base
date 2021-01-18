@@ -4,7 +4,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.dtos.ArticleDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Article;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.entities.Section;
-import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusType;
+import br.com.knowledgeBase.api.knowledgebaseapi.enums.StatusEnum;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.ArticleService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
@@ -260,12 +260,12 @@ public class ArticleController {
 
         articleExists.get().setTitle(articleDto.getTitle());
         articleExists.get().setSubtitle(articleDto.getSubtitle());
-        articleExists.get().setUpdated_by(articleDto.getUpdated_by());
+        articleExists.get().setUpdated_by(articleDto.getUpdatedBy());
         articleExists.get().setContent(articleDto.getContent());
-        articleExists.get().setStatus(StatusType.valueOf(articleDto.getStatus()));
-        articleExists.get().setAverageLiked(articleDto.getAverage_liked());
-        articleExists.get().setGreatLiked(articleDto.getGreat_liked());
-        articleExists.get().setPoorLiked(articleDto.getPoor_liked());
+        articleExists.get().setStatus(StatusEnum.valueOf(articleDto.getStatus()));
+        articleExists.get().setAverageLiked(articleDto.getAverageLiked());
+        articleExists.get().setGreatLiked(articleDto.getGreatLiked());
+        articleExists.get().setPoorLiked(articleDto.getPoorLiked());
         articleExists.get().setViewers(articleDto.getViewers());
         articleExists.get().setSlug(articleDto.getSlug());
 
@@ -374,15 +374,15 @@ public class ArticleController {
         articleDto.setSubtitle(article.getSubtitle());
         articleDto.setContent(article.getContent());
         articleDto.setStatus(article.getStatus().toString());
-        articleDto.setAverage_liked(article.getAverageLiked());
-        articleDto.setGreat_liked(article.getGreatLiked());
-        articleDto.setPoor_liked(article.getPoorLiked());
+        articleDto.setAverageLiked(article.getAverageLiked());
+        articleDto.setGreatLiked(article.getGreatLiked());
+        articleDto.setPoorLiked(article.getPoorLiked());
         articleDto.setViewers(article.getViewers());
         articleDto.setSlug(article.getSlug());
-        articleDto.setCreated_by(article.getCreated_by());
-        articleDto.setUpdated_by(article.getUpdated_by());
-        articleDto.setCreated_at(article.getCreated_at());
-        articleDto.setUpdated_at(article.getUpdated_at());
+        articleDto.setCreatedBy(article.getCreated_by());
+        articleDto.setUpdatedBy(article.getUpdated_by());
+        articleDto.setCreatedAt(article.getCreated_at());
+        articleDto.setUpdatedAt(article.getUpdated_at());
 
         return  articleDto;
     }
@@ -399,14 +399,14 @@ public class ArticleController {
         article.setTitle(articleDto.getTitle());
         article.setSubtitle(articleDto.getSubtitle());
         article.setContent(articleDto.getContent());
-        article.setStatus(StatusType.valueOf(articleDto.getStatus()));
-        article.setAverageLiked(articleDto.getAverage_liked());
-        article.setGreatLiked(articleDto.getGreat_liked());
-        article.setPoorLiked(articleDto.getPoor_liked());
+        article.setStatus(StatusEnum.valueOf(articleDto.getStatus()));
+        article.setAverageLiked(articleDto.getAverageLiked());
+        article.setGreatLiked(articleDto.getGreatLiked());
+        article.setPoorLiked(articleDto.getPoorLiked());
         article.setViewers(articleDto.getViewers());
         article.setSlug(articleDto.getSlug());
-        article.setCreated_by(articleDto.getCreated_by());
-        article.setUpdated_by(articleDto.getCreated_by());
+        article.setCreated_by(articleDto.getCreatedBy());
+        article.setUpdated_by(articleDto.getCreatedBy());
 
         return article;
     }
@@ -442,7 +442,7 @@ public class ArticleController {
     private void articleDtoValidation(ArticleDto articleDto, BindingResult result){
         if (!result.hasErrors()){
             try {
-                StatusType.valueOf(articleDto.getStatus());
+                StatusEnum.valueOf(articleDto.getStatus());
 
                 if (articleDto.getSectionId().isPresent() && !this.sectionService.findById(articleDto.getSectionId().get()).isPresent()){
                     result.addError(new ObjectError("section", "Nonexistent section id " + articleDto.getSectionId().get()));

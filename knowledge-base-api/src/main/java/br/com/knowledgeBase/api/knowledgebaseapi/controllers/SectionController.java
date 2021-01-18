@@ -188,7 +188,7 @@ public class SectionController {
 
         sectionExists.get().setTitle(sectionDto.getTitle());
         sectionExists.get().setSubtitle(sectionDto.getSubtitle());
-        sectionExists.get().setUpdated_by(sectionDto.getUpdated_by());
+        sectionExists.get().setUpdated_by(sectionDto.getUpdatedBy());
         sectionExists.get().setSlug(sectionDto.getSlug());
 
         this.sectionService.persist(sectionExists.get());
@@ -235,10 +235,10 @@ public class SectionController {
         sectionDto.setTitle(section.getTitle());
         sectionDto.setSubtitle(section.getSubtitle());
         sectionDto.setSlug(section.getSlug());
-        sectionDto.setCreated_at(section.getCreated_at());
-        sectionDto.setUpdated_at(section.getUpdated_at());
-        sectionDto.setCreated_by(section.getCreated_by());
-        sectionDto.setUpdated_by(section.getUpdated_by());
+        sectionDto.setCreatedAt(section.getCreated_at());
+        sectionDto.setUpdatedAt(section.getUpdated_at());
+        sectionDto.setCreatedBy(section.getCreated_by());
+        sectionDto.setUpdatedBy(section.getUpdated_by());
         sectionDto.setArticlesQtt(section.getArticles().size());
 
         return  sectionDto;
@@ -255,8 +255,8 @@ public class SectionController {
         section.setTitle(sectionDto.getTitle());
         section.setSubtitle(sectionDto.getSubtitle());
         section.setSlug(sectionDto.getSlug());
-        section.setCreated_by(sectionDto.getCreated_by());
-        section.setUpdated_by(sectionDto.getCreated_by());
+        section.setCreated_by(sectionDto.getCreatedBy());
+        section.setUpdated_by(sectionDto.getCreatedBy());
 
         return section;
     }

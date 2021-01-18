@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.enums;
 
-public enum StatusType {
+public enum StatusEnum {
     DRAFT{
         @Override
         public String toString() {

@@ -10,18 +10,18 @@ public class CategoryDto {
     private String title;
 
     @NotBlank(message = "The name of the author who created the category cannot be empty.")
-    private String created_by;
+    private String createdBy;
 
     @NotBlank(message = "The name of the author who updated the category cannot be empty.")
-    private String updated_by;
+    private String updatedBy;
 
     private String subtitle;
 
     private String slug;
 
-    private Date updated_at;
+    private Date updatedAt;
 
-    private Date created_at;
+    private Date createdAt;
 
     private int articlesQtt = 0;
 
@@ -59,36 +59,36 @@ public class CategoryDto {
         this.slug = slug;
     }
 
-    public String getCreated_by() {
-        return created_by;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreated_by(String created_by) {
-        this.created_by = created_by;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
-    public String getUpdated_by() {
-        return updated_by;
+    public String getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setUpdated_by(String updated_by) {
-        this.updated_by = updated_by;
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
-    public Date getUpdated_at() {
-        return updated_at;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(Date updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public int getArticlesQtt() {
@@ -112,12 +112,12 @@ public class CategoryDto {
         return "CategoryDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", created_by='" + created_by + '\'' +
-                ", updated_by='" + updated_by + '\'' +
+                ", created_by='" + createdBy + '\'' +
+                ", updated_by='" + updatedBy + '\'' +
                 ", subtitle='" + subtitle + '\'' +
                 ", slug='" + slug + '\'' +
-                ", updated_at=" + updated_at +
-                ", created_at=" + created_at +
+                ", updated_at=" + updatedAt +
+                ", created_at=" + createdAt +
                 ", articlesQtt=" + articlesQtt +
                 ", sectionsQtt=" + sectionsQtt +
                 '}';

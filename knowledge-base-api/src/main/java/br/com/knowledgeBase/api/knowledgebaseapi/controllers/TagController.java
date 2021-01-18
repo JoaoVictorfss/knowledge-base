@@ -95,7 +95,7 @@ public class TagController {
 
         tagExists.get().setTitle(tagDto.getTitle());
         tagExists.get().setSlug(tagDto.getSlug());
-        tagExists.get().setUpdated_by(tagDto.getUpdated_by());
+        tagExists.get().setUpdated_by(tagDto.getUpdatedBy());
 
         this.tagService.persist(tagExists.get());
         response.setData(this.convertTagToTagDto(tagExists.get()));
@@ -142,10 +142,10 @@ public class TagController {
         tagDto.setId(tag.getId());
         tagDto.setTitle(tag.getTitle());
         tagDto.setSlug(tag.getSlug());
-        tagDto.setCreated_at(tag.getCreated_at());
-        tagDto.setUpdated_at(tag.getUpdated_at());
-        tagDto.setCreated_by(tag.getCreated_by());
-        tagDto.setUpdated_by(tag.getUpdated_by());
+        tagDto.setCreatedAt(tag.getCreated_at());
+        tagDto.setUpdatedAt(tag.getUpdated_at());
+        tagDto.setCreatedBy(tag.getCreated_by());
+        tagDto.setUpdatedBy(tag.getUpdated_by());
 
         return  tagDto;
     }
@@ -159,8 +159,8 @@ public class TagController {
     private Tag convertDtoToTag(TagDto tagDto){
         Tag tag = new Tag();
         tag.setTitle(tagDto.getTitle());
-        tag.setCreated_by(tagDto.getCreated_by());
-        tag.setUpdated_by(tagDto.getCreated_by());
+        tag.setCreated_by(tagDto.getCreatedBy());
+        tag.setUpdated_by(tagDto.getCreatedBy());
         tag.setSlug(tagDto.getSlug());
 
         return tag;

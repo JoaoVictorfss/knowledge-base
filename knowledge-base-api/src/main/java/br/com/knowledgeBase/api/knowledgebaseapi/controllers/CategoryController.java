@@ -142,7 +142,7 @@ public class CategoryController {
             categoryExists.get().setTitle(categoryDto.getTitle());
             categoryExists.get().setSubtitle(categoryDto.getSubtitle());
             categoryExists.get().setSlug(categoryDto.getSlug());
-            categoryExists.get().setUpdated_by(categoryDto.getCreated_by());
+            categoryExists.get().setUpdated_by(categoryDto.getCreatedBy());
 
             this.categoryService.persist(categoryExists.get());
             response.setData(this.convertCategoryToCategoryDto(categoryExists.get()));
@@ -160,7 +160,6 @@ public class CategoryController {
      */
     @DeleteMapping(value = "/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    //@CacheEvict(value = "categories", allEntries = true)
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting category: {}", id);
         Response<String> response = new Response<String>();
@@ -193,10 +192,10 @@ public class CategoryController {
         categoryDto.setTitle(category.getTitle());
         categoryDto.setSubtitle(category.getSubtitle());
         categoryDto.setSlug(category.getSlug());
-        categoryDto.setCreated_at(category.getCreated_at());
-        categoryDto.setUpdated_at(category.getUpdated_at());
-        categoryDto.setCreated_by(category.getCreated_by());
-        categoryDto.setUpdated_by(category.getUpdated_by());
+        categoryDto.setCreatedAt(category.getCreated_at());
+        categoryDto.setUpdatedAt(category.getUpdated_at());
+        categoryDto.setCreatedBy(category.getCreated_by());
+        categoryDto.setUpdatedBy(category.getUpdated_by());
         categoryDto.setArticlesQtt(category.getArticles().size());
         categoryDto.setSectionsQtt(category.getSections().size());
 
@@ -213,8 +212,8 @@ public class CategoryController {
         Category category = new Category();
         category.setTitle(categoryDto.getTitle());
 
-        category.setCreated_by(categoryDto.getCreated_by());
-        category.setUpdated_by(categoryDto.getUpdated_by());
+        category.setCreated_by(categoryDto.getCreatedBy());
+        category.setUpdated_by(categoryDto.getUpdatedBy());
         category.setSubtitle(categoryDto.getSubtitle());
         category.setSlug(categoryDto.getSlug());
 

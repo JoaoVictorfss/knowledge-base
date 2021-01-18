@@ -31,10 +31,10 @@ public class ArticleDto {
     private Long viewers;
 
     @NotBlank(message = "The name of the author who created the article cannot be empty.")
-    private String created_by;
+    private String createdBy;
 
     @NotBlank(message = "The name of the author who updated the article cannot be empty.")
-    private String updated_by;
+    private String updatedBy;
 
     @NotBlank(message = "The status cannot be empty.")
     private String status;
@@ -42,23 +42,23 @@ public class ArticleDto {
     @NotNull(message = "The categories id cannot be null")
     private List<Long> categoriesId;
 
-    private Optional<Long> sectionId = Optional.empty();
-
     @PositiveOrZero(message = "The average_like field cannot be negative.")
     @NotNull(message = "The average_like cannot be null.")
-    private Long average_liked;
+    private Long averageLiked;
 
     @PositiveOrZero(message = "The great_like field cannot be negative.")
     @NotNull(message = "The great_like cannot be null.")
-    private Long great_liked;
+    private Long greatLiked;
 
     @PositiveOrZero(message = "The poor_liked field cannot be negative.")
     @NotNull(message = "The poor_like cannot be null.")
-    private Long poor_liked;
+    private Long poorLiked;
 
-    private Date updated_at;
+    private Optional<Long> sectionId = Optional.empty();
 
-    private Date created_at;
+    private Date updatedAt;
+
+    private Date createdAt;
 
     public Long getId() {
         return id;
@@ -108,20 +108,20 @@ public class ArticleDto {
         this.viewers = viewers;
     }
 
-    public String getCreated_by() {
-        return created_by;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreated_by(String created_by) {
-        this.created_by = created_by;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
-    public String getUpdated_by() {
-        return updated_by;
+    public String getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setUpdated_by(String updated_by) {
-        this.updated_by = updated_by;
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public String getStatus() {
@@ -132,20 +132,20 @@ public class ArticleDto {
         this.status = status;
     }
 
-    public Date getUpdated_at() {
-        return updated_at;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(Date updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public List<Long> getCategoriesId() {
@@ -164,28 +164,28 @@ public class ArticleDto {
         this.sectionId = sectionId;
     }
 
-    public Long getAverage_liked() {
-        return average_liked;
+    public Long getAverageLiked() {
+        return averageLiked;
     }
 
-    public void setAverage_liked(Long average_liked) {
-        this.average_liked = average_liked;
+    public void setAverageLiked(Long averageLiked) {
+        this.averageLiked = averageLiked;
     }
 
-    public Long getGreat_liked() {
-        return great_liked;
+    public Long getGreatLiked() {
+        return greatLiked;
     }
 
-    public void setGreat_liked(Long great_liked) {
-        this.great_liked = great_liked;
+    public void setGreatLiked(Long greatLiked) {
+        this.greatLiked = greatLiked;
     }
 
-    public Long getPoor_liked() {
-        return poor_liked;
+    public Long getPoorLiked() {
+        return poorLiked;
     }
 
-    public void setPoor_liked(Long poor_liked) {
-        this.poor_liked = poor_liked;
+    public void setPoorLiked(Long poorLiked) {
+        this.poorLiked = poorLiked;
     }
 
     @Override
@@ -197,14 +197,14 @@ public class ArticleDto {
                 ", content='" + content + '\'' +
                 ", slug='" + slug + '\'' +
                 ", viewers=" + viewers +
-                ", created_by='" + created_by + '\'' +
-                ", updated_by='" + updated_by + '\'' +
+                ", created_by='" + createdBy + '\'' +
+                ", updated_by='" + updatedBy + '\'' +
                 ", status='" + status + '\'' +
-                ", average_liked=" + average_liked +
-                ", great_liked=" + great_liked +
-                ", poor_liked=" + poor_liked +
-                ", updated_at=" + updated_at +
-                ", created_at=" + created_at +
+                ", average_liked=" + averageLiked +
+                ", great_liked=" + greatLiked +
+                ", poor_liked=" + poorLiked +
+                ", updated_at=" + updatedAt +
+                ", created_at=" + createdAt +
                 '}';
     }
 }
