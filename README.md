@@ -24,7 +24,7 @@
 
 ## Descrição do Projeto :star:
 <p align="justify">
-Knowledge Base é um sistema de gerenciamento de artigos, estes divididos em categorias.
+Knowledge Base é um sistema de gerenciamento de artigos.
 
 ### Notas: 
 - Apenas o administrador é responsável pela criação, edição e remoção de artigos, categorias e seções, além da criação de usuários.
@@ -55,10 +55,10 @@ Knowledge Base é um sistema de gerenciamento de artigos, estes divididos em cat
   - Spring Data JPA
   - jjwt
 
- ## Database
-- MySQL  
+  ### Database
+  - MySQL  
 
   ## Licença 
-  The [MIT License]() (MIT)
+  The [MIT License](https://github.com/JoaoVictorfss/knowledge-base/blob/master/LICENSE) (MIT)
 
   Copyright :copyright: 2021 - kowledge base
