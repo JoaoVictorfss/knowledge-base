@@ -1,0 +1,63 @@
+    <header>
+      <div id="header-content">
+      
+        <section>
+          <h2>knowledge Base</h2>
+          <a [routerLink]="['/login']"> <span class="login-btn">Entrar</span></a>
+        </section>
+
+        <section class="search">          
+          <h2>O que podemos ajudá-lo a econtrar ?</h2>
+
+          <div class="search-content">
+
+            <form autocomplete="off" novalidate [formGroup]="filterForm">
+              <div class="search-input">
+                <mat-icon>search</mat-icon>
+                <input type="text" placeholder="Buscar artigos..."
+                  formControlName="filterValue">
+              </div>
+            </form>
+
+            <div class="options" *ngIf="articles.length">
+              <ul>
+                <li *ngFor="let article of articles">
+                  <a [routerLink]="handleLink('article', article.id, article.slug)">
+                    <mat-icon>article</mat-icon>
+                    <span>{{article.title}}</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <main>
+        <kb-loading [showLoading]="isLoadingTrue()"></kb-loading>
+
+        <div class="row">
+
+          <div *ngFor="let category of categories" class="col-sm-4">
+            <div class="category">
+              <h1>{{category.title}}</h1>
+              <p *ngIf="category.subtitle">{{category.subtitle}}</p>
+              <a [routerLink]="handleLink('category', category.id, category.slug, category.title)">Ver todos os artigos e seções</a>
+            </div>
+          </div>
+
+        </div>
+
+        <mat-paginator (page)="handlePageEvent($event)" [length]="totalElements" [pageSize]="15" [pageSizeOptions]="[]" 
+           showFirstLastButtons [hidePageSize]="true" *ngIf="totalElements > 15" [pageIndex]="currentPage" [pageIndex]="pageIndex">>
+        </mat-paginator>
+        
+      </main>
+    </div>
+
+    <footer>
+      Todos os direitos reservados Knowledge Base &#169; 2021
+    </footer>
