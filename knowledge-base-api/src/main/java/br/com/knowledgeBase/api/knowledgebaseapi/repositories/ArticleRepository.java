@@ -32,6 +32,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long>{
     Page<Article>findAllPublishedBySectionId(Long sectionId, Pageable pageable);
 
     @Query("SELECT a FROM Article a " +
-            "WHERE (a.title LIKE '%' || :param || '%' OR a.subtitle LIKE '%' || :param || '%' OR a.slug LIKE '%' || :param || '%') AND a.status='PUBLISH'")
+            "WHERE (a.title LIKE '%' || :param || '%'  OR a.slug LIKE '%' || :param || '%') AND a.status='PUBLISH'")
     Page<Article>findByParam(String param, Pageable pageable);
 }

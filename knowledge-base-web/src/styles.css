@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
+@import "~bootstrap/dist/css/bootstrap.min.css";
 
 * {
   border: none;
@@ -15,19 +17,11 @@
 html,
 body {
   height: 100%;
+  margin: 0;
 }
 
 body {
   -webkit-font-smoothing: antialiased;
-}
-
-html,
-body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
 }
 
 a,
@@ -46,7 +40,7 @@ button {
   font: 14px "Roboto", sans-serif;
 }
 
-button {
+button, a{
   cursor: pointer;
 }
 
