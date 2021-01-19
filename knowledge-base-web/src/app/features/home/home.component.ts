@@ -46,13 +46,21 @@ export class HomeComponent implements OnInit {
       .get('filterValue')
       ?.valueChanges.pipe(debounceTime(600))
       .subscribe((val: string) => {
+<<<<<<< HEAD
         this.searchArticles(val);
+=======
+        this.handleArticles(val);
+>>>>>>> 75c1cc5538fc31b5702ccd5c58c2f7058ebe8d22
       });
 
     this.loadCategories();
   }
 
+<<<<<<< HEAD
   private loadCategories(): void {
+=======
+  loadCategories(): void {
+>>>>>>> 75c1cc5538fc31b5702ccd5c58c2f7058ebe8d22
     this.loading = true;
     this.categories = [];
 
@@ -66,6 +74,7 @@ export class HomeComponent implements OnInit {
       });
   }
 
+<<<<<<< HEAD
   private searchArticles(value: string) {
     if (!value) this.articles = [];
     else {
@@ -74,11 +83,23 @@ export class HomeComponent implements OnInit {
         this.articles = [];
         this.config.search = value;
        
+=======
+  private handleArticles(value: string) {
+    if (!value) this.articles = [];
+    else {
+      const exists = this.articles.some((article) => article.title.indexOf(value) > -1 || article.slug.indexOf(value) > -1);
+      if (!exists) {
+        this.articles = [];
+        this.config.search = value;
+>>>>>>> 75c1cc5538fc31b5702ccd5c58c2f7058ebe8d22
         this.articleService.search(this.config).subscribe(({ data }: any) => {
           const { content } = data;
           this.articles.push(...content);
         });
+<<<<<<< HEAD
 
+=======
+>>>>>>> 75c1cc5538fc31b5702ccd5c58c2f7058ebe8d22
       }
     }
   }
@@ -88,6 +109,10 @@ export class HomeComponent implements OnInit {
     this.pageIndex = pageIndex;
     this.currentPage = pageIndex;
     this.config.page = pageIndex;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 75c1cc5538fc31b5702ccd5c58c2f7058ebe8d22
     this.categories = [];
     this.loadCategories();
   }
