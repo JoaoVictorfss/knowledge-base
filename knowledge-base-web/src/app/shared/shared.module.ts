@@ -20,7 +20,6 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     MatPaginatorModule,
     MatIconModule,
-
     LoadingComponent
   ],
 })

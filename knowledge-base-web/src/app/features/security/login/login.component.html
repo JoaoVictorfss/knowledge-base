@@ -1,0 +1,24 @@
+<div class="wrapper" >
+  <main >
+    <div class="container" id="login-animation">
+      <h1>Knowledge Base</h1>
+      <form [formGroup]="loginForm">
+
+        <div class="inputContainer">
+          <mat-icon>email</mat-icon>
+          <input type="email" placeholder="Digite o seu e-mail" formControlName="email">
+        </div>
+
+        <div class="inputContainer">
+          <mat-icon>password</mat-icon>
+          <input type="password" placeholder="Digite a sua senha" formControlName="password">
+        </div>
+
+          <button type="submit" (click)="login(loginForm.value.email, loginForm.value.password)" [disabled]=" loginForm.invalid">
+                  login
+                <mat-icon>login</mat-icon>
+          </button>
+      </form>
+    </div>
+  </main>
+</div>
