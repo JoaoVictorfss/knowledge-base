@@ -78,7 +78,6 @@ export class HomeComponent implements OnInit {
           const { content } = data;
           this.articles.push(...content);
         });
-
       }
     }
   }
