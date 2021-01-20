@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit {
 
     this.filterForm
       .get('filterValue')
-      ?.valueChanges.pipe(debounceTime(600))
+      ?.valueChanges.pipe(debounceTime(500))
       .subscribe((val: string) => {
         this.searchArticles(val);
       });
@@ -79,7 +79,7 @@ export class HomeComponent implements OnInit {
         },
         (error) => {
           this.toastParams.type = 'error',
-          this.toastParams.message ='"Ops ...  Um erro ocorreu, tente novamente mais tarde!"';
+          this.toastParams.message ='Ops ...  Um erro ocorreu, tente novamente mais tarde!';
           this.error = true;
         }
       );
@@ -90,7 +90,8 @@ export class HomeComponent implements OnInit {
     else {
       const exists = this.articles.some(
         (article) =>
-          article.title.indexOf(value) > -1 || article.slug.indexOf(value) > -1
+          article.title.toUpperCase().indexOf(value.toUpperCase()) > -1 ||
+          article.slug.toUpperCase().indexOf(value.toUpperCase()) > -1
       );
       if (!exists) {
         this.articles = [];
@@ -113,7 +114,7 @@ export class HomeComponent implements OnInit {
     this.loadCategories();
   }
 
-  handleLink(item: string, id: any, slug: any, title?: string) {
+  handleLink(item: string, id: any, slug: any, title?: string):string {
     if (!slug && title) {
       slug = title.replace(' ', '-').toLocaleLowerCase();
     }

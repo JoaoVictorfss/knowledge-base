@@ -163,16 +163,6 @@ header section.search {
   font-size: 16px;
 }
 
-footer {
-  width: 100%;
-  padding: 8px;
-
-  margin-top: 30px;
-  color: #ffffff;
-  text-align: center;
-  background-color: #155275;
-}
-
 @keyframes header-appear {
   0% {
     opacity: 0.1;

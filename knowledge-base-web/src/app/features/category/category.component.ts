@@ -20,7 +20,7 @@ export class CategoryComponent implements OnInit {
     message: '',
     type: '',
   };
-  
+
   config: ConfigParamsModel = {
     page: 0,
   };
@@ -35,7 +35,7 @@ export class CategoryComponent implements OnInit {
   category!: CategoryModel;
 
   error: boolean = false;
-  loading: boolean = false;
+  loaded: boolean = false;
 
   categoryId!: number;
 
@@ -53,11 +53,9 @@ export class CategoryComponent implements OnInit {
 
   private loadCategory(id: number) {
     this.categoryId = id;
-    this.loading = true;
 
     this.categoryService
       .showById(id)
-      .pipe(finalize(() => (this.loading = false)))
       .subscribe(
         ({ data }) => {
           this.category = data;
@@ -73,6 +71,7 @@ export class CategoryComponent implements OnInit {
     this.articles = [];
     this.articleService
       .findByCategoryId(this.categoryId, this.config)
+      .pipe(finalize(() => (this.loaded = true)))
       .subscribe(
         ({ data }) => {
           const { content: articles, totalElements } = data;
@@ -81,13 +80,13 @@ export class CategoryComponent implements OnInit {
           this.paginatorParams.totalElements = totalElements;
         },
         (error) => {
-          this.toastParams.type = 'error',
-          this.toastParams.message = '"Ops ...  Um erro ocorreu, tente novamente mais tarde!"';
+          (this.toastParams.type = 'error'),
+            (this.toastParams.message ='Ops ...  Um erro ocorreu, tente novamente mais tarde!');
           this.error = true;
         }
       );
   }
-
+  
   handlePageEvent(event: PageEvent) {
     const { pageIndex } = event;
 
@@ -96,4 +95,10 @@ export class CategoryComponent implements OnInit {
     this.config.page = pageIndex;
     this.loadArticles();
   }
+
+  handleLink(id: any, slug: String): string {
+    return `/article/${id}/${slug}`;
+  }
+
+
 }

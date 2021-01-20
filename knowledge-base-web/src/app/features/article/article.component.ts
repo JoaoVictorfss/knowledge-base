@@ -38,4 +38,9 @@ export class ArticleComponent implements OnInit {
         }
       );
   }
+
+  handleName(name: string):string {
+    return name.toUpperCase().split(' ').reduce((formattedName, current) =>  formattedName += current[0], "");
+  }
+
 }

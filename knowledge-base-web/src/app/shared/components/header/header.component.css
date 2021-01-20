@@ -14,3 +14,25 @@ header {
 header a{
   color: #ffffff;
 }
+
+#header-apper{
+  animation-name: toast-appear;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1;
+}
+
+@keyframes header-appear {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  80%{
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}

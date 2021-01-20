@@ -12,11 +12,11 @@ article h3 {
 }
 
 .article-information {
-  width: 220px;
+  width: 240px;
   display: flex;
-  margin: 10px 0;
-  justify-content: space-between;
   align-items: center;
+  justify-content:space-between;
+  margin: 10px 0;
   font-size: 14px;
   color: #808080;
 }
@@ -27,12 +27,14 @@ article h3 {
   background-color: #0000ff;
   font-family: "Roboto", sans-serif;
   color: #ffffff;
-  font-size: 25px;
   padding: 12px;
+  font-size: 25px;
   border-radius: 50px;
+  display: flex;
+  justify-content: center;
 }
 
-.article-information span {
+.name-box span{
   display: block;
 }
 
@@ -71,20 +73,6 @@ article p {
 
 .feedback mat-icon:hover {
   font-size: 60px;
-}
-
-footer {
-  width: 100%;
-  padding: 8px;
-
-  margin-top: 30px;
-  color: #ffffff;
-  text-align: center;
-  background-image: linear-gradient(
-    to bottom,
-    rgb(74, 172, 211),
-    rgb(25, 125, 150)
-  );
 }
 
 @media only screen and (max-width: 1000px) {

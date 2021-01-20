@@ -2,40 +2,36 @@
 <div class="container">
   <main>
 
-    <article *ngIf="!error && !loading">
+    <article *ngIf="!error && loaded" id="category-appear">
       <h1>{{category.title}}. </h1>
       <p>
         {{category.subtitle}}<br>
-        Publicado em <time [dateTime]="category.createdAt">{{category.createdAt | date:'dd/MM/yyyy h:mm:ss a'}}</time>
+        Criado em: <time [dateTime]="category.createdAt">{{category.createdAt | date:'dd/MM/yyyy'}}</time>
       </p>
       <hr>
 
       <div class="content">
 
         <section *ngFor="let article of articles">
-          <a routerLink="article">
-            <h2>{{article.title}}</h2>
-          </a>
+          <h2>{{article.title}}</h2>
           <span class="views-badge">{{article.viewers}} views</span>
           <p>
             {{article.content}}
           </p>
-          <span><a routerLink="/artigo">Ler mais</a></span>
+          <span><a [routerLink]="handleLink(article.id, article.slug)">Ler mais</a></span>
         </section>
 
       </div>
-
+    <hr>
     </article>
 
-    <h2 *ngIf="articles.length === 0 && !error">Nenhum artigo desta categoria foi publicado.</h2>
+    <h2 *ngIf="loaded && !error && articles.length === 0">Nenhum artigo desta categoria foi publicado.</h2>
 
     <mat-paginator (page)="handlePageEvent($event)" [length]="paginatorParams.totalElements" [pageSize]="10"
       [pageSizeOptions]="[]" showFirstLastButtons [hidePageSize]="true" [pageIndex]="paginatorParams.currentPage"
       [pageIndex]="paginatorParams.pageIndex" *ngIf="paginatorParams.totalElements > 10">>
     </mat-paginator>
-
-    <kb-loading [showLoading]="loading"></kb-loading>
-
-    <kb-toast [show]="error" [toastParams]="toastParams"></kb-toast>
+    
   </main>
+  <kb-toast [show]="error" [toastParams]="toastParams"></kb-toast>
 </div>

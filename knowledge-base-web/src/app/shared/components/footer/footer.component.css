@@ -1,0 +1,13 @@
+footer {
+  width: 100%;
+  padding: 8px;
+
+  margin-top: 30px;
+  color: #ffffff;
+  text-align: center;
+  background-image: linear-gradient(
+    to bottom,
+    rgb(74, 172, 211),
+    rgb(25, 125, 150)
+  );
+}

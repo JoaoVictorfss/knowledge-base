@@ -12,11 +12,12 @@ article h1 + p {
 
 section{
   padding: 10px;
-  background-color: #f8f4f4;
-  box-shadow: 0px 0px 2px #c4c3c3;
-  height: 230px;
+  background-color: #f8f7f7;
+  box-shadow: 0px 2px 3px #5e5d5d;
+  height: 210px;
   border-radius: 3px;
   position: relative;
+  border-top: 3px solid rgb(18, 18, 156);
 }
 
 section h2{
@@ -24,7 +25,7 @@ section h2{
 }
 
 section + section{
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 section p {
@@ -34,10 +35,6 @@ section p {
   margin-left: 3px;
 }
 
-section a{
-  color: black;
-}
-
 section span a{
   color: #0000ff;
   position: absolute;
@@ -45,15 +42,21 @@ section span a{
   bottom: 10px;
 }
 
-mat-icon.up{
-  position: fixed;
-  bottom: 30px;
-  left: 50px;
-  color: #0000ff;
-  font-size: 50px;
-}
-
 mat-paginator{
   margin: 20px;
-  padding: 10px;
+  padding: 20px;
+}
+
+#category-appear{
+  animation: category-animation 1s ease 1;
+}
+
+@keyframes category-animation {
+  from{
+    opacity: 0;
+    transform: translateX(50px);
+  }
+ to{
+    opacity: 1;
+  }
 }

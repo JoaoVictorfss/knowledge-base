@@ -7,9 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { ToastComponent } from './components/toast/toast.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RouterModule } from '@angular/router';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
-  declarations: [LoadingComponent, ToastComponent, HeaderComponent],
+  declarations: [LoadingComponent, ToastComponent, HeaderComponent, FooterComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -26,6 +27,7 @@ import { RouterModule } from '@angular/router';
     MatIconModule,
     LoadingComponent,
     HeaderComponent,
+    FooterComponent,
     ToastComponent,
     RouterModule
   ],
