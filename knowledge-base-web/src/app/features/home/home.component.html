@@ -14,7 +14,7 @@
             <form autocomplete="off" novalidate [formGroup]="filterForm">
               <div class="search-input">
                 <mat-icon>search</mat-icon>
-                <input type="text" placeholder="Buscar artigos..." formControlName="filterValue">
+                <input type="text" placeholder="Buscar artigos..." formControlName="filterValue" [readonly]="error">
               </div>
             </form>
 
@@ -48,14 +48,14 @@
 
         </div>
 
-        <mat-paginator (page)="handlePageEvent($event)" [length]="totalElements" [pageSize]="15" [pageSizeOptions]="[]"
-          showFirstLastButtons [hidePageSize]="true" *ngIf="totalElements > 15" [pageIndex]="currentPage"
-          [pageIndex]="pageIndex">>
+        <mat-paginator (page)="handlePageEvent($event)" [length]="paginatorParams.totalElements" [pageSize]="10"
+          [pageSizeOptions]="[]" showFirstLastButtons [hidePageSize]="true" [pageIndex]="paginatorParams.currentPage"
+          [pageIndex]="paginatorParams.pageIndex" *ngIf="paginatorParams.totalElements > 10">>
         </mat-paginator>
 
         <kb-loading [showLoading]="loading"></kb-loading>
-        
-        <kb-toast [show]="error" type='error' message="Ops ...  Um erro ocorreu, tente novamente mais tarde!"></kb-toast>
+
+        <kb-toast [show]="error" [toastParams]="toastParams"></kb-toast>
       </main>
     </div>
 

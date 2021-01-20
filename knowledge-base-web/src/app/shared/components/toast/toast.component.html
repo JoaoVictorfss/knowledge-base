@@ -3,13 +3,13 @@
               'fade': 'true',
               'show': 'true',
               'alert-dismissible': 'true',
-              'alert-danger': type === 'error', 
-              'alert-info': type === 'info',
-              'alert-success': type === 'success'
+              'alert-danger': toastParams.type === 'error', 
+              'alert-info': toastParams.type === 'info',
+              'alert-success': toastParams.type === 'success'
             }" role="alert" *ngIf="show" id="toast">
 
     <strong>{{title}}</strong>
-    <p>{{message}}</p>
+    <p>{{toastParams.message}}</p>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>

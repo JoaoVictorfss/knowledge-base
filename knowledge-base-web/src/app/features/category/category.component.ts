@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
@@ -7,6 +7,8 @@ import { CategoryService } from 'src/app/core/category/category-service';
 import { ArticleModel } from 'src/app/shared/models/article.model';
 import { CategoryModel } from 'src/app/shared/models/category.model';
 import { ConfigParamsModel } from 'src/app/shared/models/config-params.model';
+import { PaginatorModel } from 'src/app/shared/models/paginator.model';
+import { ToastModel } from 'src/app/shared/models/toast.model';
 
 @Component({
   selector: 'kb-category',
@@ -14,21 +16,28 @@ import { ConfigParamsModel } from 'src/app/shared/models/config-params.model';
   styleUrls: ['./category.component.css'],
 })
 export class CategoryComponent implements OnInit {
+  toastParams: ToastModel = {
+    message: '',
+    type: '',
+  };
+  
   config: ConfigParamsModel = {
     page: 0,
+  };
+
+  paginatorParams: PaginatorModel = {
+    pageIndex: 0,
+    currentPage: 0,
+    totalElements: 0,
   };
 
   articles: ArticleModel[] = [];
   category!: CategoryModel;
 
   error: boolean = false;
-  categoryId!: number;
-
   loading: boolean = false;
 
-  pageIndex: number = 0;
-  currentPage: number = 0;
-  totalElements: number = 0;
+  categoryId!: number;
 
   constructor(
     private categoryService: CategoryService,
@@ -45,7 +54,7 @@ export class CategoryComponent implements OnInit {
   private loadCategory(id: number) {
     this.categoryId = id;
     this.loading = true;
-    
+
     this.categoryService
       .showById(id)
       .pipe(finalize(() => (this.loading = false)))
@@ -64,12 +73,16 @@ export class CategoryComponent implements OnInit {
     this.articles = [];
     this.articleService
       .findByCategoryId(this.categoryId, this.config)
-      .subscribe(({ data }) => {
-        const { content:articles, totalElements } = data;
-        this.articles.push(...articles);
-        this.totalElements = totalElements;
-      },
+      .subscribe(
+        ({ data }) => {
+          const { content: articles, totalElements } = data;
+
+          this.articles.push(...articles);
+          this.paginatorParams.totalElements = totalElements;
+        },
         (error) => {
+          this.toastParams.type = 'error',
+          this.toastParams.message = '"Ops ...  Um erro ocorreu, tente novamente mais tarde!"';
           this.error = true;
         }
       );
@@ -77,8 +90,9 @@ export class CategoryComponent implements OnInit {
 
   handlePageEvent(event: PageEvent) {
     const { pageIndex } = event;
-    this.pageIndex = pageIndex;
-    this.currentPage = pageIndex;
+
+    this.paginatorParams.pageIndex = pageIndex;
+    this.paginatorParams.currentPage = pageIndex;
     this.config.page = pageIndex;
     this.loadArticles();
   }

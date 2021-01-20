@@ -79,6 +79,10 @@ header section.search {
   font-size: 18px;
 }
 
+.search-input input:read-only{
+  cursor:not-allowed;
+}
+
 .search-input mat-icon {
   color: #666;
 }

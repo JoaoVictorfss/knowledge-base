@@ -7,6 +7,8 @@ import { CategoryService } from 'src/app/core/category/category-service';
 import { ArticleModel } from 'src/app/shared/models/article.model';
 import { CategoryModel } from 'src/app/shared/models/category.model';
 import { ConfigParamsModel } from 'src/app/shared/models/config-params.model';
+import { PaginatorModel } from 'src/app/shared/models/paginator.model';
+import { ToastModel } from 'src/app/shared/models/toast.model';
 
 @Component({
   selector: 'kb-home',
@@ -16,22 +18,29 @@ import { ConfigParamsModel } from 'src/app/shared/models/config-params.model';
 export class HomeComponent implements OnInit {
   filterForm!: FormGroup;
 
+  toastParams: ToastModel = {
+    message: '',
+    type:'',
+  };
+
   config: ConfigParamsModel = {
     page: 0,
+  };
+
+  paginatorParams: PaginatorModel = {
+    pageIndex: 0,
+    currentPage: 0,
+    totalElements: 0,
   };
 
   categories: CategoryModel[] = [];
   articles: ArticleModel[] = [];
 
-  loading: boolean = false;
-  pageIndex: number = 0;
-  currentPage: number = 0;
-  totalElements: number = 0;
-
-  error: boolean = false;
-
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
+
+  loading: boolean = false;
+  error: boolean = false;
 
   constructor(
     private categoryService: CategoryService,
@@ -61,24 +70,32 @@ export class HomeComponent implements OnInit {
     this.categoryService
       .list(this.config)
       .pipe(finalize(() => (this.loading = false)))
-      .subscribe(({ data }: any) => {
+      .subscribe(
+        ({ data }: any) => {
           const { content: categories, totalElements } = data;
-      
+
           this.categories.push(...categories);
-          this.totalElements = totalElements;
-      }, (error) => {
+          this.paginatorParams.totalElements = totalElements;
+        },
+        (error) => {
+          this.toastParams.type = 'error',
+          this.toastParams.message ='"Ops ...  Um erro ocorreu, tente novamente mais tarde!"';
           this.error = true;
-      });
+        }
+      );
   }
 
   private searchArticles(value: string) {
     if (!value) this.articles = [];
     else {
-      const exists = this.articles.some((article) => article.title.indexOf(value) > -1 || article.slug.indexOf(value) > -1); 
+      const exists = this.articles.some(
+        (article) =>
+          article.title.indexOf(value) > -1 || article.slug.indexOf(value) > -1
+      );
       if (!exists) {
         this.articles = [];
         this.config.search = value;
-       
+
         this.articleService.search(this.config).subscribe(({ data }: any) => {
           const { content } = data;
           this.articles.push(...content);
@@ -89,8 +106,9 @@ export class HomeComponent implements OnInit {
 
   handlePageEvent(event: PageEvent) {
     const { pageIndex } = event;
-    this.pageIndex = pageIndex;
-    this.currentPage = pageIndex;
+
+    this.paginatorParams.pageIndex = pageIndex;
+    this.paginatorParams.currentPage = pageIndex;
     this.config.page = pageIndex;
     this.loadCategories();
   }

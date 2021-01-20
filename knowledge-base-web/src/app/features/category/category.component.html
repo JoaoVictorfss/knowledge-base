@@ -27,15 +27,15 @@
 
     </article>
 
-     <h2 *ngIf="articles.length === 0 && !error">Nenhum artigo desta categoria foi publicado.</h2>
+    <h2 *ngIf="articles.length === 0 && !error">Nenhum artigo desta categoria foi publicado.</h2>
 
-    <mat-paginator (page)="handlePageEvent($event)" [length]="totalElements" [pageSize]="10" [pageSizeOptions]="[]"
-      showFirstLastButtons [hidePageSize]="true" [pageIndex]="currentPage" [pageIndex]="pageIndex"
-      *ngIf="totalElements > 10">>
+    <mat-paginator (page)="handlePageEvent($event)" [length]="paginatorParams.totalElements" [pageSize]="10"
+      [pageSizeOptions]="[]" showFirstLastButtons [hidePageSize]="true" [pageIndex]="paginatorParams.currentPage"
+      [pageIndex]="paginatorParams.pageIndex" *ngIf="paginatorParams.totalElements > 10">>
     </mat-paginator>
 
     <kb-loading [showLoading]="loading"></kb-loading>
 
-    <kb-toast [show]="error" type='error' message="Ops ...  Um erro ocorreu, tente novamente mais tarde!"></kb-toast>
+    <kb-toast [show]="error" [toastParams]="toastParams"></kb-toast>
   </main>
 </div>

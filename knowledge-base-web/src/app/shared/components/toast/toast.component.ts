@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ToastModel } from '../../models/toast.model';
 
 @Component({
   selector: 'kb-toast',
@@ -7,10 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ToastComponent implements OnInit {
   @Input()
-  message!: string;
-
-  @Input()
-  type!: string;
+  toastParams!: ToastModel;
 
   @Input()
   show: boolean = false;
@@ -21,7 +19,7 @@ export class ToastComponent implements OnInit {
 
   ngOnInit(): void {
 
-    switch (this.type) {
+    switch (this.toastParams.type) {
       case 'info':
         this.title = 'Info';
         break;
