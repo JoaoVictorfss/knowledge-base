@@ -80,9 +80,9 @@ export class CategoryComponent implements OnInit {
           this.paginatorParams.totalElements = totalElements;
         },
         (error) => {
-          (this.toastParams.type = 'error'),
-            (this.toastParams.message ='Ops ...  Um erro ocorreu, tente novamente mais tarde!');
-          this.error = true;
+            this.toastParams.type = 'error',
+            this.toastParams.message ='Ops ...  Um erro ocorreu, tente novamente mais tarde!';
+            this.error = true;
         }
       );
   }

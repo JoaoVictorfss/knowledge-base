@@ -26,7 +26,6 @@ export class ArticleComponent implements OnInit {
 
   private loadArticle(id: number) {
     this.articleId = id;
-
     this.articleService
       .showById(id)
       .subscribe(
@@ -40,7 +39,10 @@ export class ArticleComponent implements OnInit {
   }
 
   handleName(name: string):string {
-    return name.toUpperCase().split(' ').reduce((formattedName, current) =>  formattedName += current[0], "");
+    let formattedName:string = name.toUpperCase().split(' ').reduce((formattedName, current) => formattedName += current[0], "");
+    if (formattedName.length > 2) formattedName = formattedName.substr(0, 1);
+  
+    return formattedName;
   }
 
 }

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/auth/auth-service';
 import { AuthModel } from 'src/app/shared/models/auth.model';
+import { ToastModel } from 'src/app/shared/models/toast.model';
 
 @Component({
   selector: 'kb-login',
@@ -11,6 +12,13 @@ import { AuthModel } from 'src/app/shared/models/auth.model';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
+  error: boolean = false;
+
+  toastParams: ToastModel = {
+    message: '',
+    type: '',
+  };
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -32,13 +40,15 @@ export class LoginComponent implements OnInit {
   }
 
   login(email: string, password: string) {
+    this.error = false;
     this.authService.login(email, password).subscribe(
       (data: AuthModel) => {
-          this.router.navigate(['/management']);
+        this.router.navigate(['/management']);
       },
       (error) => {
-        //TODO colocar um modal
-        alert('verifique os dados');
+          this.toastParams.type = 'error',
+          this.toastParams.message = 'Usuário ou senha incorreto.';
+          this.error = true;
       }
     );
   }

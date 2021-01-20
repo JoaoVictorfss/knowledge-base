@@ -1,5 +1,5 @@
-<div class="wrapper" >
-  <main >
+<div class="wrapper">
+  <main>
     <div class="container" id="login-animation">
       <h1>Knowledge Base</h1>
       <form [formGroup]="loginForm">
@@ -14,11 +14,13 @@
           <input type="password" placeholder="Digite a sua senha" formControlName="password">
         </div>
 
-          <button type="submit" (click)="login(loginForm.value.email, loginForm.value.password)" [disabled]=" loginForm.invalid">
-                  login
-                <mat-icon>login</mat-icon>
-          </button>
+        <button type="submit" (click)="login(loginForm.value.email, loginForm.value.password)"
+          [disabled]=" loginForm.invalid">
+          login
+          <mat-icon>login</mat-icon>
+        </button>
       </form>
     </div>
   </main>
+  <kb-toast [show]="error" [toastParams]="toastParams"></kb-toast>
 </div>

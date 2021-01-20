@@ -21,10 +21,10 @@ export class ToastComponent implements OnInit {
 
     switch (this.toastParams.type) {
       case 'info':
-        this.title = 'Info';
+        this.title = 'Info!';
         break;
       case 'error':
-        this.title = 'Error';
+        this.title = 'Error!';
         break;
       case 'success':
         this.title = 'Success!';
