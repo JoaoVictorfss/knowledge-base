@@ -68,7 +68,6 @@ public class CategoryController {
      * @return ResponseEntity<Response<CategoryDto>>
      */
     @GetMapping(value = "/category/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<CategoryDto>> showById(@PathVariable("id") Long id){
         LOG.info("Searching category id {}", id);
         Response<CategoryDto> response = new Response<CategoryDto>();

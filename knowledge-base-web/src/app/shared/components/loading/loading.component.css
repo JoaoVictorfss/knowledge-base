@@ -19,7 +19,7 @@ span{
     height: 30px;
     background-color:#4aacd3;
     border-radius: 4px;
-    animation: chase 2s linear infinite;
+    animation: chase 1s linear infinite;
 }
 
 span:nth-child(2)

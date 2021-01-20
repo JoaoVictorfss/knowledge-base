@@ -42,11 +42,11 @@
         <div class="row">
 
           <div *ngFor="let category of categories" class="col-sm-4">
-            <div class="category">
+            <section class="category">
               <h1>{{category.title}}</h1>
               <p *ngIf="category.subtitle">{{category.subtitle}}</p>
               <a [routerLink]="handleLink('category', category.id, category.slug, category.title)">Ver</a>
-            </div>
+            </section>
           </div>
 
         </div>

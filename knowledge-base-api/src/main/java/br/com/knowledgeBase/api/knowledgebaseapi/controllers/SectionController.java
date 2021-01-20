@@ -101,7 +101,6 @@ public class SectionController {
      * @return ResponseEntity<Response<SectionDto>>
      */
     @GetMapping(value = "/section/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<SectionDto>> showById(@PathVariable("id") Long id){
         LOG.info("Searching section id {}", id);
         Response<SectionDto> response = new Response<SectionDto>();

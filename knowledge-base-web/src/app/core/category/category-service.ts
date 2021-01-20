@@ -3,8 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ConfigParamsModel } from 'src/app/shared/models/config-params.model';
 import { HttpParams } from '@angular/common/http';
+import { CategoryModel } from 'src/app/shared/models/category.model';
 
 const URL = 'http://localhost:8080/knowledgeBase-api/categories/';
+
+interface IResponse{
+  data: CategoryModel,
+  errors: string[],
+}
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +23,7 @@ export class CategoryService {
     return this.http.get<any>(`${URL}list`, { params });
   }
 
-  showById(): Observable<any> {
-    return this.http.get<any>(`${URL}category/` + 3);
+  showById(id:number): Observable<IResponse> {
+    return this.http.get<IResponse>(`${URL}category/` + id);
   };
 }

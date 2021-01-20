@@ -169,7 +169,6 @@ public class ArticleController {
      * @return ResponseEntity<Response<ArticleDto>>
      */
     @GetMapping(value = "/article/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<ArticleDto>> showById(@PathVariable("id") Long id){
         LOG.info("Searching article id {}", id);
         Response<ArticleDto> response = new Response<ArticleDto>();

@@ -55,11 +55,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/v2/api-docs",
                         "/knowledgeBase-api/sections/list",
                         "/knowledgeBase-api/sections/list/{categoryId}",
+                        "/knowledgeBase-api/sections/section/{id}",
                         "/knowledge-base/auth",
                         "/knowledgeBase-api/categories/list",
+                        "/knowledgeBase-api/categories/category/{id}",
                         "/knowledgeBase-api/articles/search/{param}",
                         "/knowledgeBase-api/articles/list-by-category/{categoryId}",
                         "/knowledgeBase-api/articles/list-by-section/{categoryId}",
+                        "/knowledgeBase-api/articles/article/{id}",
                         "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll()
 
                 .anyRequest().authenticated();

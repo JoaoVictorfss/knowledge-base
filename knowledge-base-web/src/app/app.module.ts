@@ -7,6 +7,8 @@ import { HomeModule } from './features/home/home.module';
 import { LoginModule } from './features/security/login/login.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ManageModule } from './features/manage/manage.module';
+import { NotFoundModule } from './features/not-found/not-found.module';
+import { CategoryModule } from './features/category/category.module';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { ManageModule } from './features/manage/manage.module';
     HomeModule,
     LoginModule,
     ManageModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NotFoundModule,
+    CategoryModule
   ],
   providers: [],
   bootstrap: [AppComponent]
