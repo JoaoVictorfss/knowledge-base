@@ -6,7 +6,7 @@
       <h1>{{category.title}}. </h1>
       <p>
         {{category.subtitle}}<br>
-        Published: <time [dateTime]="category.createdAt">{{category.createdAt | date:'dd/MM/yyyy h:mm:ss a'}}</time>
+        Publicado em <time [dateTime]="category.createdAt">{{category.createdAt | date:'dd/MM/yyyy h:mm:ss a'}}</time>
       </p>
       <hr>
 
@@ -27,13 +27,15 @@
 
     </article>
 
+     <h2 *ngIf="articles.length === 0 && !error">Nenhum artigo desta categoria foi publicado.</h2>
+
     <mat-paginator (page)="handlePageEvent($event)" [length]="totalElements" [pageSize]="10" [pageSizeOptions]="[]"
       showFirstLastButtons [hidePageSize]="true" [pageIndex]="currentPage" [pageIndex]="pageIndex"
       *ngIf="totalElements > 10">>
     </mat-paginator>
 
     <kb-loading [showLoading]="loading"></kb-loading>
-    <kb-toast [show]="error" type='error' message="Ops ... An error occurred"></kb-toast>
 
+    <kb-toast [show]="error" type='error' message="Ops ...  Um erro ocorreu, tente novamente mais tarde!"></kb-toast>
   </main>
 </div>

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { ArticleComponent } from './features/article/article.component';
 import { CategoryComponent } from './features/category/category.component';
 import { HomeComponent } from './features/home/home.component';
 import { ManageComponent } from './features/manage/manage.component';
@@ -17,7 +18,11 @@ const routes: Routes = [
     component: HomeComponent,
   },
   {
-    path: 'category/:id/:name',
+    path: 'article/:id/:slug',
+    component: ArticleComponent,
+  },
+  {
+    path: 'category/:id/:slug',
     component: CategoryComponent,
   },
   {
