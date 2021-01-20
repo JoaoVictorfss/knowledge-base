@@ -87,7 +87,6 @@ export class HomeComponent implements OnInit {
     this.pageIndex = pageIndex;
     this.currentPage = pageIndex;
     this.config.page = pageIndex;
-    this.categories = [];
     this.loadCategories();
   }
 

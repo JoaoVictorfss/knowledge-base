@@ -22,7 +22,7 @@ import { CategoryModule } from './features/category/category.module';
     ManageModule,
     BrowserAnimationsModule,
     NotFoundModule,
-    CategoryModule
+    CategoryModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ConfigParamsModel } from 'src/app/shared/models/config-params.model';
@@ -10,7 +10,12 @@ const URL = 'http://localhost:8080/knowledgeBase-api/articles/';
 export class ArticleService {
   constructor(private http: HttpClient) {}
 
-  search(config: ConfigParamsModel): Observable<any>{
-      return this.http.get<any>(`${URL}search/${config.search}`);
+  search(config: ConfigParamsModel): Observable<any> {
+    return this.http.get<any>(`${URL}search/${config.search}`);
+  }
+
+  findByCategoryId(id: number, config: ConfigParamsModel): Observable<any> {
+    const params = new HttpParams().set('pag', config.page.toString());
+    return this.http.get<any>(`${URL}list-by-category/${id}`, { params });
   }
 }

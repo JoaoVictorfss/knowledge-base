@@ -41,6 +41,10 @@ span.login-btn {
   transition: background 0.2s, color 0.2s;
 }
 
+header a{
+  color: #ffffff;
+}
+
 span.login-btn:hover {
   background-color: #ffffff;
   color: #0a0a6b;

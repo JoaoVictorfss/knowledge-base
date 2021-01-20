@@ -1,8 +1,14 @@
 <header>
-  <a [routerLink]="['/home']"> knowledge Base</a>
+  <a [routerLink]="['/']">
+    <mat-icon>home</mat-icon> knowledge Base
+  </a>
 </header>
+
 <div class="container">
-  <main>
+
+  <kb-loading [showLoading]="loading"></kb-loading>
+
+  <main *ngIf="!loading">
     <article>
       <h1>{{category.title}}. </h1>
       <p>
@@ -12,60 +18,25 @@
       <hr>
 
       <div class="content">
-        <section>
-          <a routerLink="article/1">
-            <h2>Artigo</h2>
-          </a>
-          <span class="views-badge">50 views</span>
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
 
-            .</p>
+        <section *ngFor="let article of articles">
+          <a routerLink="article">
+            <h2>{{article.title}}</h2>
+          </a>
+          <span class="views-badge">{{article.viewers}} views</span>
+          <p>
+            {{article.content}}
+          </p>
           <span><a routerLink="/artigo">Ler mais</a></span>
         </section>
 
-        <section>
-          <h2>Artigo</h2>
-          <span class="views-badge">50 views</span>
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            quia iste incidunt reiciendis
-            delectus amet possimus dolores dolor, quo ad recusandae qui commodi quaerat enim quidem pariatur.</p>
-          <span><a routerLink="">Ler mais</a></span>
-
-        </section>
-
-        <section>
-          <h2>Artigo</h2>
-          <span class="views-badge">50 views</span>
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            quia iste incidunt reiciendis
-            delectus amet possimus dolores dolor, quo ad recusandae qui commodi quaerat enim quidem pariatur.</p>
-        </section>
-
-        <section>
-          <h2>Artigo</h2>
-          <span class="views-badge">50 views</span>
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate eius corrupti accusantium,
-            quia iste incidunt reiciendis
-            delectus amet possimus dolores dolor, quo ad recusandae qui commodi quaerat enim quidem pariatur.</p>
-        </section>
       </div>
+
     </article>
+
+    <mat-paginator (page)="handlePageEvent($event)" [length]="totalElements" [pageSize]="10" [pageSizeOptions]="[]"
+      showFirstLastButtons [hidePageSize]="true" [pageIndex]="currentPage" [pageIndex]="pageIndex">>
+    </mat-paginator>
+
   </main>
 </div>
