@@ -62,12 +62,12 @@ public class ArticleController {
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
+            @RequestParam(value = "dir", defaultValue = "ASC") String dir)
     {
 
         LOG.info("Searching articles by category {}, page: {}", categoryId, pag);
 
-        return this.listAllArticlesByCategory(categoryId, PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord), false);
+        return this.listAllArticlesByCategory(categoryId, PageRequest.of(pag, 10, Sort.Direction.valueOf(dir), ord), false);
     }
 
     /**
