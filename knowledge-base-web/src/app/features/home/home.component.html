@@ -1,12 +1,12 @@
     <header>
       <div id="header-content">
-      
+
         <section>
           <h2>knowledge Base</h2>
           <a [routerLink]="['/login']"> <span class="login-btn">Entrar</span></a>
         </section>
 
-        <section class="search">          
+        <section class="search">
           <h2>O que podemos ajudá-lo a econtrar ?</h2>
 
           <div class="search-content">
@@ -14,8 +14,7 @@
             <form autocomplete="off" novalidate [formGroup]="filterForm">
               <div class="search-input">
                 <mat-icon>search</mat-icon>
-                <input type="text" placeholder="Buscar artigos..."
-                  formControlName="filterValue">
+                <input type="text" placeholder="Buscar artigos..." formControlName="filterValue">
               </div>
             </form>
 
@@ -37,8 +36,6 @@
 
     <div class="container">
       <main>
-        <kb-loading [showLoading]="isLoadingTrue()"></kb-loading>
-
         <div class="row">
 
           <div *ngFor="let category of categories" class="col-sm-4">
@@ -51,10 +48,13 @@
 
         </div>
 
-        <mat-paginator (page)="handlePageEvent($event)" [length]="totalElements" [pageSize]="15" [pageSizeOptions]="[]" 
-           showFirstLastButtons [hidePageSize]="true" *ngIf="totalElements > 15" [pageIndex]="currentPage" [pageIndex]="pageIndex">>
+        <mat-paginator (page)="handlePageEvent($event)" [length]="totalElements" [pageSize]="15" [pageSizeOptions]="[]"
+          showFirstLastButtons [hidePageSize]="true" *ngIf="totalElements > 15" [pageIndex]="currentPage"
+          [pageIndex]="pageIndex">>
         </mat-paginator>
-        
+
+        <kb-loading [showLoading]="loading"></kb-loading>
+        <kb-toast [show]="error" type='error' message="Ops ... An error occurred"></kb-toast>
       </main>
     </div>
 

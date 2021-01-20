@@ -28,6 +28,8 @@ export class HomeComponent implements OnInit {
   currentPage: number = 0;
   totalElements: number = 0;
 
+  error: boolean = false;
+
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
 
@@ -60,9 +62,12 @@ export class HomeComponent implements OnInit {
       .list(this.config)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(({ data }: any) => {
-        const { content: categories, totalElements } = data;
-        this.categories.push(...categories);
-        this.totalElements = totalElements;
+          const { content: categories, totalElements } = data;
+      
+          this.categories.push(...categories);
+          this.totalElements = totalElements;
+      }, (error) => {
+          this.error = true;
       });
   }
 
@@ -95,9 +100,5 @@ export class HomeComponent implements OnInit {
       slug = title.replace(' ', '-').toLocaleLowerCase();
     }
     return `${item}/${id}/${slug}`;
-  }
-
-  isLoadingTrue() {
-    return this.loading;
   }
 }

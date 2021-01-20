@@ -1,15 +1,8 @@
-<header>
-  <a [routerLink]="['/']">
-    <mat-icon>home</mat-icon> knowledge Base
-  </a>
-</header>
-
+<kb-header></kb-header>
 <div class="container">
+  <main>
 
-  <kb-loading [showLoading]="loading"></kb-loading>
-
-  <main *ngIf="!loading">
-    <article>
+    <article *ngIf="!error && !loading">
       <h1>{{category.title}}. </h1>
       <p>
         {{category.subtitle}}<br>
@@ -35,8 +28,12 @@
     </article>
 
     <mat-paginator (page)="handlePageEvent($event)" [length]="totalElements" [pageSize]="10" [pageSizeOptions]="[]"
-      showFirstLastButtons [hidePageSize]="true" [pageIndex]="currentPage" [pageIndex]="pageIndex">>
+      showFirstLastButtons [hidePageSize]="true" [pageIndex]="currentPage" [pageIndex]="pageIndex"
+      *ngIf="totalElements > 10">>
     </mat-paginator>
+
+    <kb-loading [showLoading]="loading"></kb-loading>
+    <kb-toast [show]="error" type='error' message="Ops ... An error occurred"></kb-toast>
 
   </main>
 </div>

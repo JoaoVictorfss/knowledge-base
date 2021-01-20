@@ -1,0 +1,33 @@
+#toast{
+  animation-name: toast-appear;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1;
+}
+
+.alert{
+  position: absolute;
+  bottom: 40px;
+  right: 5%;
+  width: 300px;
+  padding: 10px;
+}
+
+@keyframes toast-appear {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  25% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}

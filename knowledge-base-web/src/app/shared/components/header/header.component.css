@@ -1,0 +1,16 @@
+header {
+  padding: 30px;
+  background-image: linear-gradient(
+    to bottom,
+    rgb(74, 172, 211),
+    rgb(25, 125, 150)
+  );
+  margin-bottom: 30px;
+  box-shadow: 0px 3px 3px rgb(17, 100, 121);
+  font-size: 30px;
+  font-family: "Roboto";
+}
+
+header a{
+  color: #ffffff;
+}

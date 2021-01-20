@@ -21,10 +21,10 @@ export class CategoryComponent implements OnInit {
   articles: ArticleModel[] = [];
   category!: CategoryModel;
 
-  invalidCategory: boolean = false;
+  error: boolean = false;
   categoryId!: number;
 
-  loading: boolean = true;
+  loading: boolean = false;
 
   pageIndex: number = 0;
   currentPage: number = 0;
@@ -44,6 +44,8 @@ export class CategoryComponent implements OnInit {
 
   private loadCategory(id: number) {
     this.categoryId = id;
+    this.loading = true;
+    
     this.categoryService
       .showById(id)
       .pipe(finalize(() => (this.loading = false)))
@@ -53,7 +55,7 @@ export class CategoryComponent implements OnInit {
           this.loadArticles();
         },
         (err) => {
-          this.invalidCategory = true;
+          this.error = true;
         }
       );
   }
@@ -66,8 +68,11 @@ export class CategoryComponent implements OnInit {
         const { content:articles, totalElements } = data;
         this.articles.push(...articles);
         this.totalElements = totalElements;
-      });
-    console.log(this.articles);
+      },
+        (error) => {
+          this.error = true;
+        }
+      );
   }
 
   handlePageEvent(event: PageEvent) {
