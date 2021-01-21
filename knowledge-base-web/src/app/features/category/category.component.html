@@ -8,6 +8,7 @@
         {{category.subtitle}}<br>
         Criado em: <time [dateTime]="category.createdAt">{{category.createdAt | date:'dd/MM/yyyy'}}</time>
       </p>
+    
       <hr>
 
       <div class="content">
@@ -18,11 +19,11 @@
           <p>
             {{article.content}}
           </p>
-          <span><a [routerLink]="handleLink(article.id, article.slug)">Ler mais</a></span>
+          <a [routerLink]="handleLink(article.id, article.slug)">Ler mais</a>
         </section>
 
       </div>
-    <hr>
+       <hr>
     </article>
 
     <h2 *ngIf="loaded && !error && articles.length === 0">Nenhum artigo desta categoria foi publicado.</h2>
