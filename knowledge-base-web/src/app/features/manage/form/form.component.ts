@@ -1,5 +1,7 @@
+import { Token } from '@angular/compiler/src/ml_parser/lexer';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TokenStorageService } from 'src/app/core/auth/token-storage-service';
 import { CategoryService } from 'src/app/core/category/category-service';
 
 @Component({
@@ -30,7 +32,7 @@ export class FormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
   ) {}
 
   ngOnInit(): void {
@@ -71,20 +73,13 @@ export class FormComponent implements OnInit {
   }
 
   save() {
-    console.log("Salvando");
-        this.categoryService
-          .create({
-            title: 'Categoria',
-            subtitle:
-              'Eu sou uma categoria para você ver o quanto eu sou importante',
-            createdBy: 'joao',
-            updatedBy: 'joao',
-          })
-          .subscribe(
-            (data: any) => console.log(data),
-            (err) => console.log('Ocorreu um erro', console.log(err))
-          );
-    
+    this.categoryService.create({
+      title: 'Categoria',
+      subtitle: 'Eu sou uma categoria para você ver o quanto eu sou importante',
+      createdBy: 'joao',
+      updatedBy: 'joao',
+    }).subscribe((data) => console.log(data), (error) => console.log(error));
+
     if (this.item === 'categoria') {
       /**
        * TODO  atualizar categoria com os dados do form e salvar

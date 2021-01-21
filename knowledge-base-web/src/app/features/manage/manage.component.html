@@ -44,52 +44,54 @@
       </h2>
       <p>Descrição da categoria</p>
 
-      <table class="table mt-5">
-        <thead>
-          <tr>
-            <th scope="col">nome</th>
-            <th scope="col">artigos</th>
-            <th scope="col">atualizado</th>
-            <th scope="col">autor</th>
-            <th scope="col">
-              Opções
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let section of sections">
-            <td>{{section.title}}</td>
-            <td>{{section.articlesQtt}}</td>
-            <td>
-              <time [dateTime]="section.updatedAt">{{section.updatedAt | date:'dd/MM/yyyy hh:mm:s'}}</time>
-            </td>
-            <td>{{section.createdBy}}</td>
+      <div class="table-responsive">
+        <table class="table mt-5">
+          <thead>
+            <tr>
+              <th scope="col">nome</th>
+              <th scope="col">artigos</th>
+              <th scope="col">atualizado</th>
+              <th scope="col">autor</th>
+              <th scope="col">
+                Opções
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let section of sections">
+              <td>{{section.title}}</td>
+              <td>{{section.articlesQtt}}</td>
+              <td>
+                <time [dateTime]="section.updatedAt">{{section.updatedAt | date:'dd/MM/yyyy hh:mm:s'}}</time>
+              </td>
+              <td>{{section.createdBy}}</td>
 
-            <td>        
-              <div class="more-container">
-                <mat-icon (click)="changeMore(section)">more_horiz</mat-icon>
-             
-                <ul *ngIf="section.showMore">
-                  <li>
-                    <mat-icon>remove_red_eye</mat-icon>Ver
-                  </li>
-                  <li (click)="editSection(section)">
-                    <mat-icon class="edit-bg">create</mat-icon>Editar
-                  </li>
-                  <li>
-                    <mat-icon class="delete-bg">delete</mat-icon> Excluir
-                  </li>
-                </ul>
+              <td>
+                <div class="more-container">
+                  <mat-icon (click)="changeMore(section)">more_horiz</mat-icon>
 
-              </div>
-            </td>
-            
-          </tr>
-        </tbody>
-      </table>
+                  <ul *ngIf="section.showMore">
+                    <li>
+                      <mat-icon>remove_red_eye</mat-icon>Ver
+                    </li>
+                    <li (click)="editSection(section)">
+                      <mat-icon class="edit-bg">create</mat-icon>Editar
+                    </li>
+                    <li>
+                      <mat-icon class="delete-bg">delete</mat-icon> Excluir
+                    </li>
+                  </ul>
+
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
-    <div *ngIf="showForm">
+    <div *ngIf="showForm" >
       <kb-form (cancelFunc)="cancel()" [item]="item" [id]="id"></kb-form>
     </div>
   </main>

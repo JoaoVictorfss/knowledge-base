@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/auth/auth-service';
+import { TokenStorageService } from 'src/app/core/auth/token-storage-service';
 import { AuthModel } from 'src/app/shared/models/auth.model';
 import { ToastModel } from 'src/app/shared/models/toast.model';
 
@@ -22,7 +23,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private tokenStorage: TokenStorageService
   ) {}
 
   ngOnInit(): void {
@@ -42,14 +44,18 @@ export class LoginComponent implements OnInit {
   login(email: string, password: string) {
     this.error = false;
     this.authService.login(email, password).subscribe(
-      (data: AuthModel) => {
+      (authData: AuthModel) => {
+        const { data } = authData;
+
+        this.tokenStorage.saveToken(data.token);
+        console.log(this.tokenStorage.getToken())
+        this.tokenStorage.saveUser(data.username);
         this.router.navigate(['/management']);
-        console.log(data)
       },
       (error) => {
-          this.toastParams.type = 'error',
-          this.toastParams.message = 'Usuário ou senha incorreto.';
-          this.error = true;
+        (this.toastParams.type = 'error'),
+          (this.toastParams.message = 'Usuário ou senha incorreto.');
+        this.error = true;
       }
     );
   }

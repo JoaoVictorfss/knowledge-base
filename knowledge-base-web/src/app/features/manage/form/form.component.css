@@ -38,11 +38,11 @@
 }
 
 #appear-animation {
-  animation: appear-animation .1s ease 1;
+  animation: appear-animation .2s ease 1;
 }
 
 #appear-buttons-animation{
-    animation: appear-buttons-animation .1s ease 1;
+    animation: appear-buttons-animation .2s ease 1;
 }
 
 @keyframes appear-animation {

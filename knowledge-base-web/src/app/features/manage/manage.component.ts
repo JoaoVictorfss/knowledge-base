@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CategoryService } from 'src/app/core/category/category-service';
 import { CategoryModel } from 'src/app/shared/models/category.model';
 import { SectionModel } from 'src/app/shared/models/section.model';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'kb-manage',
@@ -12,7 +11,6 @@ import { MatDialog } from '@angular/material/dialog';
 export class ManageComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
-    public dialog: MatDialog
   ) {}
   item!: string;
 
@@ -132,9 +130,5 @@ export class ManageComponent implements OnInit {
 
   changeMore(section: SectionModel) {
     section.showMore = !section.showMore;
-  }
-
-  openDialog() {
-    this.dialog.open(ManageComponent);
   }
 }

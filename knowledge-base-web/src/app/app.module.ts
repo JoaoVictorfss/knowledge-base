@@ -12,6 +12,7 @@ import { CategoryModule } from './features/category/category.module';
 import { ArticleModule } from './features/article/article.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoggedInGuard } from './features/security/loggedin.guard';
+import { AuthInterceptor } from './features/security/auth.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,7 +28,11 @@ import { LoggedInGuard } from './features/security/loggedin.guard';
     ArticleModule,
     NgbModule,
   ],
-  providers: [LoggedInGuard],
+
+  providers: [
+    LoggedInGuard,
+    AuthInterceptor
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
