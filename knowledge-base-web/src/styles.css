@@ -45,3 +45,7 @@ button, a{
 }
 
 
+button:disabled{
+  cursor:not-allowed;
+}
+

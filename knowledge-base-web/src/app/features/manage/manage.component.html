@@ -1,1 +1,96 @@
-<p>manage works!</p>
+<div class="grid-container">
+
+  <nav class="nav grid-item">
+
+    <div class="nav-content">
+      <h2>Gerenciamento de artigos</h2>
+
+      <div class="options">
+        <div class="search-input">
+          <input type="text" placeholder="Buscar artigos...">
+          <mat-icon>search</mat-icon>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn custom-dropdown dropdown-toggle" type="button" id="add" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Adicionar
+          </button>
+          <div class="dropdown-menu" aria-labelledby="add">
+            <button class="dropdown-item" type="button">Artigo</button>
+            <button class="dropdown-item" type="button" (click)="add('seção')">Seção</button>
+            <button class="dropdown-item" type="button" (click)="add('categoria')">Categoria</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </nav>
+
+  <aside class="aside grid-item">
+    <h2>Categorias</h2>
+    <ul>
+      <li *ngFor="let category of categories">
+        <mat-icon>folder_open</mat-icon>
+        {{category.title}}
+      </li>
+    </ul>
+  </aside>
+
+  <main class="main grid-item">
+    <section class="main-content">
+      <h2>
+        <mat-icon>folder_open</mat-icon> As boas práticas de programação
+      </h2>
+      <p>Descrição da categoria</p>
+
+      <table class="table mt-5">
+        <thead>
+          <tr>
+            <th scope="col">nome</th>
+            <th scope="col">artigos</th>
+            <th scope="col">atualizado</th>
+            <th scope="col">autor</th>
+            <th scope="col">
+              Opções
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let section of sections">
+            <td>{{section.title}}</td>
+            <td>{{section.articlesQtt}}</td>
+            <td>
+              <time [dateTime]="section.updatedAt">{{section.updatedAt | date:'dd/MM/yyyy hh:mm:s'}}</time>
+            </td>
+            <td>{{section.createdBy}}</td>
+
+            <td>        
+              <div class="more-container">
+                <mat-icon (click)="changeMore(section)">more_horiz</mat-icon>
+             
+                <ul *ngIf="section.showMore">
+                  <li>
+                    <mat-icon>remove_red_eye</mat-icon>Ver
+                  </li>
+                  <li (click)="editSection(section)">
+                    <mat-icon class="edit-bg">create</mat-icon>Editar
+                  </li>
+                  <li>
+                    <mat-icon class="delete-bg">delete</mat-icon> Excluir
+                  </li>
+                </ul>
+
+              </div>
+            </td>
+            
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div *ngIf="showForm">
+      <kb-form (cancelFunc)="cancel()" [item]="item" [id]="id"></kb-form>
+    </div>
+  </main>
+</div>

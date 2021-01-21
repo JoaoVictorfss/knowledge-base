@@ -1,0 +1,31 @@
+    
+    <div class="form-container" id="appear-animation">
+        <div class="form-content">
+
+          <form [formGroup]="form">
+            <h4>{{title}}{{item}}</h4>
+            <div class="buttons" id="appear-buttons-animation">
+              <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Salvar</button>
+              <button class="btn btn-danger" (click)="cancel()">Cancelar</button>
+            </div>
+            <hr>
+
+            <div class="form-field">
+              <label for="title" class="form-label">Nome da {{item}}</label>
+              <input type="text" formControlName="title" id="title" placeholder="Digite o nome" class="form-control">
+            </div>
+
+            <div class="form-field">
+              <label for="subtitle" class="form-label">Descrição da {{item}}</label>
+              <input type="text" formControlName="subtitle" id="subtitle" placeholder="Digite a descrição"
+                class="form-control">
+            </div>
+
+            <div class="form-field">
+              <label for="slug" class="form-label">Link para a {{item}}(slug)</label>
+              <input type="text" formControlName="slug" id="slug" placeholder="Informe o link" class="form-control">
+            </div>
+          </form>
+
+        </div>
+      </div>

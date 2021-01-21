@@ -8,6 +8,7 @@ import { ToastComponent } from './components/toast/toast.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RouterModule } from '@angular/router';
 import { FooterComponent } from './components/footer/footer.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [LoadingComponent, ToastComponent, HeaderComponent, FooterComponent],
@@ -25,6 +26,7 @@ import { FooterComponent } from './components/footer/footer.component';
     ReactiveFormsModule,
     MatPaginatorModule,
     MatIconModule,
+    MatDialogModule,
     LoadingComponent,
     HeaderComponent,
     FooterComponent,

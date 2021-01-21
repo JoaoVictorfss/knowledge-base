@@ -10,6 +10,7 @@ import { ManageModule } from './features/manage/manage.module';
 import { NotFoundModule } from './features/not-found/not-found.module';
 import { CategoryModule } from './features/category/category.module';
 import { ArticleModule } from './features/article/article.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ArticleModule } from './features/article/article.module';
     BrowserAnimationsModule,
     NotFoundModule,
     CategoryModule,
-    ArticleModule
+    ArticleModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ArticleService } from 'src/app/core/article/article-service';
 import { ArticleModel } from 'src/app/shared/models/article.model';
+import { ToastModel } from 'src/app/shared/models/toast.model';
 
 @Component({
   selector: 'kb-article',
@@ -13,6 +14,11 @@ export class ArticleComponent implements OnInit {
   articleId!: number;
   error: boolean = false;
 
+  toastParams: ToastModel = {
+    message: '',
+    type: '',
+  };
+  
   constructor(
     private articleService: ArticleService,
     private route: ActivatedRoute
@@ -26,23 +32,27 @@ export class ArticleComponent implements OnInit {
 
   private loadArticle(id: number) {
     this.articleId = id;
-    this.articleService
-      .showById(id)
-      .subscribe(
-        ({ data }) => {
-          this.article = data;
-        },
-        (err) => {
-          this.error = true;
-        }
-      );
+    this.articleService.showById(id).subscribe(
+      ({ data }) => {
+        this.article = data;
+      },
+      (err) => {
+        this.error = true;
+        (this.toastParams.type = 'error'),
+          (this.toastParams.message =
+            'Ops ...  Um erro ocorreu, tente novamente mais tarde!');
+        this.error = true;
+      }
+    );
   }
 
-  handleName(name: string):string {
-    let formattedName:string = name.toUpperCase().split(' ').reduce((formattedName, current) => formattedName += current[0], "");
+  handleName(name: string): string {
+    let formattedName: string = name
+      .toUpperCase()
+      .split(' ')
+      .reduce((formattedName, current) => (formattedName += current[0]), '');
     if (formattedName.length > 2) formattedName = formattedName.substr(0, 1);
-  
+
     return formattedName;
   }
-
 }

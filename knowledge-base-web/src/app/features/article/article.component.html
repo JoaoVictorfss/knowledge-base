@@ -1,39 +1,41 @@
-<kb-header></kb-header>
+<div *ngIf="!error">
+  <kb-header></kb-header>
 
-<div class="container">
-  <main>
-    <article>
-      <h1>{{article.title}}</h1>
-      <h3>{{article.subtitle}}</h3>
+  <div class="container">
+    <main>
+      <article>
+        <h1>{{article.title}}</h1>
+        <h3>{{article.subtitle}}</h3>
 
-      <div class="article-information">
-        <div class="name-box">
-          <span>{{handleName(article.createdBy)}}</span>
+        <div class="article-information">
+          <div class="name-box">
+            <span>{{handleName(article.createdBy)}}</span>
+          </div>
+          <span>
+            Escrito por: {{article.createdBy}}<br>
+            Atualizado em: <time [dateTime]="article.updatedAt">{{article.updatedAt | date:'dd/MM/yyyy'}}</time>
+          </span>
         </div>
-        <span>
-          Escrito por: {{article.createdBy}}<br>
-          Atualizado em: <time [dateTime]="article.updatedAt">{{article.updatedAt | date:'dd/MM/yyyy'}}</time>
-        </span>
-      </div>
 
-      <p>
-        {{article.content}}
-      </p>
+        <p>
+          {{article.content}}
+        </p>
 
-      <hr>
-      <section class="feedback">
-        <h2>Deixe o seu feedback</h2>
+        <hr>
+        <section class="feedback">
+          <h2>Deixe o seu feedback</h2>
 
-        <div class="feedback-content">
-          <mat-icon>sentiment_dissatisfied</mat-icon>
-          <mat-icon>sentiment_satisfied</mat-icon>
-          <mat-icon>sentiment_satisfied_alt</mat-icon>
-        </div>
-      </section>
-     <hr>
+          <div class="feedback-content">
+            <mat-icon>sentiment_dissatisfied</mat-icon>
+            <mat-icon>sentiment_satisfied</mat-icon>
+            <mat-icon>sentiment_satisfied_alt</mat-icon>
+          </div>
+        </section>
+        <hr>
 
-    </article>
-  </main>
+      </article>
+    </main>
+  </div>
+  <kb-footer [author]="article.createdBy"></kb-footer>
 </div>
-<kb-footer [author]="article.createdBy"></kb-footer>
-
+<kb-toast [show]="error" [toastParams]="toastParams"></kb-toast>

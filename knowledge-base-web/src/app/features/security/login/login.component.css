@@ -74,7 +74,6 @@ button mat-icon {
 }
 
 button:disabled {
-  cursor: not-allowed;
   background-color: #d4d0d0;
 }
 
