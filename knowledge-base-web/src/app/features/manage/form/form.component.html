@@ -5,7 +5,7 @@
           <form [formGroup]="form">
             <h4>{{title}}{{item}}</h4>
             <div class="buttons" id="appear-buttons-animation">
-              <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Salvar</button>
+              <button type="submit" class="btn btn-primary" [disabled]="form.invalid" (click)="save()"> Salvar</button>
               <button class="btn btn-danger" (click)="cancel()">Cancelar</button>
             </div>
             <hr>

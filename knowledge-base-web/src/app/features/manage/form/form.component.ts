@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CategoryService } from 'src/app/core/category/category-service';
 
 @Component({
   selector: 'kb-form',
@@ -27,7 +28,10 @@ export class FormComponent implements OnInit {
   @Output()
   cancelFunc = new EventEmitter<null>();
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private categoryService: CategoryService
+  ) {}
 
   ngOnInit(): void {
     if (this.id) {
@@ -67,6 +71,20 @@ export class FormComponent implements OnInit {
   }
 
   save() {
+    console.log("Salvando");
+        this.categoryService
+          .create({
+            title: 'Categoria',
+            subtitle:
+              'Eu sou uma categoria para você ver o quanto eu sou importante',
+            createdBy: 'joao',
+            updatedBy: 'joao',
+          })
+          .subscribe(
+            (data: any) => console.log(data),
+            (err) => console.log('Ocorreu um erro', console.log(err))
+          );
+    
     if (this.item === 'categoria') {
       /**
        * TODO  atualizar categoria com os dados do form e salvar

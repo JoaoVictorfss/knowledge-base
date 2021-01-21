@@ -11,11 +11,10 @@ import { NotFoundModule } from './features/not-found/not-found.module';
 import { CategoryModule } from './features/category/category.module';
 import { ArticleModule } from './features/article/article.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LoggedInGuard } from './features/security/loggedin.guard';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -28,7 +27,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ArticleModule,
     NgbModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [LoggedInGuard],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -26,4 +26,8 @@ export class CategoryService {
   showById(id:number): Observable<IResponse> {
     return this.http.get<IResponse>(`${URL}category/` + id);
   };
+
+  create(category: CategoryModel): Observable<IResponse>{
+    return this.http.post<IResponse>(URL+ "create", category);
+  }
 }

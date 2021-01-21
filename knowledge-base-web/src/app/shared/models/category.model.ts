@@ -5,8 +5,8 @@ export interface CategoryModel {
   updatedBy: string;
   subtitle: string;
   slug ?: string;
-  updatedAt: Date;
-  createdAt: Date;
-  articlesQtt: number;
-  sectionsQtt: number;
+  updatedAt?: Date;
+  createdAt?: Date;
+  articlesQtt?: number;
+  sectionsQtt?: number;
 }

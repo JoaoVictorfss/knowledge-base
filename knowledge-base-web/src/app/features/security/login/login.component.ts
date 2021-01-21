@@ -44,6 +44,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(email, password).subscribe(
       (data: AuthModel) => {
         this.router.navigate(['/management']);
+        console.log(data)
       },
       (error) => {
           this.toastParams.type = 'error',

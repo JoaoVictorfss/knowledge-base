@@ -5,6 +5,7 @@ import { CategoryComponent } from './features/category/category.component';
 import { HomeComponent } from './features/home/home.component';
 import { ManageComponent } from './features/manage/manage.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
+import { LoggedInGuard } from './features/security/loggedin.guard';
 import { LoginComponent } from './features/security/login/login.component';
 
 const routes: Routes = [
@@ -32,6 +33,7 @@ const routes: Routes = [
   {
     path: 'management',
     component: ManageComponent,
+    canActivate: [LoggedInGuard],
   },
   {
     path: '**',
