@@ -12,10 +12,9 @@ article h3 {
 }
 
 .article-information {
-  width: 240px;
+  width: 350px;
   display: flex;
-  align-items: center;
-  justify-content:space-between;
+  align-items: center;;
   margin: 10px 0;
   font-size: 14px;
   color: #808080;
@@ -24,6 +23,7 @@ article h3 {
 .name-box {
   width: 60px;
   height: 60px;
+  margin-right: 10px;
   background-color: #0000ff;
   font-family: "Roboto", sans-serif;
   color: #ffffff;

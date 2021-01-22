@@ -6,7 +6,8 @@
       <h1>{{category.title}}. </h1>
       <p>
         {{category.subtitle}}<br>
-        Criado em: <time [dateTime]="category.createdAt">{{category.createdAt | date:'dd/MM/yyyy'}}</time>
+        Criado em: <time [dateTime]="category.createdAt">{{category.createdAt | date:'dd/MM/yyyy'}}</time><br>
+        Autor: {{category.createdBy}}
       </p>
     
       <hr>

@@ -51,7 +51,7 @@ export class ArticleComponent implements OnInit {
       .toUpperCase()
       .split(' ')
       .reduce((formattedName, current) => (formattedName += current[0]), '');
-    if (formattedName.length > 2) formattedName = formattedName.substr(0, 1);
+    if (formattedName.length > 2) formattedName = formattedName.substr(0, 2);
 
     return formattedName;
   }
