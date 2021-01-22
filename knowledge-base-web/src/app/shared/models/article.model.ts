@@ -1,6 +1,6 @@
 export interface ArticleModel {
   id?: number;
-  title: String;
+  title: string;
   subtitle: string;
   content: string;
   slug: string;
@@ -15,4 +15,5 @@ export interface ArticleModel {
   sectionId?: number;
   updatedAt: Date;
   createdAt: Date;
+  showMore?: boolean;
 }

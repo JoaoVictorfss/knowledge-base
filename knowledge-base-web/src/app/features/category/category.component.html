@@ -31,7 +31,7 @@
 
     <mat-paginator (page)="handlePageEvent($event)" [length]="paginatorParams.totalElements" [pageSize]="10"
       [pageSizeOptions]="[]" showFirstLastButtons [hidePageSize]="true" [pageIndex]="paginatorParams.currentPage"
-      [pageIndex]="paginatorParams.pageIndex" *ngIf="paginatorParams.totalElements > 10">>
+      [pageIndex]="paginatorParams.pageIndex" *ngIf="paginatorParams.totalElements > 10">
     </mat-paginator>
     
   </main>

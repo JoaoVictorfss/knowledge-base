@@ -1,7 +1,6 @@
 <div class="grid-container">
 
   <nav class="nav grid-item">
-
     <div class="nav-content">
       <h2>Gerenciamento de artigos</h2>
 
@@ -22,45 +21,50 @@
             <button class="dropdown-item" type="button" (click)="add('categoria')">Categoria</button>
           </div>
         </div>
+
+        <button class="btn btn-danger">Sair</button>
+
       </div>
     </div>
-
   </nav>
 
-  <aside class="aside grid-item">
-    <h2>Categorias</h2>
-    <ul>
-      <li *ngFor="let category of categories">
-        <mat-icon>folder_open</mat-icon>
-        {{category.title}}
-      </li>
-    </ul>
-  </aside>
+  <kb-categories class="aside grid-item" (addCategoryIdFunc)="loadSectionsAndArticlesByCategoryId($event)"></kb-categories>
 
   <main class="main grid-item">
-    <section class="main-content">
+    <section class="main-content" *ngIf="categoryData.id">
       <h2>
-        <mat-icon>folder_open</mat-icon> Boas práticas de programação
+        <mat-icon>folder_open</mat-icon>{{categoryData.subtitle}}
       </h2>
-      <p>Descrição da categoria</p>
+      <p>{{categoryData.subtitle}}</p>
 
-      <div class="table-responsive">
+      <div class="table-container" *ngIf="sections.length">
+        <h4>Seções</h4>
+
         <table class="table mt-5">
+          <caption>Seções</caption>
+
           <thead>
             <tr>
+              <th scope="col">id</th>
               <th scope="col">nome</th>
               <th scope="col">artigos</th>
+              <th scope="col">criado</th>
               <th scope="col">atualizado</th>
               <th scope="col">autor</th>
               <th scope="col">
-                Opções
+                <mat-icon>settings</mat-icon>
               </th>
             </tr>
           </thead>
+
           <tbody>
             <tr *ngFor="let section of sections">
+              <td># 0{{section.id}}</td>
               <td>{{section.title}}</td>
               <td>{{section.articlesQtt}}</td>
+              <td>
+                <time [dateTime]="section.updatedAt">{{section.createdAt | date:'dd/MM/yyyy hh:mm:s'}}</time>
+              </td>
               <td>
                 <time [dateTime]="section.updatedAt">{{section.updatedAt | date:'dd/MM/yyyy hh:mm:s'}}</time>
               </td>
@@ -84,15 +88,82 @@
 
                 </div>
               </td>
-
             </tr>
           </tbody>
+
         </table>
       </div>
+
+      <div class="table-container" *ngIf="articles.length">
+        <h4>Artigos</h4>
+
+        <table class="table mt-5">
+          <caption>Artigos</caption>
+
+          <thead>
+            <tr>
+              <th scope="col">titulo</th>
+              <th scope="col">autor</th>
+              <th scope="col">atualizado</th>
+              <th scope="col">status</th>
+              <th scope="col">visualizações</th>
+              <th scope="col">
+                <mat-icon>sentiment_dissatisfied</mat-icon>
+              </th>
+              <th scope="col">
+                <mat-icon>sentiment_satisfied</mat-icon>
+              </th>
+              <th scope="col">
+                <mat-icon>sentiment_satisfied_alt</mat-icon>
+              </th>
+              <th scope="col">
+                <mat-icon>settings</mat-icon>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let article of articles">
+              <td>{{article.title}}</td>
+              <td>{{article.createdBy}}</td>
+              <td>
+                <time [dateTime]="article.updatedAt">{{article.updatedAt | date:'dd/MM/yyyy hh:mm:s'}}</time>
+              </td>
+              <td>{{article.status}}</td>
+              <td>{{article.viewers}}</td>
+              <td>{{handlePercentage(article.viewers, article.poorLiked)}}</td>
+              <td>{{handlePercentage(article.viewers,article.averageLiked)}}</td>
+              <td>{{handlePercentage(article.viewers, article.greatLiked)}}</td>
+
+              <td>
+                <div class="more-container">
+                  <mat-icon (click)="changeMore(article)">more_horiz</mat-icon>
+
+                  <ul *ngIf="article.showMore">
+                    <li>
+                      <mat-icon>remove_red_eye</mat-icon>Ver
+                    </li>
+                    <li>
+                      <mat-icon class="edit-bg">create</mat-icon>Editar
+                    </li>
+                    <li>
+                      <mat-icon class="delete-bg">delete</mat-icon> Excluir
+                    </li>
+                  </ul>
+
+                </div>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
     </section>
 
-    <div *ngIf="showForm" >
+    <div *ngIf="showForm">
       <kb-form (cancelFunc)="cancel()" [item]="item" [id]="id"></kb-form>
     </div>
+
   </main>
 </div>

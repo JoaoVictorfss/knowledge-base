@@ -9,4 +9,5 @@ export interface CategoryModel {
   createdAt?: Date;
   articlesQtt?: number;
   sectionsQtt?: number;
+  selected?: boolean;
 }

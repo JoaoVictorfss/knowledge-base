@@ -12,6 +12,7 @@ import { CategoryService } from 'src/app/core/category/category-service';
 export class FormComponent implements OnInit {
   form!: FormGroup;
   title: string = 'Adicionar ';
+ 
   formData = {
     title: '',
     subtitle: '',
@@ -73,13 +74,6 @@ export class FormComponent implements OnInit {
   }
 
   save() {
-    this.categoryService.create({
-      title: 'Categoria',
-      subtitle: 'Eu sou uma categoria para você ver o quanto eu sou importante',
-      createdBy: 'joao',
-      updatedBy: 'joao',
-    }).subscribe((data) => console.log(data), (error) => console.log(error));
-
     if (this.item === 'categoria') {
       /**
        * TODO  atualizar categoria com os dados do form e salvar

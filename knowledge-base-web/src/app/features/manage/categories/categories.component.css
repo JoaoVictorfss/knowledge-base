@@ -1,0 +1,45 @@
+aside h2 {
+  color: #383737;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 10px;
+}
+
+aside ul {
+  padding-bottom: 10px;
+  margin-top: 20px;
+  margin-left: 12px;
+  font-family: "Roboto", sans-serifs;
+  color: rgb(66, 64, 64);
+  cursor: pointer;
+}
+
+aside ul li {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 4px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+aside ul li:hover, .selected-category {
+  color: #0000ff;
+}
+
+aside ul li + li {
+  margin-top: 4px;
+}
+
+aside ul li mat-icon {
+  margin-right: 3px;
+}
+
+.paginator-container{
+   position: relative;
+    padding: 15px;
+}
+
+.paginator-container mat-paginator{
+   font-size: 14px;
+}

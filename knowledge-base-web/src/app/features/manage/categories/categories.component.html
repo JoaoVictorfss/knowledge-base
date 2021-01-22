@@ -1,0 +1,9 @@
+  <aside>
+    <h2>Categorias</h2>
+    <ul>
+      <li *ngFor="let category of categories" (click)="addCategoryId(category)" [ngClass]="{'selected-category': category.selected}">
+        <mat-icon>folder_open</mat-icon>
+        {{category.title}}
+      </li>
+    </ul>   
+  </aside>

@@ -1,7 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { CategoryService } from 'src/app/core/category/category-service';
-import { CategoryModel } from 'src/app/shared/models/category.model';
+import { ArticleService } from 'src/app/core/article/article-service';
+import { SectionService } from 'src/app/core/section/section-service';
+import { ArticleModel } from 'src/app/shared/models/article.model';
+import { ConfigParamsModel } from 'src/app/shared/models/config-params.model';
 import { SectionModel } from 'src/app/shared/models/section.model';
+
+interface ICategoryData {
+  id: number;
+  title: string;
+  subtitle: string;
+}
 
 @Component({
   selector: 'kb-manage',
@@ -9,107 +17,30 @@ import { SectionModel } from 'src/app/shared/models/section.model';
   styleUrls: ['./manage.component.css'],
 })
 export class ManageComponent implements OnInit {
-  constructor(
-    private categoryService: CategoryService,
-  ) {}
   item!: string;
+
+  config: ConfigParamsModel = {
+    page: 0,
+  };
 
   showForm: boolean = false;
   id: number = 0;
 
-  sections: SectionModel[] = [
-    {
-      id: 1,
-      title: 'O titulo da seção',
-      subtitle: 'Descrição da seção',
-      slug: 'here we go',
-      createdBy: 'joao',
-      updatedBy: 'joao',
-      articlesQtt: 3,
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      showMore: false,
-    },
-    {
-      id: 2,
-      title: 'O titulo da seção',
-      subtitle: 'Descrição da seção',
-      slug: 'here we go',
-      createdBy: 'joao',
-      updatedBy: 'joao',
-      articlesQtt: 3,
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      showMore: false,
-    },
-    {
-      id: 1,
-      title: 'O titulo da seção',
-      subtitle: 'Descrição da seção',
-      slug: 'here we go',
-      createdBy: 'joao',
-      updatedBy: 'joao',
-      articlesQtt: 3,
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      showMore: false,
-    },
-    {
-      id: 1,
-      title: 'O titulo da seção',
-      subtitle: 'Descrição da seção',
-      slug: 'here we go',
-      createdBy: 'joao',
-      updatedBy: 'joao',
-      articlesQtt: 3,
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      showMore: false,
-    },
-    {
-      id: 1,
-      title: 'O titulo da seção',
-      subtitle: 'Descrição da seção',
-      slug: 'here we go',
-      createdBy: 'joao',
-      updatedBy: 'joao',
-      articlesQtt: 3,
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      showMore: false,
-    },
-    {
-      id: 1,
-      title: 'O titulo da seção',
-      subtitle: 'Descrição da seção',
-      slug: 'here we go',
-      createdBy: 'joao',
-      updatedBy: 'joao',
-      articlesQtt: 3,
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      showMore: false,
-    },
-  ];
+  sections: SectionModel[] = [];
+  articles: ArticleModel[] = [];
 
-  categories: CategoryModel[] = [
-    {
-      id: 12,
-      title: 'Categoria',
-      createdBy: 'joao',
-      updatedBy: 'joao',
-      subtitle: 'Eu sou uma categoria para você ver o quanto eu sou importante',
-      slug: 'slug',
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      articlesQtt: 23,
-      sectionsQtt: 0,
-    },
-  ];
+  categoryData: ICategoryData = {
+    id: 0,
+    title: '',
+    subtitle: '',
+  };
 
-  ngOnInit(): void {
-    //this.categoryService.showById().subscribe(({ data }: any) => {});
-  }
+  constructor(
+    private articleService: ArticleService,
+    private sectionService: SectionService
+  ) {}
+
+  ngOnInit(): void {}
 
   add(item: string) {
     this.item = item;
@@ -123,12 +54,42 @@ export class ManageComponent implements OnInit {
     this.showForm = true;
   }
 
+  loadSectionsAndArticlesByCategoryId({ id, title, subtitle }: ICategoryData) {
+    this.sections = [];
+    this.categoryData.id = id;
+    this.categoryData.title = title;
+    this.categoryData.subtitle = subtitle;
+
+    this.sectionService
+      .findByCategoryId(id, this.config)
+      .subscribe(({ data }: any) => {
+        const { content: sections } = data;
+
+        this.sections.push(...sections);
+        this.loadArticles(id);
+      });
+  }
+
+  private loadArticles(id: number) {
+    this.articles = [];
+
+    //TODO mudar o método de busca de artigos, buscar artigos privados também
+    this.articleService
+      .findByCategoryId(Number(id), this.config)
+      .subscribe(({ data }: any) => this.articles.push(...data.content));
+  }
+
   cancel() {
     if (this.id) this.id = 0;
     this.showForm = false;
   }
 
-  changeMore(section: SectionModel) {
-    section.showMore = !section.showMore;
+  changeMore(section?: SectionModel, article?: ArticleModel) {
+    if (section) section.showMore = !section.showMore;
+    else if (article) article.showMore = !article.showMore;
+  }
+
+  handlePercentage(total: number, value: number):string{
+    return ((value * 100) / total).toFixed(2) + '%';
   }
 }
