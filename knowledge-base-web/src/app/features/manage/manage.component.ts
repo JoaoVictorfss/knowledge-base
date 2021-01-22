@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ArticleService } from 'src/app/core/article/article-service';
+import { TokenStorageService } from 'src/app/core/auth/token-storage-service';
 import { SectionService } from 'src/app/core/section/section-service';
 import { ArticleModel } from 'src/app/shared/models/article.model';
 import { ConfigParamsModel } from 'src/app/shared/models/config-params.model';
@@ -37,7 +39,9 @@ export class ManageComponent implements OnInit {
 
   constructor(
     private articleService: ArticleService,
-    private sectionService: SectionService
+    private sectionService: SectionService,
+    private tokenStorageService: TokenStorageService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {}
@@ -54,7 +58,7 @@ export class ManageComponent implements OnInit {
     this.showForm = true;
   }
 
-  loadSectionsAndArticlesByCategoryId({ id, title, subtitle }: ICategoryData) {
+  buildMain({ id, title, subtitle }: ICategoryData) {
     this.sections = [];
     this.categoryData.id = id;
     this.categoryData.title = title;
@@ -79,6 +83,11 @@ export class ManageComponent implements OnInit {
       .subscribe(({ data }: any) => this.articles.push(...data.content));
   }
 
+  logout() {
+    this.tokenStorageService.signOut();
+    this.router.navigate(['/']);
+  }
+
   cancel() {
     if (this.id) this.id = 0;
     this.showForm = false;
@@ -89,7 +98,7 @@ export class ManageComponent implements OnInit {
     else if (article) article.showMore = !article.showMore;
   }
 
-  handlePercentage(total: number, value: number):string{
+  handlePercentage(total: number, value: number): string {
     return ((value * 100) / total).toFixed(2) + '%';
   }
 }

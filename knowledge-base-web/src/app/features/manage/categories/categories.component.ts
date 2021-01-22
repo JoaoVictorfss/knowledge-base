@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { CategoryService } from 'src/app/core/category/category-service';
 import { CategoryModel } from 'src/app/shared/models/category.model';
 import { ConfigParamsModel } from 'src/app/shared/models/config-params.model';
-import { ToastModel } from 'src/app/shared/models/toast.model';
 
 interface ICategoryData {
   id: number;
@@ -34,13 +33,12 @@ export class CategoriesComponent implements OnInit {
   }
 
   private loadCategories(): void {
-    this.categoryService.list(this.config).subscribe(
-      ({ data }: any) => {
-        const { content: categories} = data;
+    this.categoryService.list(this.config).subscribe(({ data }: any) => {
+      const { content: categories } = data;
 
-        this.categories.push(...categories);
-        this.addCategoryId(this.categories[0]);
-      });
+      this.categories.push(...categories);
+      this.addCategoryId(this.categories[0]);
+    });
   }
 
   addCategoryId(selectedCategory: CategoryModel) {

@@ -1,8 +1,15 @@
-import { Token } from '@angular/compiler/src/ml_parser/lexer';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TokenStorageService } from 'src/app/core/auth/token-storage-service';
 import { CategoryService } from 'src/app/core/category/category-service';
+import { SectionService } from 'src/app/core/section/section-service';
+import { CategoryModel } from 'src/app/shared/models/category.model';
+import { SectionModel } from 'src/app/shared/models/section.model';
+
+interface FormData {
+  title: string;
+  subtitle: string;
+  slug: string;
+}
 
 @Component({
   selector: 'kb-form',
@@ -11,9 +18,13 @@ import { CategoryService } from 'src/app/core/category/category-service';
 })
 export class FormComponent implements OnInit {
   form!: FormGroup;
-  title: string = 'Adicionar ';
- 
-  formData = {
+  loaded: boolean = false;
+  title!: string;
+  
+  category!: CategoryModel;
+  section!: SectionModel;
+
+  formData: FormData = {
     title: '',
     subtitle: '',
     slug: '',
@@ -34,22 +45,29 @@ export class FormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private categoryService: CategoryService,
+    private sectionService: SectionService
   ) {}
 
   ngOnInit(): void {
     if (this.id) {
       this.title = 'Editar ';
+
       if (this.item === 'categoria') {
-        /**
-         * TODO buscar categoria pelo id e adicionar os dados no formData
-         */
       } else {
-        /**
-         * TODO buscar seção pelo id e adicionar os dados no formData
-         */
+        this.sectionService.showById(this.id).subscribe(({ data: section }) => {
+          this.section = section;
+          this.formData.title = section.title;
+          this.formData.subtitle = section.subtitle;
+          this.formData.slug = section.slug;
+          this.loaded = true;
+          this.createForm();
+        });
       }
-    } else this.title = 'Adicionar ';
-    this.createForm();
+    } else {
+      this.loaded = true;
+      this.title = 'Adicionar ';
+      this.createForm();
+    }
   }
 
   private createForm() {
@@ -73,15 +91,5 @@ export class FormComponent implements OnInit {
     this.cancelFunc.emit();
   }
 
-  save() {
-    if (this.item === 'categoria') {
-      /**
-       * TODO  atualizar categoria com os dados do form e salvar
-       */
-    } else {
-      /**
-       * TODO  atualizar seção com os dados do form e salvar
-       */
-    }
-  }
+  save() {}
 }

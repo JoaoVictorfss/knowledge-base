@@ -24,7 +24,7 @@ export class CategoryComponent implements OnInit {
   config: ConfigParamsModel = {
     page: 0,
   };
-
+  
   paginatorParams: PaginatorModel = {
     pageIndex: 0,
     currentPage: 0,

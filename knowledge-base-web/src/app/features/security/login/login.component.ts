@@ -48,7 +48,6 @@ export class LoginComponent implements OnInit {
         const { data } = authData;
 
         this.tokenStorage.saveToken(data.token);
-        console.log(this.tokenStorage.getToken())
         this.tokenStorage.saveUser(data.username);
         this.router.navigate(['/management']);
       },

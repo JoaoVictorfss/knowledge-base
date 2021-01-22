@@ -22,13 +22,13 @@
           </div>
         </div>
 
-        <button class="btn btn-danger">Sair</button>
+        <button class="btn btn-danger" (click)="logout()">Sair</button>
 
       </div>
     </div>
   </nav>
 
-  <kb-categories class="aside grid-item" (addCategoryIdFunc)="loadSectionsAndArticlesByCategoryId($event)"></kb-categories>
+  <kb-categories class="aside grid-item" (addCategoryIdFunc)="buildMain($event)"></kb-categories>
 
   <main class="main grid-item">
     <section class="main-content" *ngIf="categoryData.id">

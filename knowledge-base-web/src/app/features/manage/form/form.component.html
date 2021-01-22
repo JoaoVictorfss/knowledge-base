@@ -2,7 +2,7 @@
     <div class="form-container" id="appear-animation">
         <div class="form-content">
 
-          <form [formGroup]="form">
+          <form [formGroup]="form" *ngIf="loaded">
             <h4>{{title}}{{item}}</h4>
             <div class="buttons" id="appear-buttons-animation">
               <button type="submit" class="btn btn-primary" [disabled]="form.invalid" (click)="save()"> Salvar</button>

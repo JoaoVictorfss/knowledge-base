@@ -13,6 +13,7 @@ export class ArticleComponent implements OnInit {
   article!: ArticleModel;
   articleId!: number;
   error: boolean = false;
+  loaded: boolean = false;
 
   toastParams: ToastModel = {
     message: '',
@@ -35,6 +36,7 @@ export class ArticleComponent implements OnInit {
     this.articleService.showById(id).subscribe(
       ({ data }) => {
         this.article = data;
+        this.loaded = true;
       },
       (err) => {
         this.error = true;
