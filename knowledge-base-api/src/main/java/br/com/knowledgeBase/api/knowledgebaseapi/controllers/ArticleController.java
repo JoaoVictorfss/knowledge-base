@@ -259,7 +259,6 @@ public class ArticleController {
 
     private ArticleDto convertArticleToArticleDto(Article article) {
         ArticleDto articleDto = new ArticleDto();
-
         articleDto.setId(article.getId());
         articleDto.setTitle(article.getTitle());
         articleDto.setSubtitle(article.getSubtitle());
@@ -280,7 +279,6 @@ public class ArticleController {
 
     private Article convertArticleDtoToArticle(ArticleDto articleDto) {
         Article article = new Article();
-
         article.setTitle(articleDto.getTitle());
         article.setSubtitle(articleDto.getSubtitle());
         article.setContent(articleDto.getContent());

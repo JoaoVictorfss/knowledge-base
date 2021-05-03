@@ -40,13 +40,11 @@ public class SectionController {
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
-
     @GetMapping(value = PathConstants.LIST)
     public ResponseEntity<Response<Page<SectionDto>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
-
         LOG.info("Searching sections, page: {}", pag);
         Response<Page<SectionDto>> response = new Response<Page<SectionDto>>();
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
@@ -135,11 +133,11 @@ public class SectionController {
         Response<SectionDto> response = new Response<SectionDto>();
 
         Optional<Section>sectionExists = this.sectionService.findById(id);
-        if(!sectionExists.isPresent())
+        if(!sectionExists.isPresent()){
             result.addError(new ObjectError("section", "Nonexistent section."));
-        else
-             this.belongValidation(categoryId, sectionExists.get(), result);
-
+        }else{
+            this.belongValidation(categoryId, sectionExists.get(), result);
+        }
 
         if(result.hasErrors()){
             LOG.error("Error validating section: {}", result.getAllErrors());
@@ -181,7 +179,6 @@ public class SectionController {
 
     private SectionDto convertSectionToSectionDto(Section section){
         SectionDto sectionDto = new SectionDto();
-
         sectionDto.setId(section.getId());
         sectionDto.setTitle(section.getTitle());
         sectionDto.setSubtitle(section.getSubtitle());

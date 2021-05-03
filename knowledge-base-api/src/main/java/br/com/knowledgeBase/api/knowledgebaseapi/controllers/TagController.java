@@ -112,7 +112,6 @@ public class TagController {
 
     private TagDto convertTagToTagDto(Tag tag){
         TagDto tagDto = new TagDto();
-
         tagDto.setId(tag.getId());
         tagDto.setTitle(tag.getTitle());
         tagDto.setSlug(tag.getSlug());

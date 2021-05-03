@@ -135,14 +135,13 @@ public class CategoryController {
             return ResponseEntity.badRequest().body(response);
         }else{
             this.categoryService.delete(id);
-            return ResponseEntity.ok(new Response<String>());
+            return ResponseEntity.ok(new Response<>());
         }
     }
 
 
     private CategoryDto convertCategoryToCategoryDto(Category category){
         CategoryDto categoryDto = new CategoryDto();
-
         categoryDto.setId(category.getId());
         categoryDto.setTitle(category.getTitle());
         categoryDto.setSubtitle(category.getSubtitle());
@@ -160,7 +159,6 @@ public class CategoryController {
     private Category convertDtoToCategory(CategoryDto categoryDto){
         Category category = new Category();
         category.setTitle(categoryDto.getTitle());
-
         category.setCreated_by(categoryDto.getCreatedBy());
         category.setUpdated_by(categoryDto.getUpdatedBy());
         category.setSubtitle(categoryDto.getSubtitle());

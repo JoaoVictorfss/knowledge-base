@@ -8,8 +8,7 @@ public class PasswordUtils {
 
     private static final Logger log = LoggerFactory.getLogger(PasswordUtils.class);
 
-    public PasswordUtils() {
-    }
+    public PasswordUtils() { }
 
     /**
      * Generates a hash using BCrypt.

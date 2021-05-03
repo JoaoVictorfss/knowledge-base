@@ -52,7 +52,6 @@ public class UserController {
 
     private UserDto convertUserToUserDto(User user){
         UserDto userDto = new UserDto();
-
         userDto.setId(user.getId());
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
@@ -72,7 +71,8 @@ public class UserController {
 
     private void userValidation(String email, BindingResult result){
        if (!result.hasErrors()){
-           this.userService.findByEmail(email)
+           this.userService
+                   .findByEmail(email)
                    .ifPresent(func -> result.addError(new ObjectError("email", "Existing email.")));
        }
     }

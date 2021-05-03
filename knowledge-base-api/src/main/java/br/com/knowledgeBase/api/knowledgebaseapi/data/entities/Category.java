@@ -135,9 +135,9 @@ public class Category implements Serializable {
 
     @PrePersist
     public void prePersist() {
-        final Date atual = new Date();
-        created_at = atual;
-        updated_at = atual;
+        final Date currentDate = new Date();
+        created_at = currentDate;
+        updated_at = currentDate;
     }
 
     @Override

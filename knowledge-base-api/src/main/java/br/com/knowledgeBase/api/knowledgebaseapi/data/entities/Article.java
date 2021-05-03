@@ -60,20 +60,16 @@ public class Article implements Serializable {
 
     @JsonIgnore
     @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(
-            name = "article_categories",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
+    @JoinTable(name = "article_categories",
+               joinColumns = @JoinColumn(name = "article_id"),
+               inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> articleCategories = new ArrayList<Category>();
 
     @JsonIgnore
     @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(
-            name = "article_sections",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "section_id")
-    )
+    @JoinTable(name = "article_sections",
+               joinColumns = @JoinColumn(name = "article_id"),
+               inverseJoinColumns = @JoinColumn(name = "section_id"))
     private List<Section> sections = new ArrayList<Section>();
 
     public Long getId() {

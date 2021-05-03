@@ -44,11 +44,9 @@ public class Section implements Serializable {
 
     @JsonIgnore
     @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(
-           name = "section_categories",
-           joinColumns = @JoinColumn(name = "section_id"),
-           inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
+    @JoinTable(name = "section_categories",
+               joinColumns = @JoinColumn(name = "section_id"),
+               inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories = new ArrayList<Category>();
 
     public Long getId() {
@@ -138,9 +136,9 @@ public class Section implements Serializable {
 
     @PrePersist
     public void prePersist() {
-        final Date atual = new Date();
-        created_at = atual;
-        updated_at = atual;
+        final Date currentDate = new Date();
+        created_at = currentDate;
+        updated_at = currentDate;
     }
 
     @Override
