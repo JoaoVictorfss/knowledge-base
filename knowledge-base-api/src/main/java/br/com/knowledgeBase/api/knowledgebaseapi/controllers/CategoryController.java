@@ -1,5 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.CategoryDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
@@ -24,7 +25,7 @@ import java.text.ParseException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/knowledgeBase-api/categories")
+@RequestMapping(PathConstants.CATEGORY_PATH)
 @CrossOrigin(origins = "*")
 public class CategoryController {
     private static final Logger LOG = LoggerFactory.getLogger(CategoryController.class);
@@ -38,7 +39,7 @@ public class CategoryController {
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
-    @GetMapping(value = "/list")
+    @GetMapping(value = PathConstants.LIST)
     public ResponseEntity<Response<Page<CategoryDto>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
@@ -54,7 +55,7 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/category/{id}")
+    @GetMapping(value = PathConstants.FIND_CATEGORY_BY_ID)
     public ResponseEntity<Response<CategoryDto>> showById(@PathVariable("id") Long id) {
         LOG.info("Searching category id {}", id);
         Response<CategoryDto> response = new Response<CategoryDto>();
@@ -70,7 +71,7 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/create")
+    @PostMapping(PathConstants.CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<CategoryDto>> store(@Valid @RequestBody CategoryDto categoryDto,
                                                   BindingResult result) throws ParseException {
@@ -91,7 +92,7 @@ public class CategoryController {
         }
     }
 
-    @PutMapping(value = "/update/{id}")
+    @PutMapping(value = PathConstants.UPDATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<CategoryDto>> update(@PathVariable("id") Long id,
                                                    @Valid @RequestBody CategoryDto categoryDto, BindingResult result) throws NoSuchAlgorithmException {
@@ -121,7 +122,7 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = PathConstants.DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting category: {}", id);

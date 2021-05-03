@@ -1,5 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.ArticleDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Article;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Category;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/knowledgeBase-api/articles")
+@RequestMapping(PathConstants.ARTICLE_PATH)
 @CrossOrigin(origins = "*")
 public class ArticleController {
     private static final Logger LOG = LoggerFactory.getLogger(ArticleController.class);
@@ -47,7 +49,7 @@ public class ArticleController {
     private int qttPerPage;
 
 
-    @GetMapping(value = "/list-by-category/{categoryId}")
+    @GetMapping(value = PathConstants.LIST_BY_CATEGORY)
     public ResponseEntity<Response<Page<ArticleDto>>> listAllPublishedArticlesByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
@@ -58,7 +60,7 @@ public class ArticleController {
         return this.listAllArticlesByCategory(categoryId, PageRequest.of(pag, 10, Sort.Direction.valueOf(dir), ord), false);
     }
 
-    @GetMapping(value = "/list-by-section/{sectionId}")
+    @GetMapping(value = PathConstants.LIST_BY_SECTION)
     public ResponseEntity<Response<Page<ArticleDto>>> listAllPublishedArticlesBySectionId(
             @PathVariable("sectionId") Long sectionId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
@@ -69,7 +71,7 @@ public class ArticleController {
         return this.listAllArticlesBySection(sectionId, PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord), false);
     }
 
-    @GetMapping(value = "/search/{param}")
+    @GetMapping(value = PathConstants.SEARCH)
     public ResponseEntity<Response<Page<ArticleDto>>> search(@PathVariable("param") String param) {
         Response<Page<ArticleDto>> response = new Response<Page<ArticleDto>>();
         PageRequest pageRequest = PageRequest.of(0, 8, Sort.Direction.ASC, "title");
@@ -82,7 +84,7 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/list/category/{categoryId}")
+    @GetMapping(value = PathConstants.PRIVATE_LIST_BY_CATEGORY)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<Page<ArticleDto>>> listAllArticlesByCategoryId(
             @PathVariable("categoryId") Long categoryId,
@@ -95,7 +97,7 @@ public class ArticleController {
     }
 
 
-    @GetMapping(value = "/list/section/{sectionId}")
+    @GetMapping(value = PathConstants.PRIVATE_LIST_BY_SECTION )
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<Page<ArticleDto>>> listAllArticlesBySectionId(
             @PathVariable("sectionId") Long sectionId,
@@ -108,7 +110,7 @@ public class ArticleController {
     }
 
 
-    @GetMapping(value = "/article/{id}")
+    @GetMapping(value = PathConstants.FIND_BY_ARTICLE_ID)
     public ResponseEntity<Response<ArticleDto>> showById(@PathVariable("id") Long id) {
         Response<ArticleDto> response = new Response<ArticleDto>();
         LOG.info("Searching article id {}", id);
@@ -124,7 +126,7 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/create")
+    @PostMapping(PathConstants.CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<ArticleDto>> store(@Valid @RequestBody ArticleDto articleDto,
                                                       BindingResult result) throws ParseException {
@@ -160,7 +162,7 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping(PathConstants.UPDATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<ArticleDto>> update(@Valid @RequestBody ArticleDto articleDto,
                                                        BindingResult result, @PathVariable("id") Long id) throws NoSuchAlgorithmException {
@@ -197,7 +199,7 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = PathConstants.DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting article: {}", id);

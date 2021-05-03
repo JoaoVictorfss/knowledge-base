@@ -1,5 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.SectionDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Section;
@@ -25,7 +26,7 @@ import java.text.ParseException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/knowledgeBase-api/sections")
+@RequestMapping(PathConstants.SECTION_PATH)
 @CrossOrigin(origins = "*")
 public class SectionController {
     private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
@@ -40,7 +41,7 @@ public class SectionController {
     private int qttPerPage;
 
 
-    @GetMapping(value = "/list")
+    @GetMapping(value = PathConstants.LIST)
     public ResponseEntity<Response<Page<SectionDto>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
@@ -58,7 +59,7 @@ public class SectionController {
     }
 
 
-    @GetMapping(value = "/list/{categoryId}")
+    @GetMapping(value = PathConstants.FIND_SECTIONS_BY_CATEGORY_ID)
     public ResponseEntity<Response<Page<SectionDto>>> listSectionsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
@@ -82,7 +83,7 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/section/{id}")
+    @GetMapping(value = PathConstants.FIND_SECTION_BY_ID)
     public ResponseEntity<Response<SectionDto>> showById(@PathVariable("id") Long id) {
         LOG.info("Searching section id {}", id);
         Response<SectionDto> response = new Response<SectionDto>();
@@ -98,7 +99,7 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/create/category/{categoryId}")
+    @PostMapping(PathConstants.CREATE_SECTION)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<SectionDto>> store(@Valid @RequestBody SectionDto sectionDto,
                                                        BindingResult result, @PathVariable("categoryId") Long categoryId) throws ParseException {
@@ -126,7 +127,7 @@ public class SectionController {
        return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update/{id}/category/{categoryId}")
+    @PutMapping(PathConstants.UPDATE_SECTION)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<SectionDto>> update(@Valid @RequestBody SectionDto sectionDto,
                                                       BindingResult result, @PathVariable("id") Long id, @PathVariable("categoryId") Long categoryId) throws NoSuchAlgorithmException {
@@ -159,7 +160,7 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = PathConstants.DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
         LOG.info("Deleting section: {}", id);

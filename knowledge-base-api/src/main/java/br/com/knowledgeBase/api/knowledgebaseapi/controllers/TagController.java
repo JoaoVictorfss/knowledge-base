@@ -1,5 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.TagDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Tag;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
@@ -24,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping("/knowledgeBase-api/tags")
+@RequestMapping(PathConstants.TAG_PATH)
 @CrossOrigin(origins = "*")
 @Cacheable("tags")
 public class TagController {
@@ -33,7 +34,7 @@ public class TagController {
     @Autowired
     private TagService tagService;
 
-    @PostMapping("/create")
+    @PostMapping(PathConstants.CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CachePut("tags")
     public ResponseEntity<Response<TagDto>> store(@Valid @RequestBody TagDto tagDto,
@@ -57,7 +58,7 @@ public class TagController {
 
     }
 
-    @PutMapping(value = "/update/{id}")
+    @PutMapping(value = PathConstants.UPDATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CacheEvict(value = "tafs", allEntries = true)
     public ResponseEntity<Response<TagDto>> update(@PathVariable("id") Long id,
@@ -89,7 +90,7 @@ public class TagController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = PathConstants.DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CacheEvict(value = "tags", allEntries = true)
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {

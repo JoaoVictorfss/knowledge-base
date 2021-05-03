@@ -1,5 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.UserDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.User;
 import br.com.knowledgeBase.api.knowledgebaseapi.Data.enums.ProfileEnum;
@@ -19,7 +20,7 @@ import javax.validation.Valid;
 import java.text.ParseException;
 
 @RestController
-@RequestMapping("/knowledgeBase-api/users")
+@RequestMapping(PathConstants.USER_PATH)
 @CrossOrigin(origins = "*")
 public class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
@@ -27,7 +28,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping(PathConstants.CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<UserDto>> add(@Valid @RequestBody UserDto userDto,
                                                  BindingResult result) throws ParseException {
