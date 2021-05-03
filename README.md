@@ -2,7 +2,7 @@
 
 <p align="center">
    <img src="https://img.shields.io/static/v1?label=issues&message=0&color=yellow&style=plastic"/>
-  <img src="https://img.shields.io/static/v1?label=last%20commit&message=january&color=information&style=plastic"/>
+  <img src="https://img.shields.io/static/v1?label=last%20commit&message=may&color=information&style=plastic"/>
   <img src="https://img.shields.io/static/v1?label=angular&message=framework&color=red&style=plastic&logo=ANGULAR"/>
   <img src="https://img.shields.io/static/v1?label=java&message=language&color=red&style=plastic&logo=JAVA"/>
   <img src="https://img.shields.io/static/v1?label=spring&message=framework&color=green&style=plastic&logo=SPRING"/>
