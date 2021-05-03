@@ -1,31 +1,26 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
+package br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
-public class CategoryDto {
+public class TagDto {
     private Long id;
 
     @NotBlank(message = "The title cannot be empty.")
     private String title;
 
-    @NotBlank(message = "The name of the author who created the category cannot be empty.")
+    @NotBlank(message = "The slug cannot be empty.")
+    private String slug;
+
+    @NotBlank(message = "The name of the author who created the tag cannot be empty.")
     private String createdBy;
 
-    @NotBlank(message = "The name of the author who updated the category cannot be empty.")
+    @NotBlank(message = "The name of the author who updated the tag cannot be empty.")
     private String updatedBy;
-
-    private String subtitle;
-
-    private String slug;
 
     private Date updatedAt;
 
     private Date createdAt;
-
-    private int articlesQtt = 0;
-
-    private int sectionsQtt = 0;
 
     public Long getId() {
         return id;
@@ -41,14 +36,6 @@ public class CategoryDto {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
     }
 
     public String getSlug() {
@@ -91,35 +78,16 @@ public class CategoryDto {
         this.createdAt = createdAt;
     }
 
-    public int getArticlesQtt() {
-        return articlesQtt;
-    }
-
-    public void setArticlesQtt(int articlesQtt) {
-        this.articlesQtt = articlesQtt;
-    }
-
-    public int getSectionsQtt() {
-        return sectionsQtt;
-    }
-
-    public void setSectionsQtt(int sectionsQtt) {
-        this.sectionsQtt = sectionsQtt;
-    }
-
     @Override
     public String toString() {
-        return "CategoryDto{" +
+        return "TagDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", slug=" + slug +
                 ", created_by='" + createdBy + '\'' +
                 ", updated_by='" + updatedBy + '\'' +
-                ", subtitle='" + subtitle + '\'' +
-                ", slug='" + slug + '\'' +
                 ", updated_at=" + updatedAt +
                 ", created_at=" + createdAt +
-                ", articlesQtt=" + articlesQtt +
-                ", sectionsQtt=" + sectionsQtt +
                 '}';
     }
 }

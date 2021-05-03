@@ -1,7 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.dtos.TagDto;
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.Tag;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.TagDto;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Tag;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +33,6 @@ public class TagController {
     @Autowired
     private TagService tagService;
 
-    /**
-     * Add a new tag
-     *
-     * @param tagDto
-     * @param result
-     * @return ResponseEntity<Response<TagDto>>
-     * @throws ParseException
-     */
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CachePut("tags")
@@ -65,14 +57,6 @@ public class TagController {
 
     }
 
-    /**
-     * Update tag data
-     *
-     * @param tagDto
-     * @param result
-     * @return ResponseEntity<Response<TagDto>>
-     * @throws NoSuchAlgorithmException
-     */
     @PutMapping(value = "/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CacheEvict(value = "tafs", allEntries = true)
@@ -82,8 +66,9 @@ public class TagController {
         Response<TagDto> response = new Response<TagDto>();
 
         Optional<Tag>tagExists = this.tagService.findById(id);
-        if(!tagExists.isPresent())
+        if(!tagExists.isPresent()){
             result.addError(new ObjectError("tag", "Nonexistent tag."));
+        }
 
         tagValidation(tagDto, result);
         if(result.hasErrors()) {
@@ -93,23 +78,17 @@ public class TagController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        tagExists.get().setTitle(tagDto.getTitle());
-        tagExists.get().setSlug(tagDto.getSlug());
-        tagExists.get().setUpdated_by(tagDto.getUpdatedBy());
+        Tag tagExistsOpt = tagExists.get();
+        tagExistsOpt.setTitle(tagDto.getTitle());
+        tagExistsOpt.setSlug(tagDto.getSlug());
+        tagExistsOpt.setUpdated_by(tagDto.getUpdatedBy());
 
-        this.tagService.persist(tagExists.get());
-        response.setData(this.convertTagToTagDto(tagExists.get()));
+        this.tagService.persist(tagExistsOpt);
+        response.setData(this.convertTagToTagDto(tagExistsOpt));
 
         return ResponseEntity.ok(response);
     }
 
-
-    /**
-     * Delete tag by id
-     *
-     * @param id
-     * @return ResponseEntity<Response<String>>
-     */
     @DeleteMapping(value = "/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CacheEvict(value = "tags", allEntries = true)
@@ -130,12 +109,6 @@ public class TagController {
         }
     }
 
-    /**
-     *Convert Tag to TagDto
-     *
-     * @param tag
-     * @return TagDto
-     */
     private TagDto convertTagToTagDto(Tag tag){
         TagDto tagDto = new TagDto();
 
@@ -150,12 +123,6 @@ public class TagController {
         return  tagDto;
     }
 
-    /**
-     * Convert DTO data to Tag
-     *
-     * @param tagDto
-     * @return Tag
-     */
     private Tag convertDtoToTag(TagDto tagDto){
         Tag tag = new Tag();
         tag.setTitle(tagDto.getTitle());
@@ -166,12 +133,6 @@ public class TagController {
         return tag;
     }
 
-    /**
-     * Validate a tag. Checks if the name has unique words, no special characters and has no errors
-     *
-     * @param tagDto
-     * @param result
-     */
     private void tagValidation(TagDto tagDto, BindingResult result) {
         if (!result.hasErrors()) {
             Pattern notAllowed = Pattern.compile("[1-9A-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ']");

@@ -1,8 +1,8 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.dtos.SectionDto;
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.Section;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.SectionDto;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Category;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Section;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
@@ -39,20 +39,15 @@ public class SectionController {
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
-    /**
-     * Returns a paginated list of sections
-     *
-     * @return ResponseEntity<Response<SectionDto>>
-     */
+
     @GetMapping(value = "/list")
     public ResponseEntity<Response<Page<SectionDto>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
-    {
+            @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
+
         LOG.info("Searching sections, page: {}", pag);
         Response<Page<SectionDto>> response = new Response<Page<SectionDto>>();
-
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
 
         Page<Section>sections = this.sectionService.findAll(pageRequest);
@@ -62,19 +57,13 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Returns a paginated list of sections by category id
-     *
-     * @return ResponseEntity<Response<SectionDto>>
-     */
+
     @GetMapping(value = "/list/{categoryId}")
     public ResponseEntity<Response<Page<SectionDto>>> listSectionsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "DESC") String dir)
-    {
-
+            @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
         LOG.info("Searching sections by category {}, page: {}", categoryId, pag);
         Response<Page<SectionDto>> response = new Response<Page<SectionDto>>();
 
@@ -86,7 +75,6 @@ public class SectionController {
         }
         
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
-
         Page<Section>sections = this.sectionService.findAllByCategoryId(categoryId, pageRequest);
         Page<SectionDto> sectionsDto = sections.map(this::convertSectionToSectionDto);
 
@@ -94,14 +82,8 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Return a section by id
-     *
-     * @param id
-     * @return ResponseEntity<Response<SectionDto>>
-     */
     @GetMapping(value = "/section/{id}")
-    public ResponseEntity<Response<SectionDto>> showById(@PathVariable("id") Long id){
+    public ResponseEntity<Response<SectionDto>> showById(@PathVariable("id") Long id) {
         LOG.info("Searching section id {}", id);
         Response<SectionDto> response = new Response<SectionDto>();
 
@@ -116,15 +98,6 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Add a new section
-     *
-     * @param sectionDto
-     * @param result
-     * @param categoryId
-     * @return ResponseEntity<Response<SectionDto>>
-     * @throws ParseException
-     */
     @PostMapping("/create/category/{categoryId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<SectionDto>> store(@Valid @RequestBody SectionDto sectionDto,
@@ -136,7 +109,6 @@ public class SectionController {
         if(!category.isPresent()){
            result.addError(new ObjectError("section", "Nonexistent category."));
         }
-
         if(result.hasErrors()){
            LOG.error("Error validating section: {}", result.getAllErrors());
            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
@@ -154,16 +126,6 @@ public class SectionController {
        return ResponseEntity.ok(response);
     }
 
-    /**
-     * Update a section
-     *
-     * @param sectionDto
-     * @param id
-     * @param result
-     * @param categoryId
-     * @return ResponseEntity<Response<SectionDto>>
-     * @throws NoSuchAlgorithmException
-     */
     @PutMapping("/update/{id}/category/{categoryId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<SectionDto>> update(@Valid @RequestBody SectionDto sectionDto,
@@ -185,23 +147,18 @@ public class SectionController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        sectionExists.get().setTitle(sectionDto.getTitle());
-        sectionExists.get().setSubtitle(sectionDto.getSubtitle());
-        sectionExists.get().setUpdated_by(sectionDto.getUpdatedBy());
-        sectionExists.get().setSlug(sectionDto.getSlug());
+        Section sectionExistsOpt = sectionExists.get();
+        sectionExistsOpt.setTitle(sectionDto.getTitle());
+        sectionExistsOpt.setSubtitle(sectionDto.getSubtitle());
+        sectionExistsOpt.setUpdated_by(sectionDto.getUpdatedBy());
+        sectionExistsOpt.setSlug(sectionDto.getSlug());
 
-        this.sectionService.persist(sectionExists.get());
-        response.setData(this.convertSectionToSectionDto(sectionExists.get()));
+        this.sectionService.persist(sectionExistsOpt);
+        response.setData(this.convertSectionToSectionDto(sectionExistsOpt));
 
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Delete section by id
-     *
-     * @param id
-     * @return ResponseEntity<Response<String>>
-     */
     @DeleteMapping(value = "/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
@@ -221,12 +178,6 @@ public class SectionController {
         }
     }
 
-    /**
-     *Convert section to SectionDto
-     *
-     * @param section
-     * @return SectionDto
-     */
     private SectionDto convertSectionToSectionDto(Section section){
         SectionDto sectionDto = new SectionDto();
 
@@ -243,12 +194,6 @@ public class SectionController {
         return  sectionDto;
     }
 
-    /**
-     * Convert DTO data to Section
-     *
-     * @param sectionDto
-     * @return Section
-     */
     private Section convertDtoToSection(SectionDto sectionDto){
         Section section = new Section();
         section.setTitle(sectionDto.getTitle());
@@ -260,13 +205,6 @@ public class SectionController {
         return section;
     }
 
-    /**
-     * Search category by id and check if the section belongs to it
-     *
-     * @param section
-     * @param categoryId
-     * @param result
-     */
     private void belongValidation(Long categoryId, Section section, BindingResult result){
         Optional<Category> category = this.categoryService.findById(categoryId);
         if(!category.isPresent()){

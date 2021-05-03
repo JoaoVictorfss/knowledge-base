@@ -1,20 +1,17 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.entities;
+package br.com.knowledgeBase.api.knowledgebaseapi.Data.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
-@Table(name = "categories")
-public class Category implements Serializable {
+@Table(name = "sections")
+public class Section implements Serializable {
     private static final long serialVersionUID = -5754246207015712518L;
 
-    public Category(){ }
+    public Section(){ }
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -23,10 +20,10 @@ public class Category implements Serializable {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "subtitle", nullable = true)
+    @Column(name = "subtitle", nullable = false)
     private String subtitle;
 
-    @Column(name = "slug", nullable = true)
+    @Column(name = "slug", nullable = false)
     private String slug;
 
     @Column(name = "created_by", nullable = false)
@@ -42,12 +39,17 @@ public class Category implements Serializable {
     private Date updated_at;
 
     @JsonIgnore
-    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "categories", cascade = {CascadeType.REMOVE})
-    private List<Section> sections = new ArrayList<Section>();
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "sections", cascade = {CascadeType.REMOVE})
+    private List<Article> articles = new ArrayList<Article>();
 
     @JsonIgnore
-    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "articleCategories", cascade = {CascadeType.REMOVE})
-    private List<Article> articles = new ArrayList<Article>();
+    @ManyToMany(fetch=FetchType.LAZY)
+    @JoinTable(
+           name = "section_categories",
+           joinColumns = @JoinColumn(name = "section_id"),
+           inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories = new ArrayList<Category>();
 
     public Long getId() {
         return id;
@@ -113,12 +115,12 @@ public class Category implements Serializable {
         this.updated_at = updated_at;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public List<Category> getCategories() {
+        return categories;
     }
 
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public List<Article> getArticles() {
@@ -142,8 +144,21 @@ public class Category implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return id.equals(section.id) && title.equals(section.title) && subtitle.equals(section.subtitle) && slug.equals(section.slug) && created_by.equals(section.created_by) && updated_by.equals(section.updated_by) && created_at.equals(section.created_at) && updated_at.equals(section.updated_at) && categories.equals(section.categories);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, subtitle, slug, created_by, updated_by, created_at, updated_at, categories);
+    }
+
+    @Override
     public String toString() {
-        return "Category{" +
+        return "Section{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", subtitle='" + subtitle + '\'' +

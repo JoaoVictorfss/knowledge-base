@@ -2,7 +2,7 @@ package br.com.knowledgeBase.api.knowledgebaseapi.security.services;
 
 import java.util.Optional;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.User;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.User;
 import br.com.knowledgeBase.api.knowledgebaseapi.security.JwtUserFactory;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

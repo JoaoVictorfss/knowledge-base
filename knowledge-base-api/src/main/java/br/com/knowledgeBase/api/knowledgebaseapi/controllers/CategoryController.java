@@ -1,7 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.dtos.CategoryDto;
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.Category;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.CategoryDto;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
@@ -38,20 +38,13 @@ public class CategoryController {
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
-    /**
-     * Returns a paginated list of categories
-     *
-     * @return ResponseEntity<Response<CategoryDto>>
-     */
     @GetMapping(value = "/list")
     public ResponseEntity<Response<Page<CategoryDto>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "ASC") String dir)
-    {
+            @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
         LOG.info("Searching categories, page: {}", pag);
         Response<Page<CategoryDto>> response = new Response<Page<CategoryDto>>();
-
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Direction.valueOf(dir), ord);
 
         Page<Category>categories = this.categoryService.findAll(pageRequest);
@@ -61,14 +54,8 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Return a category by id
-     *
-     * @param id
-     * @return ResponseEntity<Response<CategoryDto>>
-     */
     @GetMapping(value = "/category/{id}")
-    public ResponseEntity<Response<CategoryDto>> showById(@PathVariable("id") Long id){
+    public ResponseEntity<Response<CategoryDto>> showById(@PathVariable("id") Long id) {
         LOG.info("Searching category id {}", id);
         Response<CategoryDto> response = new Response<CategoryDto>();
 
@@ -83,14 +70,6 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Add a new category
-     *
-     * @param categoryDto
-     * @param result
-     * @return ResponseEntity<Response<CategoryDto>>
-     * @throws ParseException
-     */
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<CategoryDto>> store(@Valid @RequestBody CategoryDto categoryDto,
@@ -98,12 +77,12 @@ public class CategoryController {
         LOG.info("Adding category: {}", categoryDto.toString());
         Response<CategoryDto> response = new Response<CategoryDto>();
 
-        if (result.hasErrors()) {//errros de validação
+        if (result.hasErrors()) {
             LOG.error("Error validating category: {}", result.getAllErrors());
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
             return ResponseEntity.badRequest().body(response);
-        }else {
+        } else {
             Category category = this.convertDtoToCategory(categoryDto);
             this.categoryService.persist(category);
             response.setData(this.convertCategoryToCategoryDto(category));
@@ -112,14 +91,6 @@ public class CategoryController {
         }
     }
 
-    /**
-     * Update category data
-     *
-     * @param categoryDto
-     * @param result
-     * @return ResponseEntity<Response<CategoryDto>>
-     * @throws NoSuchAlgorithmException
-     */
     @PutMapping(value = "/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<CategoryDto>> update(@PathVariable("id") Long id,
@@ -131,32 +102,25 @@ public class CategoryController {
         if (!categoryExists.isPresent()) {
             result.addError(new ObjectError("category", "Nonexistent category."));
         }
-
         if(result.hasErrors()){
             LOG.error("Error validating category: {}", result.getAllErrors());
             result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 
             return ResponseEntity.badRequest().body(response);
-        }else{
-            categoryExists.get().setTitle(categoryDto.getTitle());
-            categoryExists.get().setSubtitle(categoryDto.getSubtitle());
-            categoryExists.get().setSlug(categoryDto.getSlug());
-            categoryExists.get().setUpdated_by(categoryDto.getCreatedBy());
-
-            this.categoryService.persist(categoryExists.get());
-            response.setData(this.convertCategoryToCategoryDto(categoryExists.get()));
-
-            return ResponseEntity.ok(response);
         }
 
+        Category categoryExistsOpt = categoryExists.get();
+        categoryExistsOpt.setTitle(categoryDto.getTitle());
+        categoryExistsOpt.setSubtitle(categoryDto.getSubtitle());
+        categoryExistsOpt.setSlug(categoryDto.getSlug());
+        categoryExistsOpt.setUpdated_by(categoryDto.getCreatedBy());
+
+        this.categoryService.persist(categoryExistsOpt);
+        response.setData(this.convertCategoryToCategoryDto(categoryExistsOpt));
+
+        return ResponseEntity.ok(response);
     }
 
-    /**
-     * Delete category by id
-     *
-     * @param id
-     * @return ResponseEntity<Response<String>>
-     */
     @DeleteMapping(value = "/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
@@ -164,26 +128,17 @@ public class CategoryController {
         Response<String> response = new Response<String>();
 
         Optional<Category> category = this.categoryService.findById(id);
-
         if (!category.isPresent()) {
             LOG.info("Error removing category ID: {} Nonexistent category.", id);
             response.getErrors().add("Error removing category. Nonexistent category!");
-
             return ResponseEntity.badRequest().body(response);
         }else{
             this.categoryService.delete(id);
-
             return ResponseEntity.ok(new Response<String>());
         }
     }
 
 
-    /**
-     * Convert category to CategoryDto
-     *
-     * @param category
-     * @return CategoryDto
-     */
     private CategoryDto convertCategoryToCategoryDto(Category category){
         CategoryDto categoryDto = new CategoryDto();
 
@@ -201,12 +156,6 @@ public class CategoryController {
         return  categoryDto;
     }
 
-    /**
-     * Convert DTO data to Category
-     *
-     * @param categoryDto
-     * @return Category
-     */
     private Category convertDtoToCategory(CategoryDto categoryDto){
         Category category = new Category();
         category.setTitle(categoryDto.getTitle());

@@ -1,6 +1,6 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.entities;
+package br.com.knowledgeBase.api.knowledgebaseapi.Data.entities;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.enums.ProfileEnum;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.enums.ProfileEnum;
 
 import javax.persistence.*;
 import java.io.Serializable;

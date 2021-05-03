@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.services.impl;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.Tag;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Tag;
 import br.com.knowledgeBase.api.knowledgebaseapi.repositories.TagRepository;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.TagService;
 import org.slf4j.Logger;
@@ -20,21 +20,18 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag persist(Tag tag) {
         LOG.info("Persisting tag: {}", tag);
-
         return this.tagRepository.save(tag);
     }
 
     @Override
     public Optional<Tag> findById(Long id) {
         LOG.info("searching tag ID {}", id);
-
         return this.tagRepository.findById(id);
     }
 
     @Override
     public void delete(Long id) {
         LOG.info("Removing tag ID {}", id);
-
         this.tagRepository.deleteById(id);
     }
 }

@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.repositories;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.Section;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Section;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.services;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.Tag;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Tag;
 
 import java.util.Optional;
 

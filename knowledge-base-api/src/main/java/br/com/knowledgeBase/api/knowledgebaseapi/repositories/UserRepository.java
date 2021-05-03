@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.repositories;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.User;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 

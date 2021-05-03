@@ -1,4 +1,4 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
+package br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos;
 
 import org.hibernate.validator.constraints.Length;
 

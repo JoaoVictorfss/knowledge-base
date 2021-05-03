@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.services;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.Article;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Article;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 

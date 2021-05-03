@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.services.impl;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.User;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.User;
 import br.com.knowledgeBase.api.knowledgebaseapi.repositories.UserRepository;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.UserService;
 import org.slf4j.Logger;
@@ -20,14 +20,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByEmail(String email) {
         LOG.info("searching user email {}", email);
-
         return Optional.ofNullable(this.userRepository.findByEmail(email));
     }
 
     @Override
     public User persist(User user) {
         LOG.info("Persisting user {}", user);
-
         return this.userRepository.save(user);
     }
 }

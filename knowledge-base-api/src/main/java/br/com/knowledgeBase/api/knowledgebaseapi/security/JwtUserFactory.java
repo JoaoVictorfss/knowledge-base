@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.entities.User;
-import br.com.knowledgeBase.api.knowledgebaseapi.enums.ProfileEnum;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.User;
+import br.com.knowledgeBase.api.knowledgebaseapi.Data.enums.ProfileEnum;
 
 public class JwtUserFactory {
 

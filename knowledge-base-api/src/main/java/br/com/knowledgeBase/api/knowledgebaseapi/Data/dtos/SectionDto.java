@@ -1,4 +1,4 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.dtos;
+package br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
