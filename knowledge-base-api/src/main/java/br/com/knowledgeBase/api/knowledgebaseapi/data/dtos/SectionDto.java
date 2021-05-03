@@ -1,22 +1,28 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos;
+package br.com.knowledgeBase.api.knowledgebaseapi.data.dtos;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
-public class TagDto {
+public class SectionDto {
+
     private Long id;
 
     @NotBlank(message = "The title cannot be empty.")
     private String title;
 
+    @NotBlank(message = "The subtitle cannot be empty.")
+    private String subtitle;
+
     @NotBlank(message = "The slug cannot be empty.")
     private String slug;
 
-    @NotBlank(message = "The name of the author who created the tag cannot be empty.")
+    @NotBlank(message = "The name of the author who created the category cannot be empty.")
     private String createdBy;
 
-    @NotBlank(message = "The name of the author who updated the tag cannot be empty.")
+    @NotBlank(message = "The name of the author who updated the category cannot be empty.")
     private String updatedBy;
+
+    private int articlesQtt = 0;
 
     private Date updatedAt;
 
@@ -38,6 +44,14 @@ public class TagDto {
         this.title = title;
     }
 
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
     public String getSlug() {
         return slug;
     }
@@ -54,20 +68,20 @@ public class TagDto {
         this.createdBy = createdBy;
     }
 
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
     public Date getUpdatedAt() {
         return updatedAt;
     }
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public Date getCreatedAt() {
@@ -78,12 +92,21 @@ public class TagDto {
         this.createdAt = createdAt;
     }
 
+    public int getArticlesQtt() {
+        return articlesQtt;
+    }
+
+    public void setArticlesQtt(int articlesQtt) {
+        this.articlesQtt = articlesQtt;
+    }
+
     @Override
     public String toString() {
-        return "TagDto{" +
+        return "SectionDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", slug=" + slug +
+                ", subtitle='" + subtitle + '\'' +
+                ", slug='" + slug + '\'' +
                 ", created_by='" + createdBy + '\'' +
                 ", updated_by='" + updatedBy + '\'' +
                 ", updated_at=" + updatedAt +

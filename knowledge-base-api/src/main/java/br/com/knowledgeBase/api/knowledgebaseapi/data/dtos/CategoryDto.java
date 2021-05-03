@@ -1,20 +1,13 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos;
+package br.com.knowledgeBase.api.knowledgebaseapi.data.dtos;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
-public class SectionDto {
-
+public class CategoryDto {
     private Long id;
 
     @NotBlank(message = "The title cannot be empty.")
     private String title;
-
-    @NotBlank(message = "The subtitle cannot be empty.")
-    private String subtitle;
-
-    @NotBlank(message = "The slug cannot be empty.")
-    private String slug;
 
     @NotBlank(message = "The name of the author who created the category cannot be empty.")
     private String createdBy;
@@ -22,11 +15,17 @@ public class SectionDto {
     @NotBlank(message = "The name of the author who updated the category cannot be empty.")
     private String updatedBy;
 
-    private int articlesQtt = 0;
+    private String subtitle;
+
+    private String slug;
 
     private Date updatedAt;
 
     private Date createdAt;
+
+    private int articlesQtt = 0;
+
+    private int sectionsQtt = 0;
 
     public Long getId() {
         return id;
@@ -68,20 +67,20 @@ public class SectionDto {
         this.createdBy = createdBy;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public String getUpdatedBy() {
         return updatedBy;
     }
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public Date getCreatedAt() {
@@ -100,17 +99,27 @@ public class SectionDto {
         this.articlesQtt = articlesQtt;
     }
 
+    public int getSectionsQtt() {
+        return sectionsQtt;
+    }
+
+    public void setSectionsQtt(int sectionsQtt) {
+        this.sectionsQtt = sectionsQtt;
+    }
+
     @Override
     public String toString() {
-        return "SectionDto{" +
+        return "CategoryDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", subtitle='" + subtitle + '\'' +
-                ", slug='" + slug + '\'' +
                 ", created_by='" + createdBy + '\'' +
                 ", updated_by='" + updatedBy + '\'' +
+                ", subtitle='" + subtitle + '\'' +
+                ", slug='" + slug + '\'' +
                 ", updated_at=" + updatedAt +
                 ", created_at=" + createdAt +
+                ", articlesQtt=" + articlesQtt +
+                ", sectionsQtt=" + sectionsQtt +
                 '}';
     }
 }

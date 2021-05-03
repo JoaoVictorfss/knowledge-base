@@ -1,12 +1,12 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.ArticleDto;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Article;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Category;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Section;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.enums.StatusEnum;
-import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.contants.PathConstants;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.ArticleDto;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Article;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Section;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.enums.StatusEnum;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.ArticleService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;

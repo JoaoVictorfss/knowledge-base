@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.services.impl;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Tag;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Tag;
 import br.com.knowledgeBase.api.knowledgebaseapi.repositories.TagRepository;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.TagService;
 import org.slf4j.Logger;

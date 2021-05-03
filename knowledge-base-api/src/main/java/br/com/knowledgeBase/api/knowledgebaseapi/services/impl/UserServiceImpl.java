@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.services.impl;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.User;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.User;
 import br.com.knowledgeBase.api.knowledgebaseapi.repositories.UserRepository;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.UserService;
 import org.slf4j.Logger;

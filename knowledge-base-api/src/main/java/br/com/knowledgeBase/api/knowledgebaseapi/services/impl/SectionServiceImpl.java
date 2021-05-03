@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.services.impl;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Section;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Section;
 import br.com.knowledgeBase.api.knowledgebaseapi.repositories.SectionRepository;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
 import org.slf4j.Logger;

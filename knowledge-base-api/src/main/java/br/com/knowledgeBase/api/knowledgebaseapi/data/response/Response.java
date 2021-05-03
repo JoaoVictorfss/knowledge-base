@@ -1,4 +1,4 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.response;
+package br.com.knowledgeBase.api.knowledgebaseapi.data.response;
 
 import java.util.ArrayList;
 import java.util.List;

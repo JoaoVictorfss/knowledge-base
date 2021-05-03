@@ -1,6 +1,6 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.Data.entities;
+package br.com.knowledgeBase.api.knowledgebaseapi.data.entities;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.enums.StatusEnum;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.enums.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;

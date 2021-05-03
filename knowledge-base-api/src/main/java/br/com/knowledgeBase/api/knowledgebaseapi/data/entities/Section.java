@@ -1,4 +1,4 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.Data.entities;
+package br.com.knowledgeBase.api.knowledgebaseapi.data.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -1,16 +1,19 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.Data.entities;
+package br.com.knowledgeBase.api.knowledgebaseapi.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name = "tags")
-public class Tag implements Serializable {
+@Table(name = "categories")
+public class Category implements Serializable {
     private static final long serialVersionUID = -5754246207015712518L;
 
-    public Tag(){ }
+    public Category(){ }
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -19,7 +22,10 @@ public class Tag implements Serializable {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "slug", nullable = false)
+    @Column(name = "subtitle", nullable = true)
+    private String subtitle;
+
+    @Column(name = "slug", nullable = true)
     private String slug;
 
     @Column(name = "created_by", nullable = false)
@@ -33,6 +39,14 @@ public class Tag implements Serializable {
 
     @Column(name = "updated_at", nullable = false)
     private Date updated_at;
+
+    @JsonIgnore
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "categories", cascade = {CascadeType.REMOVE})
+    private List<Section> sections = new ArrayList<Section>();
+
+    @JsonIgnore
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "articleCategories", cascade = {CascadeType.REMOVE})
+    private List<Article> articles = new ArrayList<Article>();
 
     public Long getId() {
         return id;
@@ -48,6 +62,14 @@ public class Tag implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 
     public String getSlug() {
@@ -90,6 +112,22 @@ public class Tag implements Serializable {
         this.updated_at = updated_at;
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    public void setSections(List<Section> sections) {
+        this.sections = sections;
+    }
+
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
+    }
+
     @PreUpdate
     public void preUpdate() {
         updated_at = new Date();
@@ -104,9 +142,10 @@ public class Tag implements Serializable {
 
     @Override
     public String toString() {
-        return "Tag{" +
+        return "Category{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", subtitle='" + subtitle + '\'' +
                 ", slug='" + slug + '\'' +
                 ", created_by='" + created_by + '\'' +
                 ", updated_by='" + updated_by + '\'' +

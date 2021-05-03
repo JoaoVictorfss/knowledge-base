@@ -1,4 +1,4 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.Data.enums;
+package br.com.knowledgeBase.api.knowledgebaseapi.data.enums;
 
 public enum StatusEnum {
     DRAFT{

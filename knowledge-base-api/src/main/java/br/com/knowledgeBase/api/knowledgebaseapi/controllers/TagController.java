@@ -1,9 +1,9 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.TagDto;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Tag;
-import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.contants.PathConstants;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.TagDto;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Tag;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;

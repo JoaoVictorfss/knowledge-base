@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.security.dto.JwtAuthenticationDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.security.dto.TokenDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.security.utils.JwtTokenUtil;

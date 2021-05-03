@@ -1,10 +1,10 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.SectionDto;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Category;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Section;
-import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.contants.PathConstants;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.SectionDto;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Section;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
 import org.slf4j.Logger;

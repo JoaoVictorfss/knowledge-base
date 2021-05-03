@@ -1,9 +1,9 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.CategoryDto;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.Category;
-import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.contants.PathConstants;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.CategoryDto;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
 import org.springframework.data.domain.Sort.Direction;

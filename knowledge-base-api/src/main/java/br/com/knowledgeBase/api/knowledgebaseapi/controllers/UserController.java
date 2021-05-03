@@ -1,10 +1,10 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.contants.PathConstants;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.dtos.UserDto;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.entities.User;
-import br.com.knowledgeBase.api.knowledgebaseapi.Data.enums.ProfileEnum;
-import br.com.knowledgeBase.api.knowledgebaseapi.response.Response;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.contants.PathConstants;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.UserDto;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.User;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.enums.ProfileEnum;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.UserService;
 import br.com.knowledgeBase.api.knowledgebaseapi.utils.PasswordUtils;
 import org.slf4j.Logger;
