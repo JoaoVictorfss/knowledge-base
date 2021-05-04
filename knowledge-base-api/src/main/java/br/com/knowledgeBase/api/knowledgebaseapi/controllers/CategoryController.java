@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants;
+import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.CategoryDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
@@ -25,7 +25,7 @@ import java.text.ParseException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(PathConstants.CATEGORY_PATH)
+@RequestMapping(CATEGORY_PATH)
 @CrossOrigin(origins = "*")
 public class CategoryController {
     private static final Logger LOG = LoggerFactory.getLogger(CategoryController.class);
@@ -39,11 +39,12 @@ public class CategoryController {
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
-    @GetMapping(value = PathConstants.LIST)
+    @GetMapping(value = LIST)
     public ResponseEntity<Response<Page<CategoryDto>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
+
         LOG.info("Searching categories, page: {}", pag);
         Response<Page<CategoryDto>> response = new Response<Page<CategoryDto>>();
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Direction.valueOf(dir), ord);
@@ -55,8 +56,9 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = PathConstants.FIND_CATEGORY_BY_ID)
+    @GetMapping(value = FIND_CATEGORY_BY_ID)
     public ResponseEntity<Response<CategoryDto>> showById(@PathVariable("id") Long id) {
+
         LOG.info("Searching category id {}", id);
         Response<CategoryDto> response = new Response<CategoryDto>();
 
@@ -71,10 +73,11 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(PathConstants.CREATE)
+    @PostMapping(CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<CategoryDto>> store(@Valid @RequestBody CategoryDto categoryDto,
                                                   BindingResult result) throws ParseException {
+
         LOG.info("Adding category: {}", categoryDto.toString());
         Response<CategoryDto> response = new Response<CategoryDto>();
 
@@ -92,10 +95,11 @@ public class CategoryController {
         }
     }
 
-    @PutMapping(value = PathConstants.UPDATE)
+    @PutMapping(value = UPDATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<CategoryDto>> update(@PathVariable("id") Long id,
                                                    @Valid @RequestBody CategoryDto categoryDto, BindingResult result) throws NoSuchAlgorithmException {
+
         LOG.info("Updating category: {}", categoryDto.toString());
         Response<CategoryDto> response = new Response<CategoryDto>();
 
@@ -122,9 +126,10 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = PathConstants.DELETE)
+    @DeleteMapping(value = DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
+
         LOG.info("Deleting category: {}", id);
         Response<String> response = new Response<String>();
 

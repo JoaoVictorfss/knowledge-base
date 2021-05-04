@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants;
+import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.ArticleDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Article;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(PathConstants.ARTICLE_PATH)
+@RequestMapping(ARTICLE_PATH)
 @CrossOrigin(origins = "*")
 public class ArticleController {
     private static final Logger LOG = LoggerFactory.getLogger(ArticleController.class);
@@ -47,8 +47,7 @@ public class ArticleController {
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
-
-    @GetMapping(value = PathConstants.LIST_BY_CATEGORY)
+    @GetMapping(value = LIST_BY_CATEGORY)
     public ResponseEntity<Response<Page<ArticleDto>>> listAllPublishedArticlesByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
@@ -59,7 +58,7 @@ public class ArticleController {
         return this.listAllArticlesByCategory(categoryId, PageRequest.of(pag, 10, Sort.Direction.valueOf(dir), ord), false);
     }
 
-    @GetMapping(value = PathConstants.LIST_BY_SECTION)
+    @GetMapping(value = LIST_BY_SECTION)
     public ResponseEntity<Response<Page<ArticleDto>>> listAllPublishedArticlesBySectionId(
             @PathVariable("sectionId") Long sectionId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
@@ -70,12 +69,13 @@ public class ArticleController {
         return this.listAllArticlesBySection(sectionId, PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord), false);
     }
 
-    @GetMapping(value = PathConstants.SEARCH)
+    @GetMapping(value = SEARCH)
     public ResponseEntity<Response<Page<ArticleDto>>> search(@PathVariable("param") String param) {
+
+        LOG.info("Searching articles by {}", param);
         Response<Page<ArticleDto>> response = new Response<Page<ArticleDto>>();
         PageRequest pageRequest = PageRequest.of(0, 8, Sort.Direction.ASC, "title");
 
-        LOG.info("Searching articles by {}", param);
         Page<Article> articles = this.articleService.findAllByParam(param, pageRequest);
         Page<ArticleDto> articlesDto = articles.map(this::convertArticleToArticleDto);
 
@@ -83,7 +83,7 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = PathConstants.PRIVATE_LIST_BY_CATEGORY)
+    @GetMapping(value = PRIVATE_LIST_BY_CATEGORY)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<Page<ArticleDto>>> listAllArticlesByCategoryId(
             @PathVariable("categoryId") Long categoryId,
@@ -96,7 +96,7 @@ public class ArticleController {
     }
 
 
-    @GetMapping(value = PathConstants.PRIVATE_LIST_BY_SECTION )
+    @GetMapping(value = PRIVATE_LIST_BY_SECTION )
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<Page<ArticleDto>>> listAllArticlesBySectionId(
             @PathVariable("sectionId") Long sectionId,
@@ -109,10 +109,11 @@ public class ArticleController {
     }
 
 
-    @GetMapping(value = PathConstants.FIND_BY_ARTICLE_ID)
+    @GetMapping(value = FIND_BY_ARTICLE_ID)
     public ResponseEntity<Response<ArticleDto>> showById(@PathVariable("id") Long id) {
-        Response<ArticleDto> response = new Response<ArticleDto>();
+
         LOG.info("Searching article id {}", id);
+        Response<ArticleDto> response = new Response<ArticleDto>();
 
         Optional<Article>articleExists = this.articleService.findById(id);
         if(!articleExists.isPresent()) {
@@ -125,7 +126,7 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(PathConstants.CREATE)
+    @PostMapping(CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<ArticleDto>> store(@Valid @RequestBody ArticleDto articleDto,
                                                       BindingResult result) throws ParseException {
@@ -161,10 +162,11 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping(PathConstants.UPDATE)
+    @PutMapping(UPDATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<ArticleDto>> update(@Valid @RequestBody ArticleDto articleDto,
                                                        BindingResult result, @PathVariable("id") Long id) throws NoSuchAlgorithmException {
+
         LOG.info("Updating article id {}, article: {}",id, articleDto.toString());
         Response<ArticleDto> response = new Response<ArticleDto>();
 
@@ -198,9 +200,10 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = PathConstants.DELETE)
+    @DeleteMapping(value = DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
+
         LOG.info("Deleting article: {}", id);
         Response<String> response = new Response<String>();
 
@@ -216,6 +219,7 @@ public class ArticleController {
     }
 
     private ResponseEntity<Response<Page<ArticleDto>>> listAllArticlesByCategory(Long id, PageRequest pageRequest, boolean isPrivate) {
+
         Response<Page<ArticleDto>> response = new Response<Page<ArticleDto>>();
 
         Optional<Category> category = this.categoryService.findById(id);
@@ -237,6 +241,7 @@ public class ArticleController {
     }
 
     private ResponseEntity<Response<Page<ArticleDto>>> listAllArticlesBySection(Long id, PageRequest pageRequest, boolean isPrivate) {
+
         Response<Page<ArticleDto>> response = new Response<Page<ArticleDto>>();
 
         Optional<Section> section = this.sectionService.findById(id);
@@ -296,7 +301,6 @@ public class ArticleController {
 
     private void categoriesValidation(List<Long> categories, BindingResult result) {
         if (result.hasErrors()) return;
-
         if (categories.isEmpty()){
             result.addError(new ObjectError("categories", "Categories cannot be empty"));
         } else{
@@ -310,7 +314,7 @@ public class ArticleController {
     }
 
     private void articleDtoValidation(ArticleDto articleDto, BindingResult result){
-        if (!result.hasErrors()) return;
+        if (result.hasErrors()) return;
         try {
             StatusEnum.valueOf(articleDto.getStatus());
 

@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants;
+import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.SectionDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Section;
@@ -26,7 +26,7 @@ import java.text.ParseException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(PathConstants.SECTION_PATH)
+@RequestMapping(SECTION_PATH)
 @CrossOrigin(origins = "*")
 public class SectionController {
     private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
@@ -40,11 +40,12 @@ public class SectionController {
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
-    @GetMapping(value = PathConstants.LIST)
+    @GetMapping(value = LIST)
     public ResponseEntity<Response<Page<SectionDto>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
+
         LOG.info("Searching sections, page: {}", pag);
         Response<Page<SectionDto>> response = new Response<Page<SectionDto>>();
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
@@ -57,12 +58,13 @@ public class SectionController {
     }
 
 
-    @GetMapping(value = PathConstants.FIND_SECTIONS_BY_CATEGORY_ID)
+    @GetMapping(value = FIND_SECTIONS_BY_CATEGORY_ID)
     public ResponseEntity<Response<Page<SectionDto>>> listSectionsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
+
         LOG.info("Searching sections by category {}, page: {}", categoryId, pag);
         Response<Page<SectionDto>> response = new Response<Page<SectionDto>>();
 
@@ -81,8 +83,9 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = PathConstants.FIND_SECTION_BY_ID)
+    @GetMapping(value = FIND_SECTION_BY_ID)
     public ResponseEntity<Response<SectionDto>> showById(@PathVariable("id") Long id) {
+
         LOG.info("Searching section id {}", id);
         Response<SectionDto> response = new Response<SectionDto>();
 
@@ -97,10 +100,11 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(PathConstants.CREATE_SECTION)
+    @PostMapping(CREATE_SECTION)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<SectionDto>> store(@Valid @RequestBody SectionDto sectionDto,
                                                        BindingResult result, @PathVariable("categoryId") Long categoryId) throws ParseException {
+
         LOG.info("Adding section: {}, category id {}", sectionDto.toString(), categoryId);
         Response<SectionDto> response = new Response<SectionDto>();
 
@@ -125,10 +129,11 @@ public class SectionController {
        return ResponseEntity.ok(response);
     }
 
-    @PutMapping(PathConstants.UPDATE_SECTION)
+    @PutMapping(UPDATE_SECTION)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<SectionDto>> update(@Valid @RequestBody SectionDto sectionDto,
                                                       BindingResult result, @PathVariable("id") Long id, @PathVariable("categoryId") Long categoryId) throws NoSuchAlgorithmException {
+
         LOG.info("Updating section id {}, section: {}, category id {}",id, sectionDto.toString(), categoryId);
         Response<SectionDto> response = new Response<SectionDto>();
 
@@ -158,9 +163,10 @@ public class SectionController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = PathConstants.DELETE)
+    @DeleteMapping(value = DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
+
         LOG.info("Deleting section: {}", id);
         Response<String> response = new Response<String>();
 

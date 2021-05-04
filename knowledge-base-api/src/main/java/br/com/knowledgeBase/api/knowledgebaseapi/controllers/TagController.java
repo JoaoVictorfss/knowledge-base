@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants;
+import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.TagDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Tag;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping(PathConstants.TAG_PATH)
+@RequestMapping(TAG_PATH)
 @CrossOrigin(origins = "*")
 @Cacheable("tags")
 public class TagController {
@@ -34,7 +34,7 @@ public class TagController {
     @Autowired
     private TagService tagService;
 
-    @PostMapping(PathConstants.CREATE)
+    @PostMapping(CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CachePut("tags")
     public ResponseEntity<Response<TagDto>> store(@Valid @RequestBody TagDto tagDto,
@@ -58,11 +58,12 @@ public class TagController {
 
     }
 
-    @PutMapping(value = PathConstants.UPDATE)
+    @PutMapping(value = UPDATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CacheEvict(value = "tafs", allEntries = true)
     public ResponseEntity<Response<TagDto>> update(@PathVariable("id") Long id,
                                                         @Valid @RequestBody TagDto tagDto,  BindingResult result) throws NoSuchAlgorithmException {
+
         LOG.info("Updating tag id {}, {}", id, tagDto.toString());
         Response<TagDto> response = new Response<TagDto>();
 
@@ -90,10 +91,11 @@ public class TagController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = PathConstants.DELETE)
+    @DeleteMapping(value = DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CacheEvict(value = "tags", allEntries = true)
     public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
+
         LOG.info("Deleting tag: {}", id);
         Response<String> response = new Response<String>();
 
