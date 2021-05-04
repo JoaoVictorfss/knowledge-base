@@ -1,4 +1,4 @@
-package br.com.knowledgeBase.api.knowledgebaseapi.data.contants;
+package br.com.knowledgeBase.api.knowledgebaseapi.data.constants;
 
 public final class PathConstants {
     public static final String API_PATH = "/knowledgeBase-api";

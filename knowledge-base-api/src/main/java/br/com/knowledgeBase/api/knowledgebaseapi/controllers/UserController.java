@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.data.contants.PathConstants;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.UserDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.User;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.enums.ProfileEnum;

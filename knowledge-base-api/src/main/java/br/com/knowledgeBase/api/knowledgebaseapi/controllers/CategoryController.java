@@ -1,6 +1,6 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
-import br.com.knowledgeBase.api.knowledgebaseapi.data.contants.PathConstants;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.CategoryDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
