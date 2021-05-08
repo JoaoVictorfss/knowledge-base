@@ -5,6 +5,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.SectionDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Section;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.SectionResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
 import org.slf4j.Logger;
@@ -41,32 +42,32 @@ public class SectionController {
     private int qttPerPage;
 
     @GetMapping(value = LIST)
-    public ResponseEntity<Response<Page<SectionDto>>> index(
+    public ResponseEntity<Response<Page<SectionResponse>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
 
         LOG.info("Searching sections, page: {}", pag);
-        Response<Page<SectionDto>> response = new Response<Page<SectionDto>>();
+        Response<Page<SectionResponse>> response = new Response<>();
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
 
         Page<Section>sections = this.sectionService.findAll(pageRequest);
-        Page<SectionDto> sectionsDto = sections.map(this::convertSectionToSectionDto);
+        Page<SectionResponse> sectionsResponse = sections.map(this::convertSectionToSectionResponse);
 
-        response.setData(sectionsDto);
+        response.setData(sectionsResponse);
         return ResponseEntity.ok(response);
     }
 
 
     @GetMapping(value = FIND_SECTIONS_BY_CATEGORY_ID)
-    public ResponseEntity<Response<Page<SectionDto>>> listSectionsByCategoryId(
+    public ResponseEntity<Response<Page<SectionResponse>>> listSectionsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
 
         LOG.info("Searching sections by category {}, page: {}", categoryId, pag);
-        Response<Page<SectionDto>> response = new Response<Page<SectionDto>>();
+        Response<Page<SectionResponse>> response = new Response<>();
 
         Optional<Category> category = this.categoryService.findById(categoryId);
         if(!category.isPresent()){
@@ -77,17 +78,17 @@ public class SectionController {
         
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
         Page<Section>sections = this.sectionService.findAllByCategoryId(categoryId, pageRequest);
-        Page<SectionDto> sectionsDto = sections.map(this::convertSectionToSectionDto);
+        Page<SectionResponse> sectionsResponse = sections.map(this::convertSectionToSectionResponse);
+        response.setData(sectionsResponse);
 
-        response.setData(sectionsDto);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = FIND_SECTION_BY_ID)
-    public ResponseEntity<Response<SectionDto>> showById(@PathVariable("id") Long id) {
+    public ResponseEntity<Response<SectionResponse>> showById(@PathVariable("id") Long id) {
 
         LOG.info("Searching section id {}", id);
-        Response<SectionDto> response = new Response<SectionDto>();
+        Response<SectionResponse> response = new Response<>();
 
         Optional<Section>sectionExists = this.sectionService.findById(id);
         if(!sectionExists.isPresent()) {
@@ -96,17 +97,17 @@ public class SectionController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        response.setData(this.convertSectionToSectionDto(sectionExists.get()));
+        response.setData(this.convertSectionToSectionResponse(sectionExists.get()));
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(CREATE_SECTION)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<SectionDto>> store(@Valid @RequestBody SectionDto sectionDto,
+    public ResponseEntity<Response<SectionResponse>> store(@Valid @RequestBody SectionDto sectionDto,
                                                        BindingResult result, @PathVariable("categoryId") Long categoryId) throws ParseException {
 
         LOG.info("Adding section: {}, category id {}", sectionDto.toString(), categoryId);
-        Response<SectionDto> response = new Response<SectionDto>();
+        Response<SectionResponse> response = new Response<>();
 
         Optional<Category> category = this.categoryService.findById(categoryId);
         if(!category.isPresent()){
@@ -124,18 +125,18 @@ public class SectionController {
         category.get().getSections().add(section);
 
         this.sectionService.persist(section);
-        response.setData(this.convertSectionToSectionDto(section));
+        response.setData(this.convertSectionToSectionResponse(section));
 
-       return ResponseEntity.ok(response);
+       return ResponseEntity.status(201).body(response);
     }
 
     @PutMapping(UPDATE_SECTION)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<SectionDto>> update(@Valid @RequestBody SectionDto sectionDto,
+    public ResponseEntity<Response<SectionResponse>> update(@Valid @RequestBody SectionDto sectionDto,
                                                       BindingResult result, @PathVariable("id") Long id, @PathVariable("categoryId") Long categoryId) throws NoSuchAlgorithmException {
 
         LOG.info("Updating section id {}, section: {}, category id {}",id, sectionDto.toString(), categoryId);
-        Response<SectionDto> response = new Response<SectionDto>();
+        Response<SectionResponse> response = new Response<>();
 
         Optional<Section>sectionExists = this.sectionService.findById(id);
         if(!sectionExists.isPresent()){
@@ -158,7 +159,7 @@ public class SectionController {
         sectionExistsOpt.setSlug(sectionDto.getSlug());
 
         this.sectionService.persist(sectionExistsOpt);
-        response.setData(this.convertSectionToSectionDto(sectionExistsOpt));
+        response.setData(this.convertSectionToSectionResponse(sectionExistsOpt));
 
         return ResponseEntity.ok(response);
     }
@@ -183,19 +184,20 @@ public class SectionController {
         }
     }
 
-    private SectionDto convertSectionToSectionDto(Section section){
-        SectionDto sectionDto = new SectionDto();
-        sectionDto.setId(section.getId());
-        sectionDto.setTitle(section.getTitle());
-        sectionDto.setSubtitle(section.getSubtitle());
-        sectionDto.setSlug(section.getSlug());
-        sectionDto.setCreatedAt(section.getCreated_at());
-        sectionDto.setUpdatedAt(section.getUpdated_at());
-        sectionDto.setCreatedBy(section.getCreated_by());
-        sectionDto.setUpdatedBy(section.getUpdated_by());
-        sectionDto.setArticlesQtt(section.getArticles().size());
+    private SectionResponse convertSectionToSectionResponse(Section section){
+        SectionResponse newSectionResponse = SectionResponse.builder()
+                .id(section.getId())
+                .title(section.getTitle())
+                .subtitle(section.getSubtitle())
+                .slug(section.getSlug())
+                .createdBy(section.getCreated_by())
+                .updatedBy(section.getUpdated_by())
+                .articlesQtt(section.getArticles().size())
+                .createdAt(section.getCreated_at())
+                .updatedAt(section.getUpdated_at())
+                .build();
 
-        return  sectionDto;
+        return newSectionResponse;
     }
 
     private Section convertDtoToSection(SectionDto sectionDto){

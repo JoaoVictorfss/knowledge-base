@@ -5,6 +5,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.UserDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.User;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.enums.ProfileEnum;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.UserResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.UserService;
 import br.com.knowledgeBase.api.knowledgebaseapi.utils.PasswordUtils;
 import org.slf4j.Logger;
@@ -30,11 +31,11 @@ public class UserController {
 
     @PostMapping(CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<UserDto>> add(@Valid @RequestBody UserDto userDto,
+    public ResponseEntity<Response<UserResponse>> add(@Valid @RequestBody UserDto userDto,
                                                  BindingResult result) throws ParseException {
 
         LOG.info("Adding user: {}", userDto.toString());
-        Response<UserDto> response = new Response<UserDto>();
+        Response<UserResponse> response = new Response<>();
 
         userValidation(userDto.getEmail(), result);
         if (result.hasErrors()) {
@@ -46,18 +47,19 @@ public class UserController {
         User user = this.convertDtoToUser(userDto);
 
         this.userService.persist(user);
-        response.setData(this.convertUserToUserDto(user));
+        response.setData(this.convertUserToUserResponse(user));
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(201).body(response);
     }
 
-    private UserDto convertUserToUserDto(User user){
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setEmail(user.getEmail());
-        userDto.setName(user.getName());
+    private UserResponse convertUserToUserResponse(User user){
+        UserResponse userResponse = UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .build();
 
-        return  userDto;
+        return userResponse;
     }
 
     private User convertDtoToUser(UserDto userDto){

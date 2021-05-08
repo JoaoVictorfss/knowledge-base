@@ -4,6 +4,7 @@ import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConst
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.TagDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Tag;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.TagResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -37,10 +38,10 @@ public class TagController {
     @PostMapping(CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CachePut("tags")
-    public ResponseEntity<Response<TagDto>> store(@Valid @RequestBody TagDto tagDto,
-                                                  BindingResult result) throws ParseException {
+    public ResponseEntity<Response<TagResponse>> store(@Valid @RequestBody TagDto tagDto,
+                                                       BindingResult result) throws ParseException {
         LOG.info("Adding tag: {}", tagDto.toString());
-        Response<TagDto> response = new Response<TagDto>();
+        Response<TagResponse> response = new Response<>();
 
         this.tagValidation(tagDto, result);
         if(result.hasErrors()) {
@@ -52,20 +53,20 @@ public class TagController {
 
         Tag tag = this.convertDtoToTag(tagDto);
         this.tagService.persist(tag);
-        response.setData(this.convertTagToTagDto(tag));
+        response.setData(this.convertTagToTagResponse(tag));
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(201).body(response);
 
     }
 
     @PutMapping(value = UPDATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CacheEvict(value = "tafs", allEntries = true)
-    public ResponseEntity<Response<TagDto>> update(@PathVariable("id") Long id,
+    public ResponseEntity<Response<TagResponse>> update(@PathVariable("id") Long id,
                                                         @Valid @RequestBody TagDto tagDto,  BindingResult result) throws NoSuchAlgorithmException {
 
         LOG.info("Updating tag id {}, {}", id, tagDto.toString());
-        Response<TagDto> response = new Response<TagDto>();
+        Response<TagResponse> response = new Response<>();
 
         Optional<Tag>tagExists = this.tagService.findById(id);
         if(!tagExists.isPresent()){
@@ -86,7 +87,7 @@ public class TagController {
         tagExistsOpt.setUpdated_by(tagDto.getUpdatedBy());
 
         this.tagService.persist(tagExistsOpt);
-        response.setData(this.convertTagToTagDto(tagExistsOpt));
+        response.setData(this.convertTagToTagResponse(tagExistsOpt));
 
         return ResponseEntity.ok(response);
     }
@@ -112,17 +113,18 @@ public class TagController {
         }
     }
 
-    private TagDto convertTagToTagDto(Tag tag){
-        TagDto tagDto = new TagDto();
-        tagDto.setId(tag.getId());
-        tagDto.setTitle(tag.getTitle());
-        tagDto.setSlug(tag.getSlug());
-        tagDto.setCreatedAt(tag.getCreated_at());
-        tagDto.setUpdatedAt(tag.getUpdated_at());
-        tagDto.setCreatedBy(tag.getCreated_by());
-        tagDto.setUpdatedBy(tag.getUpdated_by());
+    private TagResponse convertTagToTagResponse(Tag tag){
+        TagResponse newTagResponse = TagResponse.builder()
+                .id(tag.getId())
+                .title(tag.getTitle())
+                .slug(tag.getSlug())
+                .createdBy(tag.getCreated_by())
+                .updatedBy(tag.getCreated_by())
+                .createdAt(tag.getCreated_at())
+                .updatedAt(tag.getUpdated_at())
+                .build();
 
-        return  tagDto;
+        return newTagResponse;
     }
 
     private Tag convertDtoToTag(TagDto tagDto){

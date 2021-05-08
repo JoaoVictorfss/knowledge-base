@@ -3,6 +3,7 @@ package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.CategoryDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.CategoryResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
@@ -40,27 +41,27 @@ public class CategoryController {
     private int qttPerPage;
 
     @GetMapping(value = LIST)
-    public ResponseEntity<Response<Page<CategoryDto>>> index(
+    public ResponseEntity<Response<Page<CategoryResponse>>> index(
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
 
         LOG.info("Searching categories, page: {}", pag);
-        Response<Page<CategoryDto>> response = new Response<Page<CategoryDto>>();
+        Response<Page<CategoryResponse>> response = new Response<>();
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Direction.valueOf(dir), ord);
 
         Page<Category>categories = this.categoryService.findAll(pageRequest);
-        Page<CategoryDto> categoriesDto = categories.map(this::convertCategoryToCategoryDto);
+        Page<CategoryResponse> categoriesResponse = categories.map(this::convertCategoryToCategoryResponse);
+        response.setData(categoriesResponse);
 
-        response.setData(categoriesDto);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = FIND_CATEGORY_BY_ID)
-    public ResponseEntity<Response<CategoryDto>> showById(@PathVariable("id") Long id) {
+    public ResponseEntity<Response<CategoryResponse>> showById(@PathVariable("id") Long id) {
 
         LOG.info("Searching category id {}", id);
-        Response<CategoryDto> response = new Response<CategoryDto>();
+        Response<CategoryResponse> response = new Response<>();
 
         Optional<Category>categoryExists = this.categoryService.findById(id);
         if(!categoryExists.isPresent()) {
@@ -69,17 +70,17 @@ public class CategoryController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        response.setData(this.convertCategoryToCategoryDto(categoryExists.get()));
+        response.setData(this.convertCategoryToCategoryResponse(categoryExists.get()));
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<CategoryDto>> store(@Valid @RequestBody CategoryDto categoryDto,
+    public ResponseEntity<Response<CategoryResponse>> store(@Valid @RequestBody CategoryDto categoryDto,
                                                   BindingResult result) throws ParseException {
 
         LOG.info("Adding category: {}", categoryDto.toString());
-        Response<CategoryDto> response = new Response<CategoryDto>();
+        Response<CategoryResponse> response = new Response<>();
 
         if (result.hasErrors()) {
             LOG.error("Error validating category: {}", result.getAllErrors());
@@ -89,19 +90,19 @@ public class CategoryController {
         } else {
             Category category = this.convertDtoToCategory(categoryDto);
             this.categoryService.persist(category);
-            response.setData(this.convertCategoryToCategoryDto(category));
+            response.setData(this.convertCategoryToCategoryResponse(category));
 
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(201).body(response);
         }
     }
 
     @PutMapping(value = UPDATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<CategoryDto>> update(@PathVariable("id") Long id,
+    public ResponseEntity<Response<CategoryResponse>> update(@PathVariable("id") Long id,
                                                    @Valid @RequestBody CategoryDto categoryDto, BindingResult result) throws NoSuchAlgorithmException {
 
         LOG.info("Updating category: {}", categoryDto.toString());
-        Response<CategoryDto> response = new Response<CategoryDto>();
+        Response<CategoryResponse> response = new Response<>();
 
         Optional<Category>categoryExists = this.categoryService.findById(id);
         if (!categoryExists.isPresent()) {
@@ -121,7 +122,7 @@ public class CategoryController {
         categoryExistsOpt.setUpdated_by(categoryDto.getCreatedBy());
 
         this.categoryService.persist(categoryExistsOpt);
-        response.setData(this.convertCategoryToCategoryDto(categoryExistsOpt));
+        response.setData(this.convertCategoryToCategoryResponse(categoryExistsOpt));
 
         return ResponseEntity.ok(response);
     }
@@ -144,21 +145,21 @@ public class CategoryController {
         }
     }
 
+    private CategoryResponse convertCategoryToCategoryResponse(Category category){
+        CategoryResponse newCategoryResponse = CategoryResponse.builder()
+                .id(category.getId())
+                .title(category.getTitle())
+                .subtitle(category.getSubtitle())
+                .slug(category.getSlug())
+                .createdBy(category.getCreated_by())
+                .updatedBy(category.getUpdated_by())
+                .articlesQtt(category.getArticles().size())
+                .sectionsQtt(category.getSections().size())
+                .createdAt(category.getCreated_at())
+                .updatedAt(category.getUpdated_at())
+                .build();
 
-    private CategoryDto convertCategoryToCategoryDto(Category category){
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setId(category.getId());
-        categoryDto.setTitle(category.getTitle());
-        categoryDto.setSubtitle(category.getSubtitle());
-        categoryDto.setSlug(category.getSlug());
-        categoryDto.setCreatedAt(category.getCreated_at());
-        categoryDto.setUpdatedAt(category.getUpdated_at());
-        categoryDto.setCreatedBy(category.getCreated_by());
-        categoryDto.setUpdatedBy(category.getUpdated_by());
-        categoryDto.setArticlesQtt(category.getArticles().size());
-        categoryDto.setSectionsQtt(category.getSections().size());
-
-        return  categoryDto;
+        return newCategoryResponse;
     }
 
     private Category convertDtoToCategory(CategoryDto categoryDto){
