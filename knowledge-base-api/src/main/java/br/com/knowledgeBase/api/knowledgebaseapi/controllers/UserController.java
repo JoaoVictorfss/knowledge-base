@@ -7,6 +7,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.data.enums.ProfileEnum;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.UserResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.UserService;
+import br.com.knowledgeBase.api.knowledgebaseapi.utils.BindResultUtils;
 import br.com.knowledgeBase.api.knowledgebaseapi.utils.PasswordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.BindingResultUtils;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping(USER_PATH)
@@ -27,7 +30,7 @@ public class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
 
     @Autowired
-    private UserService userService;
+    private UserService _userService;
 
     @PostMapping(CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -39,17 +42,21 @@ public class UserController {
 
         userValidation(userDto.getEmail(), result);
         if (result.hasErrors()) {
-            LOG.error("Error validating user: {}", result.getAllErrors());
-            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-            return ResponseEntity.badRequest().body(response);
+          this.badRequest(result, response);
         }
 
         User user = this.convertDtoToUser(userDto);
+        this._userService.persist(user);
 
-        this.userService.persist(user);
         response.setData(this.convertUserToUserResponse(user));
-
         return ResponseEntity.status(201).body(response);
+    }
+
+    private ResponseEntity<Response<UserResponse>> badRequest(BindingResult result, Response<UserResponse> response) {
+        LOG.error("Error validating user: {}", result.getAllErrors());
+        List<String> errors = BindResultUtils.getAllErrorMessages(result);
+        response.getErrors().addAll(errors);
+        return ResponseEntity.badRequest().body(response);
     }
 
     private UserResponse convertUserToUserResponse(User user){
@@ -63,20 +70,19 @@ public class UserController {
     }
 
     private User convertDtoToUser(UserDto userDto){
-        User user = new User();
-        user.setEmail(userDto.getEmail());
-        user.setName(userDto.getName());
-        user.setPassword(PasswordUtils.generateBCrypt(userDto.getPassword()));
-        user.setProfile(ProfileEnum.ROLE_USER);
+        User newUser = new User();
+        newUser.setEmail(userDto.getEmail());
+        newUser.setName(userDto.getName());
+        newUser.setPassword(PasswordUtils.generateBCrypt(userDto.getPassword()));
+        newUser.setProfile(ProfileEnum.ROLE_USER);
 
-        return user;
+        return newUser;
     }
 
     private void userValidation(String email, BindingResult result){
        if (!result.hasErrors()){
-           this.userService
-                   .findByEmail(email)
-                   .ifPresent(func -> result.addError(new ObjectError("email", "Existing email.")));
+           this._userService.findByEmail(email)
+                   .ifPresent(func -> BindResultUtils.bindErrorMessage(result, "email", "Existing email."));
        }
     }
 }

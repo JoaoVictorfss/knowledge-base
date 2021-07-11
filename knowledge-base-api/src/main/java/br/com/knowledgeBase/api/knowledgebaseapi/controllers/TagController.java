@@ -6,6 +6,7 @@ import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Tag;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.TagResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.TagService;
+import br.com.knowledgeBase.api.knowledgebaseapi.utils.BindResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -20,7 +21,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
+import java.text.Bidi;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +38,7 @@ public class TagController {
     private static final Logger LOG = LoggerFactory.getLogger(TagController.class);
 
     @Autowired
-    private TagService tagService;
+    private TagService _tagService;
 
     @PostMapping(CREATE)
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -45,18 +50,16 @@ public class TagController {
 
         this.tagValidation(tagDto, result);
         if(result.hasErrors()) {
-            LOG.error("Error validating tag\n: {}", result.getAllErrors());
-            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-
-            return ResponseEntity.badRequest().body(response);
+            String errorLogMessage =  "Error validating tag\n: " + result.getAllErrors();
+            List<String> errors = BindResultUtils.getAllErrorMessages(result);
+            return this.badRequest(errors, response, errorLogMessage);
         }
 
         Tag tag = this.convertDtoToTag(tagDto);
-        this.tagService.persist(tag);
+        this._tagService.persist(tag);
+
         response.setData(this.convertTagToTagResponse(tag));
-
         return ResponseEntity.status(201).body(response);
-
     }
 
     @PutMapping(value = UPDATE)
@@ -68,52 +71,59 @@ public class TagController {
         LOG.info("Updating tag id {}, {}", id, tagDto.toString());
         Response<TagResponse> response = new Response<>();
 
-        Optional<Tag>tagExists = this.tagService.findById(id);
-        if(!tagExists.isPresent()){
-            result.addError(new ObjectError("tag", "Nonexistent tag."));
+        Optional<Tag> tagExists = this._tagService.findById(id);
+        boolean isTagNotPresent = !tagExists.isPresent();
+        if(isTagNotPresent) {
+            BindResultUtils.bindErrorMessage(result, "tag", "Nonexistent tag.");
         }
 
         tagValidation(tagDto, result);
         if(result.hasErrors()) {
-            LOG.error("Error validating tag\n: {}", result.getAllErrors());
-            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-
-            return ResponseEntity.badRequest().body(response);
+            String errorLogMessage =  "Error validating tag\n: " + result.getAllErrors();
+            List<String> errors = BindResultUtils.getAllErrorMessages(result);
+            return this.badRequest(errors, response, errorLogMessage);
         }
 
         Tag tagExistsOpt = tagExists.get();
-        tagExistsOpt.setTitle(tagDto.getTitle());
-        tagExistsOpt.setSlug(tagDto.getSlug());
-        tagExistsOpt.setUpdated_by(tagDto.getUpdatedBy());
-
-        this.tagService.persist(tagExistsOpt);
-        response.setData(this.convertTagToTagResponse(tagExistsOpt));
-
+        Tag updatedTag = updateTag(tagExistsOpt, tagDto);
+        response.setData(this.convertTagToTagResponse(updatedTag));
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping(value = DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @CacheEvict(value = "tags", allEntries = true)
-    public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Response<TagResponse>> delete(@PathVariable("id") Long id) {
 
         LOG.info("Deleting tag: {}", id);
-        Response<String> response = new Response<String>();
+        Response<TagResponse> response = new Response<>();
 
-        Optional<Tag> tag = this.tagService.findById(id);
-        if (!tag.isPresent()) {
-            LOG.info("Error removing tag ID: {} Nonexistent tag.", id);
-            response.getErrors().add("Error removing tag. Nonexistent tag!");
-
-            return ResponseEntity.badRequest().body(response);
+        boolean isTagNotPresent = !this._tagService.findById(id).isPresent();
+        if (isTagNotPresent) {
+            String errorLogMessage = "Error removing tag ID: {} Nonexistent tag."+  id;
+            List<String> errors = Arrays.asList("Error removing tag. Nonexistent tag!");
+            return badRequest(errors, response, errorLogMessage);
         }else{
-            this.tagService.delete(id);
-
-            return ResponseEntity.ok(new Response<String>());
+            this._tagService.delete(id);
+            return ResponseEntity.ok(new Response<>());
         }
     }
 
-    private TagResponse convertTagToTagResponse(Tag tag){
+    private ResponseEntity<Response<TagResponse>> badRequest (List<String> errors, Response<TagResponse> response, String errorLog) {
+        LOG.error(errorLog);
+        response.getErrors().addAll(errors);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    private Tag updateTag(Tag tagToBeUpdated, TagDto updatedTag) {
+        tagToBeUpdated.setTitle(updatedTag.getTitle());
+        tagToBeUpdated.setSlug(updatedTag.getSlug());
+        tagToBeUpdated.setUpdated_by(updatedTag.getUpdatedBy());
+
+        return this._tagService.persist(tagToBeUpdated);
+    }
+
+    private TagResponse convertTagToTagResponse(Tag tag) {
         TagResponse newTagResponse = TagResponse.builder()
                 .id(tag.getId())
                 .title(tag.getTitle())
@@ -127,14 +137,14 @@ public class TagController {
         return newTagResponse;
     }
 
-    private Tag convertDtoToTag(TagDto tagDto){
-        Tag tag = new Tag();
-        tag.setTitle(tagDto.getTitle());
-        tag.setCreated_by(tagDto.getCreatedBy());
-        tag.setUpdated_by(tagDto.getCreatedBy());
-        tag.setSlug(tagDto.getSlug());
+    private Tag convertDtoToTag(TagDto tagDto) {
+        Tag newTag = new Tag();
+        newTag.setTitle(tagDto.getTitle());
+        newTag.setCreated_by(tagDto.getCreatedBy());
+        newTag.setUpdated_by(tagDto.getCreatedBy());
+        newTag.setSlug(tagDto.getSlug());
 
-        return tag;
+        return newTag;
     }
 
     private void tagValidation(TagDto tagDto, BindingResult result) {
@@ -142,8 +152,9 @@ public class TagController {
             Pattern notAllowed = Pattern.compile("[1-9A-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ']");
             Matcher m = notAllowed.matcher(tagDto.getTitle());
 
-            if (m.find())
-                result.addError(new ObjectError("tag", "Invalid title."));
+            if (m.find()) {
+                BindResultUtils.bindErrorMessage(result, "tag", "Invalid title.");
+            }
         }
     }
 }

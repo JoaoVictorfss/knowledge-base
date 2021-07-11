@@ -7,10 +7,12 @@ import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Section;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.enums.StatusEnum;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.ArticleResponse;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.CategoryResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.ArticleService;
-import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
+import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
+import br.com.knowledgeBase.api.knowledgebaseapi.utils.BindResultUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +23,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,37 +40,45 @@ public class ArticleController {
     private static final Logger LOG = LoggerFactory.getLogger(ArticleController.class);
 
     @Autowired
-    private ArticleService articleService;
+    private ArticleService _articleService;
 
     @Autowired
-    private SectionService sectionService;
+    private SectionService _sectionService;
 
     @Autowired
-    private CategoryService categoryService;
+    private CategoryService _categoryService;
 
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
     @GetMapping(value = LIST_BY_CATEGORY)
-    public ResponseEntity<Response<Page<ArticleResponse>>> listAllPublishedArticlesByCategoryId(
+    public void listAllPublishedArticlesByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
 
         LOG.info("Searching articles by category {}, page: {}", categoryId, pag);
-        return this.listAllArticlesByCategory(categoryId, PageRequest.of(pag, 10, Sort.Direction.valueOf(dir), ord), false);
+
+        PageRequest pageRequest = PageRequest.of(pag, 10, Sort.Direction.valueOf(dir), ord);
+        Page<Article> articles = this._articleService.findAllPublishedByCategoryId(categoryId, pageRequest);
+
+        this.listAllArticlesByCategory(categoryId, articles);
     }
 
     @GetMapping(value = LIST_BY_SECTION)
-    public ResponseEntity<Response<Page<ArticleResponse>>> listAllPublishedArticlesBySectionId(
+    public void listAllPublishedArticlesBySectionId(
             @PathVariable("sectionId") Long sectionId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
 
         LOG.info("Searching articles by section {}, page: {}", sectionId, pag);
-        return this.listAllArticlesBySection(sectionId, PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord), false);
+
+        PageRequest pageRequest =  PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
+        Page<Article> articles = this._articleService.findAllPublishedBySectionId(sectionId, pageRequest);
+
+        this.listAllArticlesBySection(sectionId, articles);
     }
 
     @GetMapping(value = SEARCH)
@@ -76,40 +86,46 @@ public class ArticleController {
 
         LOG.info("Searching articles by {}", param);
         Response<Page<ArticleResponse>> response = new Response<>();
+
         PageRequest pageRequest = PageRequest.of(0, 8, Sort.Direction.ASC, "title");
-
-        Page<Article> articles = this.articleService.findAllByParam(param, pageRequest);
+        Page<Article> articles = this._articleService.findAllByParam(param, pageRequest);
         Page<ArticleResponse> articlesDto = articles.map(this::convertArticleToArticleResponse);
-        response.setData(articlesDto);
 
+        response.setData(articlesDto);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = PRIVATE_LIST_BY_CATEGORY)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<Page<ArticleResponse>>> listAllArticlesByCategoryId(
+    public void listAllArticlesByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
 
         LOG.info("Searching articles by category {}, page: {}", categoryId, pag);
-        return this.listAllArticlesByCategory(categoryId, PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord), true);
-    }
 
+        PageRequest pageRequest =  PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
+        Page<Article> articles = this._articleService.findAllByCategoryId(categoryId, pageRequest);
+
+        this.listAllArticlesByCategory(categoryId, articles);
+    }
 
     @GetMapping(value = PRIVATE_LIST_BY_SECTION )
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<Page<ArticleResponse>>> listAllArticlesBySectionId(
+    public void listAllArticlesBySectionId(
             @PathVariable("sectionId") Long sectionId,
             @RequestParam(value = "pag", defaultValue = "0") int pag,
             @RequestParam(value = "ord", defaultValue = "title") String ord,
             @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
 
         LOG.info("Searching articles by section {}, page: {}", sectionId, pag);
-        return this.listAllArticlesBySection(sectionId, PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord), true);
-    }
 
+        PageRequest pageRequest =  PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
+        Page<Article> articles = this._articleService.findAllBySectionId(sectionId, pageRequest);
+
+        this.listAllArticlesBySection(sectionId, articles);
+    }
 
     @GetMapping(value = FIND_BY_ARTICLE_ID)
     public ResponseEntity<Response<ArticleResponse>> showById(@PathVariable("id") Long id) {
@@ -117,11 +133,12 @@ public class ArticleController {
         LOG.info("Searching article id {}", id);
         Response<ArticleResponse> response = new Response<>();
 
-        Optional<Article>articleExists = this.articleService.findById(id);
-        if(!articleExists.isPresent()) {
-            LOG.info("Error. Nonexistent article.");
-            response.getErrors().add("Error. Nonexistent article.");
-            return ResponseEntity.badRequest().body(response);
+        Optional<Article> articleExists = this._articleService.findById(id);
+        boolean isArticleNotPresent = !articleExists.isPresent();
+        if(isArticleNotPresent) {
+            String errorLogMessage = "Error. Nonexistent article.";
+            List<String> errors = Arrays.asList(errorLogMessage);
+            return badRequest(errors, response, errorLogMessage);
         }
 
         response.setData(this.convertArticleToArticleResponse(articleExists.get()));
@@ -138,29 +155,28 @@ public class ArticleController {
 
         articleDtoValidation(articleDto, result);
         categoriesValidation(articleDto.getCategoriesId(),result);
-        if(result.hasErrors()){
-           LOG.error("Error validating article: {}", result.getAllErrors());
-           result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-
-           return ResponseEntity.badRequest().body(response);
+        if(result.hasErrors()) {
+            String errorLogMessage = "Error validating article: " +  result.getAllErrors();
+            List<String> errors = BindResultUtils.getAllErrorMessages(result);
+            return badRequest(errors, response, errorLogMessage);
         }
 
         Article article = this.convertArticleDtoToArticle(articleDto);
         articleDto.getCategoriesId().forEach(id -> {
-           Category category = this.categoryService.findById(id).get();
+           Category category = this._categoryService.findById(id).get();
            article.getCategories().add(category);
            category.getArticles().add(article);
         });
 
         articleDto.getSectionId().ifPresent( id -> {
-            Section s = this.sectionService.findById(id).get();
-            s.getArticles().add(article);
-            article.getSections().add(s);
+            Section section = this._sectionService.findById(id).get();
+            section.getArticles().add(article);
+            article.getSections().add(section);
         });
 
-        this.articleService.persist(article);
-        response.setData(this.convertArticleToArticleResponse(article));
+        this._articleService.persist(article);
 
+        response.setData(this.convertArticleToArticleResponse(article));
         return ResponseEntity.status(201).body(response);
     }
 
@@ -172,96 +188,92 @@ public class ArticleController {
         LOG.info("Updating article id {}, article: {}",id, articleDto.toString());
         Response<ArticleResponse> response = new Response<ArticleResponse>();
 
-        Optional<Article>articleExists = this.articleService.findById(id);
-        if(!articleExists.isPresent()){
-            result.addError(new ObjectError("article", "Nonexistent article."));
+        Optional<Article> articleExists = this._articleService.findById(id);
+        boolean isArticleNotPresent = !articleExists.isPresent();
+        if(isArticleNotPresent) {
+            BindResultUtils.bindErrorMessage(result, "article", "Nonexistent article.");
         }
         articleDtoValidation(articleDto, result);
-        if(result.hasErrors()){
-            LOG.error("Error validating article: {}", result.getAllErrors());
-            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-
-            return ResponseEntity.badRequest().body(response);
+        if(result.hasErrors()) {
+            String errorLogMessage = "Error validating article: " +  result.getAllErrors();
+            List<String> errors = BindResultUtils.getAllErrorMessages(result);
+            return badRequest(errors, response, errorLogMessage);
         }
 
-        Article articleOpt = articleExists.get();
-        articleOpt.setTitle(articleDto.getTitle());
-        articleOpt.setSubtitle(articleDto.getSubtitle());
-        articleOpt.setUpdated_by(articleDto.getUpdatedBy());
-        articleOpt.setContent(articleDto.getContent());
-        articleOpt.setStatus(StatusEnum.valueOf(articleDto.getStatus()));
-        articleOpt.setAverageLiked(articleDto.getAverageLiked());
-        articleOpt.setGreatLiked(articleDto.getGreatLiked());
-        articleOpt.setPoorLiked(articleDto.getPoorLiked());
-        articleOpt.setViewers(articleDto.getViewers());
-        articleOpt.setSlug(articleDto.getSlug());
-
-        this.articleService.persist(articleOpt);
-        response.setData(this.convertArticleToArticleResponse(articleOpt));
+        Article articleToBeUpdated = articleExists.get();
+        Article savedArticle = this.updateArticle(articleToBeUpdated, articleDto);
+        response.setData(this.convertArticleToArticleResponse(savedArticle));
 
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping(value = DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Response<ArticleResponse>> delete(@PathVariable("id") Long id) {
 
         LOG.info("Deleting article: {}", id);
-        Response<String> response = new Response<String>();
+        Response<ArticleResponse> response = new Response<>();
 
-        Optional<Article> article = this.articleService.findById(id);
+        Optional<Article> article = this._articleService.findById(id);
         if (!article.isPresent()) {
-            LOG.info("Error removing article ID: {} Nonexistent article.", id);
-            response.getErrors().add("Error removing article. Nonexistent article!");
-            return ResponseEntity.badRequest().body(response);
-        }else{
-            this.articleService.delete(id);
-            return ResponseEntity.ok(new Response<String>());
+            String errorLogMessage = "Error removing article ID: Nonexistent article " +  id;
+            List<String> errors = Arrays.asList(errorLogMessage);
+            return badRequest(errors, response, errorLogMessage);
+        }else {
+            this._articleService.delete(id);
+            return ResponseEntity.ok(new Response<>());
         }
     }
 
-    private ResponseEntity<Response<Page<ArticleResponse>>> listAllArticlesByCategory(Long id, PageRequest pageRequest, boolean isPrivate) {
+    private ResponseEntity<Response<ArticleResponse>> badRequest (List<String> errors, Response<ArticleResponse> response, String errorLog) {
+        LOG.error(errorLog);
+        response.getErrors().addAll(errors);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    private ResponseEntity<Response<Page<ArticleResponse>>> listAllArticlesByCategory(Long id, Page<Article> articles) {
 
         Response<Page<ArticleResponse>> response = new Response<>();
 
-        Optional<Category> category = this.categoryService.findById(id);
-        if(!category.isPresent()){
+        boolean isCategoryNotPresent = !this._categoryService.findById(id).isPresent();
+        if(isCategoryNotPresent) {
             LOG.info("Error. Nonexistent category.");
             response.getErrors().add("Error. Nonexistent category.");
             return  ResponseEntity.badRequest().body(response);
         }
 
-        Page<Article> articles;
-        if(isPrivate){
-            articles = this.articleService.findAllByCategoryId(id, pageRequest);
-        }else {
-            articles = this.articleService.findAllPublishedByCategoryId(id, pageRequest);
+        response.setData(articles.map(this::convertArticleToArticleResponse));
+        return ResponseEntity.ok(response);
+    }
+
+    private ResponseEntity<Response<Page<ArticleResponse>>> listAllArticlesBySection(Long id, Page<Article> articles) {
+
+        Response<Page<ArticleResponse>> response = new Response<>();
+
+        boolean isSectionNotPresent = !this._sectionService.findById(id).isPresent();
+        if(isSectionNotPresent) {
+            LOG.info("Error. Nonexistent section.");
+            response.getErrors().add("Error. Nonexistent section.");
+            return  ResponseEntity.badRequest().body(response);
         }
 
         response.setData(articles.map(this::convertArticleToArticleResponse));
         return ResponseEntity.ok(response);
     }
 
-    private ResponseEntity<Response<Page<ArticleResponse>>> listAllArticlesBySection(Long id, PageRequest pageRequest, boolean isPrivate) {
+    private Article updateArticle(Article articleToBeUpdated, ArticleDto updatedArticle) {
+        articleToBeUpdated.setTitle(updatedArticle.getTitle());
+        articleToBeUpdated.setSubtitle(updatedArticle.getSubtitle());
+        articleToBeUpdated.setUpdated_by(updatedArticle.getUpdatedBy());
+        articleToBeUpdated.setContent(updatedArticle.getContent());
+        articleToBeUpdated.setStatus(StatusEnum.valueOf(updatedArticle.getStatus()));
+        articleToBeUpdated.setAverageLiked(updatedArticle.getAverageLiked());
+        articleToBeUpdated.setGreatLiked(updatedArticle.getGreatLiked());
+        articleToBeUpdated.setPoorLiked(updatedArticle.getPoorLiked());
+        articleToBeUpdated.setViewers(updatedArticle.getViewers());
+        articleToBeUpdated.setSlug(updatedArticle.getSlug());
 
-        Response<Page<ArticleResponse>> response = new Response<>();
-
-        Optional<Section> section = this.sectionService.findById(id);
-        if(!section.isPresent()){
-            LOG.info("Error. Nonexistent section.");
-            response.getErrors().add("Error. Nonexistent section.");
-            return  ResponseEntity.badRequest().body(response);
-        }
-
-        Page<Article> articles;
-        if(isPrivate){
-            articles = this.articleService.findAllBySectionId(id, pageRequest);
-        }else{
-            articles = this.articleService.findAllPublishedBySectionId(id, pageRequest);
-        }
-
-        response.setData(articles.map(this::convertArticleToArticleResponse));
-        return ResponseEntity.ok(response);
+        return this._articleService.persist(articleToBeUpdated);
     }
 
     private ArticleResponse convertArticleToArticleResponse(Article article) {
@@ -287,46 +299,55 @@ public class ArticleController {
     }
 
     private Article convertArticleDtoToArticle(ArticleDto articleDto) {
-        Article article = new Article();
-        article.setTitle(articleDto.getTitle());
-        article.setSubtitle(articleDto.getSubtitle());
-        article.setContent(articleDto.getContent());
-        article.setStatus(StatusEnum.valueOf(articleDto.getStatus()));
-        article.setAverageLiked(articleDto.getAverageLiked());
-        article.setGreatLiked(articleDto.getGreatLiked());
-        article.setPoorLiked(articleDto.getPoorLiked());
-        article.setViewers(articleDto.getViewers());
-        article.setSlug(articleDto.getSlug());
-        article.setCreated_by(articleDto.getCreatedBy());
-        article.setUpdated_by(articleDto.getCreatedBy());
+        Article newArticle = new Article();
+        newArticle.setTitle(articleDto.getTitle());
+        newArticle.setSubtitle(articleDto.getSubtitle());
+        newArticle.setContent(articleDto.getContent());
+        newArticle.setStatus(StatusEnum.valueOf(articleDto.getStatus()));
+        newArticle.setAverageLiked(articleDto.getAverageLiked());
+        newArticle.setGreatLiked(articleDto.getGreatLiked());
+        newArticle.setPoorLiked(articleDto.getPoorLiked());
+        newArticle.setViewers(articleDto.getViewers());
+        newArticle.setSlug(articleDto.getSlug());
+        newArticle.setCreated_by(articleDto.getCreatedBy());
+        newArticle.setUpdated_by(articleDto.getCreatedBy());
 
-        return article;
+        return newArticle;
     }
 
+
     private void categoriesValidation(List<Long> categories, BindingResult result) {
-        if (result.hasErrors()) return;
-        if (categories.isEmpty()){
-            result.addError(new ObjectError("categories", "Categories cannot be empty"));
-        } else{
+        if (result.hasErrors()) {
+            return;
+        }
+        if (categories.isEmpty()) {
+            BindResultUtils.bindErrorMessage(result, "categories", "Categories cannot be empty");
+        } else {
             categories.forEach(categoryId -> {
-                Optional<Category> category = this.categoryService.findById(categoryId);
-                if (!category.isPresent()) {
-                    result.addError(new ObjectError("category", "Nonexistent category id " + categoryId));
+                boolean isCategryNotPresent = !this._categoryService.findById(categoryId).isPresent();
+                if (isCategryNotPresent) {
+                    BindResultUtils.bindErrorMessage(result, "category", "Nonexistent category id " + categoryId);
                 }
             });
         }
     }
 
-    private void articleDtoValidation(ArticleDto articleDto, BindingResult result){
-        if (result.hasErrors()) return;
+    private void articleDtoValidation(ArticleDto articleDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return;
+        }
         try {
             StatusEnum.valueOf(articleDto.getStatus());
-            if (articleDto.getSectionId().isPresent() && !this.sectionService.findById(articleDto.getSectionId().get()).isPresent()){
-                result.addError(new ObjectError("section", "Nonexistent section id " + articleDto.getSectionId().get()));
+
+            boolean isSectionIdPresent = articleDto.getSectionId().isPresent();
+            boolean isSectionNotPresent = !this._sectionService.findById(articleDto.getSectionId().get()).isPresent();
+            if (isSectionIdPresent && isSectionNotPresent) {
+                Long sectionId = articleDto.getSectionId().get();
+                BindResultUtils.bindErrorMessage(result, "section", "Nonexistent section id " + sectionId);
             }
         } catch (java.lang.IllegalArgumentException err) {
-            result.addError(new ObjectError("status", "Invalid status type. " +
-                    "Accepted values for the status field: CANCEL, PUBLISH and DRAFT(Default)"));
+            BindResultUtils.bindErrorMessage(result,"status", "Invalid status type. " +
+                    "Accepted values for the status field: CANCEL, PUBLISH and DRAFT(Default)");
         }
     }
 }

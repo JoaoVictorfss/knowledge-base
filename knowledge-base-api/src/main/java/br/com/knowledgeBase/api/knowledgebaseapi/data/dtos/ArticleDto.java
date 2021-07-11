@@ -55,4 +55,108 @@ public class ArticleDto {
     private Long poorLiked;
 
     private Optional<Long> sectionId = Optional.empty();
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public Long getViewers() {
+        return viewers;
+    }
+
+    public void setViewers(Long viewers) {
+        this.viewers = viewers;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<Long> getCategoriesId() {
+        return categoriesId;
+    }
+
+    public void setCategoriesId(List<Long> categoriesId) {
+        this.categoriesId = categoriesId;
+    }
+
+    public Long getAverageLiked() {
+        return averageLiked;
+    }
+
+    public void setAverageLiked(Long averageLiked) {
+        this.averageLiked = averageLiked;
+    }
+
+    public Long getGreatLiked() {
+        return greatLiked;
+    }
+
+    public void setGreatLiked(Long greatLiked) {
+        this.greatLiked = greatLiked;
+    }
+
+    public Long getPoorLiked() {
+        return poorLiked;
+    }
+
+    public void setPoorLiked(Long poorLiked) {
+        this.poorLiked = poorLiked;
+    }
+
+    public Optional<Long> getSectionId() {
+        return sectionId;
+    }
+
+    public void setSectionId(Optional<Long> sectionId) {
+        this.sectionId = sectionId;
+    }
 }

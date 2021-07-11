@@ -6,8 +6,10 @@ import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Section;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.SectionResponse;
+import br.com.knowledgeBase.api.knowledgebaseapi.data.response.TagResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
+import br.com.knowledgeBase.api.knowledgebaseapi.utils.BindResultUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,10 +37,10 @@ public class SectionController {
     private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
 
     @Autowired
-    private SectionService sectionService;
+    private SectionService _sectionService;
 
     @Autowired
-    private CategoryService categoryService;
+    private CategoryService _categoryService;
 
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
@@ -49,9 +53,9 @@ public class SectionController {
 
         LOG.info("Searching sections, page: {}", pag);
         Response<Page<SectionResponse>> response = new Response<>();
-        PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
 
-        Page<Section>sections = this.sectionService.findAll(pageRequest);
+        PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
+        Page<Section> sections = this._sectionService.findAll(pageRequest);
         Page<SectionResponse> sectionsResponse = sections.map(this::convertSectionToSectionResponse);
 
         response.setData(sectionsResponse);
@@ -69,18 +73,18 @@ public class SectionController {
         LOG.info("Searching sections by category {}, page: {}", categoryId, pag);
         Response<Page<SectionResponse>> response = new Response<>();
 
-        Optional<Category> category = this.categoryService.findById(categoryId);
-        if(!category.isPresent()){
+        boolean isCategoryNotPresent = !this._categoryService.findById(categoryId).isPresent();
+        if(isCategoryNotPresent) {
             LOG.info("Error. Nonexistent category.");
             response.getErrors().add("Error. Nonexistent category.");
             return  ResponseEntity.badRequest().body(response);
         }
         
         PageRequest pageRequest = PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
-        Page<Section>sections = this.sectionService.findAllByCategoryId(categoryId, pageRequest);
+        Page<Section>sections = this._sectionService.findAllByCategoryId(categoryId, pageRequest);
         Page<SectionResponse> sectionsResponse = sections.map(this::convertSectionToSectionResponse);
-        response.setData(sectionsResponse);
 
+        response.setData(sectionsResponse);
         return ResponseEntity.ok(response);
     }
 
@@ -90,11 +94,12 @@ public class SectionController {
         LOG.info("Searching section id {}", id);
         Response<SectionResponse> response = new Response<>();
 
-        Optional<Section>sectionExists = this.sectionService.findById(id);
-        if(!sectionExists.isPresent()) {
-            LOG.info("Error. Nonexistent section.");
-            response.getErrors().add("Error. Nonexistent section.");
-            return ResponseEntity.badRequest().body(response);
+        Optional<Section> sectionExists = this._sectionService.findById(id);
+        boolean isSectionNotPresent = !sectionExists.isPresent();
+        if(isSectionNotPresent) {
+            String errorLogMessage = "Error. Nonexistent section.";
+            List<String> errors = Arrays.asList(errorLogMessage);
+            return badRequest(errors, response, errorLogMessage);
         }
 
         response.setData(this.convertSectionToSectionResponse(sectionExists.get()));
@@ -109,25 +114,25 @@ public class SectionController {
         LOG.info("Adding section: {}, category id {}", sectionDto.toString(), categoryId);
         Response<SectionResponse> response = new Response<>();
 
-        Optional<Category> category = this.categoryService.findById(categoryId);
-        if(!category.isPresent()){
-           result.addError(new ObjectError("section", "Nonexistent category."));
+        Optional<Category> category = this._categoryService.findById(categoryId);
+        boolean isCategoryNotPresent = !category.isPresent();
+        if(isCategoryNotPresent) {
+            BindResultUtils.bindErrorMessage(result, "section", "Nonexistent category.");
         }
-        if(result.hasErrors()){
-           LOG.error("Error validating section: {}", result.getAllErrors());
-           result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-
-           return ResponseEntity.badRequest().body(response);
+        if(result.hasErrors()) {
+            String errorLogMessage = "Error validating section: " + result.getAllErrors();
+            List<String> errors = BindResultUtils.getAllErrorMessages(result);
+            return badRequest(errors, response, errorLogMessage);
         }
 
         Section section = this.convertDtoToSection(sectionDto);
         section.getCategories().add(category.get());
         category.get().getSections().add(section);
 
-        this.sectionService.persist(section);
-        response.setData(this.convertSectionToSectionResponse(section));
+        this._sectionService.persist(section);
 
-       return ResponseEntity.status(201).body(response);
+        response.setData(this.convertSectionToSectionResponse(section));
+        return ResponseEntity.status(201).body(response);
     }
 
     @PutMapping(UPDATE_SECTION)
@@ -138,50 +143,58 @@ public class SectionController {
         LOG.info("Updating section id {}, section: {}, category id {}",id, sectionDto.toString(), categoryId);
         Response<SectionResponse> response = new Response<>();
 
-        Optional<Section>sectionExists = this.sectionService.findById(id);
-        if(!sectionExists.isPresent()){
-            result.addError(new ObjectError("section", "Nonexistent section."));
-        }else{
+        Optional<Section> sectionExists = this._sectionService.findById(id);
+        boolean isSectionNotPresent = !sectionExists.isPresent();
+        if(isSectionNotPresent) {
+            BindResultUtils.bindErrorMessage(result,"section", "Nonexistent section." );
+        }else {
             this.belongValidation(categoryId, sectionExists.get(), result);
         }
 
-        if(result.hasErrors()){
-            LOG.error("Error validating section: {}", result.getAllErrors());
-            result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-
-            return ResponseEntity.badRequest().body(response);
+        if(result.hasErrors()) {
+            String errorLogMessage = "Error validating section: " + result.getAllErrors();
+            List<String> errors = BindResultUtils.getAllErrorMessages(result);
+            return badRequest(errors, response, errorLogMessage);
         }
 
         Section sectionExistsOpt = sectionExists.get();
-        sectionExistsOpt.setTitle(sectionDto.getTitle());
-        sectionExistsOpt.setSubtitle(sectionDto.getSubtitle());
-        sectionExistsOpt.setUpdated_by(sectionDto.getUpdatedBy());
-        sectionExistsOpt.setSlug(sectionDto.getSlug());
+        Section updatedSection = this.updateSection(sectionExistsOpt, sectionDto);
 
-        this.sectionService.persist(sectionExistsOpt);
-        response.setData(this.convertSectionToSectionResponse(sectionExistsOpt));
-
+        response.setData(this.convertSectionToSectionResponse(updatedSection));
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping(value = DELETE)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<String>> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Response<SectionResponse>> delete(@PathVariable("id") Long id) {
 
         LOG.info("Deleting section: {}", id);
-        Response<String> response = new Response<String>();
+        Response<SectionResponse> response = new Response<>();
 
-        Optional<Section> section = this.sectionService.findById(id);
-        if (!section.isPresent()) {
-            LOG.info("Error removing section ID: {} Nonexistent section.", id);
-            response.getErrors().add("Error removing section. Nonexistent section!");
-
-            return ResponseEntity.badRequest().body(response);
-        }else{
-            this.sectionService.delete(id);
-
-            return ResponseEntity.ok(new Response<String>());
+        boolean isSectionNotPresent = !this._sectionService.findById(id).isPresent();
+        if (isSectionNotPresent) {
+            String errorLogMessage = "Error removing section ID: {} Nonexistent section " + id;
+            List<String> errors = Arrays.asList("Error removing section. Nonexistent section!");
+            return badRequest(errors, response, errorLogMessage);
+        }else {
+            this._sectionService.delete(id);
+            return ResponseEntity.ok(new Response<>());
         }
+    }
+
+    private ResponseEntity<Response<SectionResponse>> badRequest (List<String> errors, Response<SectionResponse> response, String errorLog) {
+        LOG.error(errorLog);
+        response.getErrors().addAll(errors);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    private Section updateSection(Section sectionToBeUpdated, SectionDto updatedSection) {
+        sectionToBeUpdated.setTitle(updatedSection.getTitle());
+        sectionToBeUpdated.setSubtitle(updatedSection.getSubtitle());
+        sectionToBeUpdated.setUpdated_by(updatedSection.getUpdatedBy());
+        sectionToBeUpdated.setSlug(updatedSection.getSlug());
+
+        return  this._sectionService.persist(sectionToBeUpdated);
     }
 
     private SectionResponse convertSectionToSectionResponse(Section section){
@@ -200,24 +213,26 @@ public class SectionController {
         return newSectionResponse;
     }
 
-    private Section convertDtoToSection(SectionDto sectionDto){
-        Section section = new Section();
-        section.setTitle(sectionDto.getTitle());
-        section.setSubtitle(sectionDto.getSubtitle());
-        section.setSlug(sectionDto.getSlug());
-        section.setCreated_by(sectionDto.getCreatedBy());
-        section.setUpdated_by(sectionDto.getCreatedBy());
+    private Section convertDtoToSection(SectionDto sectionDto) {
+        Section newSection = new Section();
+        newSection.setTitle(sectionDto.getTitle());
+        newSection.setSubtitle(sectionDto.getSubtitle());
+        newSection.setSlug(sectionDto.getSlug());
+        newSection.setCreated_by(sectionDto.getCreatedBy());
+        newSection.setUpdated_by(sectionDto.getCreatedBy());
 
-        return section;
+        return newSection;
     }
 
-    private void belongValidation(Long categoryId, Section section, BindingResult result){
-        Optional<Category> category = this.categoryService.findById(categoryId);
-        if(!category.isPresent()){
-            result.addError(new ObjectError("category", "Nonexistent category."));
-        }else{
-            if(!category.get().getSections().contains(section)){
-                result.addError(new ObjectError("section", "Section does not belong to category."));
+    private void belongValidation(Long categoryId, Section section, BindingResult result) {
+        Optional<Category> category = this._categoryService.findById(categoryId);
+        boolean isCategoryNotPresent = !category.isPresent();
+        if(isCategoryNotPresent) {
+            BindResultUtils.bindErrorMessage(result, "category", "Nonexistent category.");
+        }else {
+            boolean shouldNotContainsSection = !category.get().getSections().contains(section);
+            if(shouldNotContainsSection) {
+                BindResultUtils.bindErrorMessage(result, "section", "Section does not belong to category.");
             }
         }
     }
