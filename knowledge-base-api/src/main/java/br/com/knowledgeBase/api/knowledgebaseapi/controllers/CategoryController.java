@@ -1,6 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
 import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
+import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.GeneralConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.CategoryDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.CategoryResponse;
@@ -22,13 +23,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping(CATEGORY_PATH)
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = ANYWHERE)
 public class CategoryController {
     private static final Logger LOG = LoggerFactory.getLogger(CategoryController.class);
 
@@ -40,9 +41,9 @@ public class CategoryController {
 
     @GetMapping(value = LIST)
     public ResponseEntity<Response<Page<CategoryResponse>>> index(
-            @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
+            @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
+            @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
+            @RequestParam(value = DIRECTION_PARAM, defaultValue = "ASC") String dir) {
 
         LOG.info("Searching categories, page: {}", pag);
         Response<Page<CategoryResponse>> response = new Response<>();
@@ -56,7 +57,7 @@ public class CategoryController {
     }
 
     @GetMapping(value = FIND_CATEGORY_BY_ID)
-    public ResponseEntity<Response<CategoryResponse>> showById(@PathVariable("id") Long id) {
+    public ResponseEntity<Response<CategoryResponse>> showById(@PathVariable(ID_PARAM) Long id) {
 
         LOG.info("Searching category id {}", id);
         Response<CategoryResponse> response = new Response<>();
@@ -65,7 +66,7 @@ public class CategoryController {
         boolean isCategoryNotPresent = !categoryExists.isPresent();
         if(isCategoryNotPresent) {
             String errorLogMessage = "Error. Nonexistent category.";
-            List<String> errors = Arrays.asList(errorLogMessage);
+            List<String> errors = Collections.singletonList(errorLogMessage);
             return badRequest(errors, response, errorLogMessage);
         }
 
@@ -74,7 +75,7 @@ public class CategoryController {
     }
 
     @PostMapping(CREATE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize(ONLY_ADMIN)
     public ResponseEntity<Response<CategoryResponse>> store(@Valid @RequestBody CategoryDto categoryDto,
                                                   BindingResult result) throws ParseException {
 
@@ -89,13 +90,13 @@ public class CategoryController {
             Category category = this.convertDtoToCategory(categoryDto);
             this._categoryService.persist(category);
             response.setData(this.convertCategoryToCategoryResponse(category));
-            return ResponseEntity.status(201).body(response);
+            return ResponseEntity.status(CREATED_STATUS).body(response);
         }
     }
 
     @PutMapping(value = UPDATE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<CategoryResponse>> update(@PathVariable("id") Long id,
+    @PreAuthorize(ONLY_ADMIN)
+    public ResponseEntity<Response<CategoryResponse>> update(@PathVariable(ID_PARAM) Long id,
                                                    @Valid @RequestBody CategoryDto categoryDto, BindingResult result) throws NoSuchAlgorithmException {
 
         LOG.info("Updating category: {}", categoryDto.toString());
@@ -120,16 +121,16 @@ public class CategoryController {
     }
 
     @DeleteMapping(value = DELETE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<CategoryResponse>> delete(@PathVariable("id") Long id) {
+    @PreAuthorize(ONLY_ADMIN)
+    public ResponseEntity<Response<CategoryResponse>> delete(@PathVariable(ID_PARAM) Long id) {
 
         LOG.info("Deleting category: {}", id);
         Response<CategoryResponse> response = new Response<>();
 
-        Optional<Category> category = this._categoryService.findById(id);
-        if (!category.isPresent()) {
+        boolean isCategoryNotPresent = !this._categoryService.findById(id).isPresent();
+        if (isCategoryNotPresent) {
             String errorLogMessage = "Error removing category ID: {} Nonexistent category " + id;
-            List<String> errors = Arrays.asList(errorLogMessage);
+            List<String> errors = Collections.singletonList(errorLogMessage);
             return badRequest(errors, response, errorLogMessage);
         }else {
             this._categoryService.delete(id);

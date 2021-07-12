@@ -1,6 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
 import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
+import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.GeneralConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.TagDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Tag;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
@@ -14,17 +15,15 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
-import java.text.Bidi;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -32,8 +31,8 @@ import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping(TAG_PATH)
-@CrossOrigin(origins = "*")
-@Cacheable("tags")
+@CrossOrigin(origins = ANYWHERE)
+@Cacheable()
 public class TagController {
     private static final Logger LOG = LoggerFactory.getLogger(TagController.class);
 
@@ -41,8 +40,8 @@ public class TagController {
     private TagService _tagService;
 
     @PostMapping(CREATE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @CachePut("tags")
+    @PreAuthorize(ONLY_ADMIN)
+    @CachePut(TAG_CACHE)
     public ResponseEntity<Response<TagResponse>> store(@Valid @RequestBody TagDto tagDto,
                                                        BindingResult result) throws ParseException {
         LOG.info("Adding tag: {}", tagDto.toString());
@@ -59,13 +58,13 @@ public class TagController {
         this._tagService.persist(tag);
 
         response.setData(this.convertTagToTagResponse(tag));
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(CREATED_STATUS).body(response);
     }
 
     @PutMapping(value = UPDATE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @CacheEvict(value = "tafs", allEntries = true)
-    public ResponseEntity<Response<TagResponse>> update(@PathVariable("id") Long id,
+    @PreAuthorize(ONLY_ADMIN)
+    @CacheEvict(value = TAG_CACHE, allEntries = true)
+    public ResponseEntity<Response<TagResponse>> update(@PathVariable(ID_PARAM) Long id,
                                                         @Valid @RequestBody TagDto tagDto,  BindingResult result) throws NoSuchAlgorithmException {
 
         LOG.info("Updating tag id {}, {}", id, tagDto.toString());
@@ -91,9 +90,9 @@ public class TagController {
     }
 
     @DeleteMapping(value = DELETE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @CacheEvict(value = "tags", allEntries = true)
-    public ResponseEntity<Response<TagResponse>> delete(@PathVariable("id") Long id) {
+    @PreAuthorize(ONLY_ADMIN)
+    @CacheEvict(value = TAG_CACHE, allEntries = true)
+    public ResponseEntity<Response<TagResponse>> delete(@PathVariable(ID_PARAM) Long id) {
 
         LOG.info("Deleting tag: {}", id);
         Response<TagResponse> response = new Response<>();
@@ -101,9 +100,9 @@ public class TagController {
         boolean isTagNotPresent = !this._tagService.findById(id).isPresent();
         if (isTagNotPresent) {
             String errorLogMessage = "Error removing tag ID: {} Nonexistent tag."+  id;
-            List<String> errors = Arrays.asList("Error removing tag. Nonexistent tag!");
+            List<String> errors = Collections.singletonList("Error removing tag. Nonexistent tag!");
             return badRequest(errors, response, errorLogMessage);
-        }else{
+        }else {
             this._tagService.delete(id);
             return ResponseEntity.ok(new Response<>());
         }
@@ -149,10 +148,12 @@ public class TagController {
 
     private void tagValidation(TagDto tagDto, BindingResult result) {
         if (!result.hasErrors()) {
-            Pattern notAllowed = Pattern.compile("[1-9A-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ']");
-            Matcher m = notAllowed.matcher(tagDto.getTitle());
+            String invalidTitleRegex = "[1-9A-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ' ']";
+            Pattern notAllowed = Pattern.compile(invalidTitleRegex);
+            Matcher invalidTitleRegexMatcher = notAllowed.matcher(tagDto.getTitle());
+            boolean isTitleNotValid = invalidTitleRegexMatcher.find();
 
-            if (m.find()) {
+            if (isTitleNotValid) {
                 BindResultUtils.bindErrorMessage(result, "tag", "Invalid title.");
             }
         }

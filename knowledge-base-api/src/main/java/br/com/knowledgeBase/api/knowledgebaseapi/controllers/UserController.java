@@ -1,6 +1,7 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
 import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
+import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.GeneralConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.UserDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.User;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.enums.ProfileEnum;
@@ -15,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.BindingResultUtils;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(USER_PATH)
-@CrossOrigin(origins = "*")
+@CrossOrigin(ONLY_ADMIN)
 public class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
 
@@ -33,8 +32,8 @@ public class UserController {
     private UserService _userService;
 
     @PostMapping(CREATE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<UserResponse>> add(@Valid @RequestBody UserDto userDto,
+    @PreAuthorize(ONLY_ADMIN)
+    public ResponseEntity<Response<UserResponse>> store(@Valid @RequestBody UserDto userDto,
                                                  BindingResult result) throws ParseException {
 
         LOG.info("Adding user: {}", userDto.toString());
@@ -49,7 +48,7 @@ public class UserController {
         this._userService.persist(user);
 
         response.setData(this.convertUserToUserResponse(user));
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(CREATED_STATUS).body(response);
     }
 
     private ResponseEntity<Response<UserResponse>> badRequest(BindingResult result, Response<UserResponse> response) {

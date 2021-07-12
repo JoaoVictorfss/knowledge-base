@@ -1,13 +1,13 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
 import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
+import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.GeneralConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.ArticleDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Article;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Section;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.enums.StatusEnum;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.ArticleResponse;
-import br.com.knowledgeBase.api.knowledgebaseapi.data.response.CategoryResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.ArticleService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
@@ -28,14 +28,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(ARTICLE_PATH)
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = ANYWHERE)
 public class ArticleController {
     private static final Logger LOG = LoggerFactory.getLogger(ArticleController.class);
 
@@ -53,10 +53,10 @@ public class ArticleController {
 
     @GetMapping(value = LIST_BY_CATEGORY)
     public void listAllPublishedArticlesByCategoryId(
-            @PathVariable("categoryId") Long categoryId,
-            @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
+            @PathVariable(CATEGORY_ID_PARAM) Long categoryId,
+            @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
+            @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
+            @RequestParam(value = DIRECTION_PARAM, defaultValue = "ASC") String dir) {
 
         LOG.info("Searching articles by category {}, page: {}", categoryId, pag);
 
@@ -68,10 +68,10 @@ public class ArticleController {
 
     @GetMapping(value = LIST_BY_SECTION)
     public void listAllPublishedArticlesBySectionId(
-            @PathVariable("sectionId") Long sectionId,
-            @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
+            @PathVariable(SECTION_ID_PARAM) Long sectionId,
+            @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
+            @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
+            @RequestParam(value = DIRECTION_PARAM, defaultValue = "DESC") String dir) {
 
         LOG.info("Searching articles by section {}, page: {}", sectionId, pag);
 
@@ -96,12 +96,12 @@ public class ArticleController {
     }
 
     @GetMapping(value = PRIVATE_LIST_BY_CATEGORY)
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize(ONLY_ADMIN)
     public void listAllArticlesByCategoryId(
-            @PathVariable("categoryId") Long categoryId,
-            @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
+            @PathVariable(CATEGORY_ID_PARAM) Long categoryId,
+            @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
+            @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
+            @RequestParam(value = DIRECTION_PARAM, defaultValue = "ASC") String dir) {
 
         LOG.info("Searching articles by category {}, page: {}", categoryId, pag);
 
@@ -112,12 +112,12 @@ public class ArticleController {
     }
 
     @GetMapping(value = PRIVATE_LIST_BY_SECTION )
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize(ONLY_ADMIN)
     public void listAllArticlesBySectionId(
-            @PathVariable("sectionId") Long sectionId,
-            @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "ASC") String dir) {
+            @PathVariable(SECTION_ID_PARAM) Long sectionId,
+            @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
+            @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
+            @RequestParam(value = DIRECTION_PARAM, defaultValue = "ASC") String dir) {
 
         LOG.info("Searching articles by section {}, page: {}", sectionId, pag);
 
@@ -128,7 +128,7 @@ public class ArticleController {
     }
 
     @GetMapping(value = FIND_BY_ARTICLE_ID)
-    public ResponseEntity<Response<ArticleResponse>> showById(@PathVariable("id") Long id) {
+    public ResponseEntity<Response<ArticleResponse>> showById(@PathVariable(ID_PARAM) Long id) {
 
         LOG.info("Searching article id {}", id);
         Response<ArticleResponse> response = new Response<>();
@@ -137,7 +137,7 @@ public class ArticleController {
         boolean isArticleNotPresent = !articleExists.isPresent();
         if(isArticleNotPresent) {
             String errorLogMessage = "Error. Nonexistent article.";
-            List<String> errors = Arrays.asList(errorLogMessage);
+            List<String> errors = Collections.singletonList(errorLogMessage);
             return badRequest(errors, response, errorLogMessage);
         }
 
@@ -146,7 +146,7 @@ public class ArticleController {
     }
 
     @PostMapping(CREATE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize(ONLY_ADMIN)
     public ResponseEntity<Response<ArticleResponse>> store(@Valid @RequestBody ArticleDto articleDto,
                                                       BindingResult result) throws ParseException {
 
@@ -177,13 +177,13 @@ public class ArticleController {
         this._articleService.persist(article);
 
         response.setData(this.convertArticleToArticleResponse(article));
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(CREATED_STATUS).body(response);
     }
 
     @PutMapping(UPDATE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize(ONLY_ADMIN)
     public ResponseEntity<Response<ArticleResponse>> update(@Valid @RequestBody ArticleDto articleDto,
-                                                       BindingResult result, @PathVariable("id") Long id) throws NoSuchAlgorithmException {
+                                                       BindingResult result, @PathVariable(ID_PARAM) Long id) throws NoSuchAlgorithmException {
 
         LOG.info("Updating article id {}, article: {}",id, articleDto.toString());
         Response<ArticleResponse> response = new Response<ArticleResponse>();
@@ -208,16 +208,16 @@ public class ArticleController {
     }
 
     @DeleteMapping(value = DELETE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<ArticleResponse>> delete(@PathVariable("id") Long id) {
+    @PreAuthorize(ONLY_ADMIN)
+    public ResponseEntity<Response<ArticleResponse>> delete(@PathVariable(ID_PARAM) Long id) {
 
         LOG.info("Deleting article: {}", id);
         Response<ArticleResponse> response = new Response<>();
 
-        Optional<Article> article = this._articleService.findById(id);
-        if (!article.isPresent()) {
+        boolean isArticleNotPresent = !this._articleService.findById(id).isPresent();
+        if (isArticleNotPresent) {
             String errorLogMessage = "Error removing article ID: Nonexistent article " +  id;
-            List<String> errors = Arrays.asList(errorLogMessage);
+            List<String> errors = Collections.singletonList(errorLogMessage);
             return badRequest(errors, response, errorLogMessage);
         }else {
             this._articleService.delete(id);
@@ -288,7 +288,8 @@ public class ArticleController {
                 .poorLiked(article.getPoorLiked())
                 .viewers(article.getViewers())
                 .slug(article.getSlug())
-                .categoriesId(article.getCategories().stream().map(it -> it.getId()).collect(Collectors.toList()))
+                .categoriesId(article.getCategories()
+                        .stream().map(Category::getId).collect(Collectors.toList()))
                 .createdBy(article.getCreated_by())
                 .updatedBy(article.getUpdated_by())
                 .createdAt(article.getCreated_at())
@@ -324,8 +325,8 @@ public class ArticleController {
             BindResultUtils.bindErrorMessage(result, "categories", "Categories cannot be empty");
         } else {
             categories.forEach(categoryId -> {
-                boolean isCategryNotPresent = !this._categoryService.findById(categoryId).isPresent();
-                if (isCategryNotPresent) {
+                boolean isCategoryNotPresent = !this._categoryService.findById(categoryId).isPresent();
+                if (isCategoryNotPresent) {
                     BindResultUtils.bindErrorMessage(result, "category", "Nonexistent category id " + categoryId);
                 }
             });

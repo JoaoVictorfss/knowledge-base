@@ -1,12 +1,12 @@
 package br.com.knowledgeBase.api.knowledgebaseapi.controllers;
 
 import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.PathConstants.*;
+import static br.com.knowledgeBase.api.knowledgebaseapi.data.constants.GeneralConstants.*;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.dtos.SectionDto;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Category;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.entities.Section;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.Response;
 import br.com.knowledgeBase.api.knowledgebaseapi.data.response.SectionResponse;
-import br.com.knowledgeBase.api.knowledgebaseapi.data.response.TagResponse;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.CategoryService;
 import br.com.knowledgeBase.api.knowledgebaseapi.services.SectionService;
 import br.com.knowledgeBase.api.knowledgebaseapi.utils.BindResultUtils;
@@ -26,13 +26,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping(SECTION_PATH)
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = ANYWHERE)
 public class SectionController {
     private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
 
@@ -47,9 +47,9 @@ public class SectionController {
 
     @GetMapping(value = LIST)
     public ResponseEntity<Response<Page<SectionResponse>>> index(
-            @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
+            @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
+            @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
+            @RequestParam(value = DIRECTION_PARAM, defaultValue = "DESC") String dir) {
 
         LOG.info("Searching sections, page: {}", pag);
         Response<Page<SectionResponse>> response = new Response<>();
@@ -65,10 +65,10 @@ public class SectionController {
 
     @GetMapping(value = FIND_SECTIONS_BY_CATEGORY_ID)
     public ResponseEntity<Response<Page<SectionResponse>>> listSectionsByCategoryId(
-            @PathVariable("categoryId") Long categoryId,
-            @RequestParam(value = "pag", defaultValue = "0") int pag,
-            @RequestParam(value = "ord", defaultValue = "title") String ord,
-            @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
+            @PathVariable(CATEGORY_ID_PARAM) Long categoryId,
+            @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
+            @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
+            @RequestParam(value = DIRECTION_PARAM, defaultValue = "DESC") String dir) {
 
         LOG.info("Searching sections by category {}, page: {}", categoryId, pag);
         Response<Page<SectionResponse>> response = new Response<>();
@@ -89,7 +89,7 @@ public class SectionController {
     }
 
     @GetMapping(value = FIND_SECTION_BY_ID)
-    public ResponseEntity<Response<SectionResponse>> showById(@PathVariable("id") Long id) {
+    public ResponseEntity<Response<SectionResponse>> showById(@PathVariable(ID_PARAM) Long id) {
 
         LOG.info("Searching section id {}", id);
         Response<SectionResponse> response = new Response<>();
@@ -98,7 +98,7 @@ public class SectionController {
         boolean isSectionNotPresent = !sectionExists.isPresent();
         if(isSectionNotPresent) {
             String errorLogMessage = "Error. Nonexistent section.";
-            List<String> errors = Arrays.asList(errorLogMessage);
+            List<String> errors = Collections.singletonList(errorLogMessage);
             return badRequest(errors, response, errorLogMessage);
         }
 
@@ -107,9 +107,9 @@ public class SectionController {
     }
 
     @PostMapping(CREATE_SECTION)
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize(ONLY_ADMIN)
     public ResponseEntity<Response<SectionResponse>> store(@Valid @RequestBody SectionDto sectionDto,
-                                                       BindingResult result, @PathVariable("categoryId") Long categoryId) throws ParseException {
+                                                       BindingResult result, @PathVariable(CATEGORY_ID_PARAM) Long categoryId) throws ParseException {
 
         LOG.info("Adding section: {}, category id {}", sectionDto.toString(), categoryId);
         Response<SectionResponse> response = new Response<>();
@@ -132,13 +132,13 @@ public class SectionController {
         this._sectionService.persist(section);
 
         response.setData(this.convertSectionToSectionResponse(section));
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(CREATED_STATUS).body(response);
     }
 
     @PutMapping(UPDATE_SECTION)
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize(ONLY_ADMIN)
     public ResponseEntity<Response<SectionResponse>> update(@Valid @RequestBody SectionDto sectionDto,
-                                                      BindingResult result, @PathVariable("id") Long id, @PathVariable("categoryId") Long categoryId) throws NoSuchAlgorithmException {
+                                                      BindingResult result, @PathVariable(ID_PARAM) Long id, @PathVariable(CATEGORY_ID_PARAM) Long categoryId) throws NoSuchAlgorithmException {
 
         LOG.info("Updating section id {}, section: {}, category id {}",id, sectionDto.toString(), categoryId);
         Response<SectionResponse> response = new Response<>();
@@ -165,8 +165,8 @@ public class SectionController {
     }
 
     @DeleteMapping(value = DELETE)
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response<SectionResponse>> delete(@PathVariable("id") Long id) {
+    @PreAuthorize(ONLY_ADMIN)
+    public ResponseEntity<Response<SectionResponse>> delete(@PathVariable(ID_PARAM) Long id) {
 
         LOG.info("Deleting section: {}", id);
         Response<SectionResponse> response = new Response<>();
@@ -174,7 +174,7 @@ public class SectionController {
         boolean isSectionNotPresent = !this._sectionService.findById(id).isPresent();
         if (isSectionNotPresent) {
             String errorLogMessage = "Error removing section ID: {} Nonexistent section " + id;
-            List<String> errors = Arrays.asList("Error removing section. Nonexistent section!");
+            List<String> errors = Collections.singletonList("Error removing section. Nonexistent section!");
             return badRequest(errors, response, errorLogMessage);
         }else {
             this._sectionService.delete(id);
