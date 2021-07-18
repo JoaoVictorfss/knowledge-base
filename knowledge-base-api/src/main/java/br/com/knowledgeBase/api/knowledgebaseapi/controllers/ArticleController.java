@@ -39,20 +39,23 @@ import java.util.stream.Collectors;
 public class ArticleController {
     private static final Logger LOG = LoggerFactory.getLogger(ArticleController.class);
 
-    @Autowired
-    private ArticleService _articleService;
+    private final ArticleService _articleService;
 
-    @Autowired
-    private SectionService _sectionService;
+    private final SectionService _sectionService;
 
-    @Autowired
-    private CategoryService _categoryService;
+    private final CategoryService _categoryService;
 
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
 
+    public ArticleController(ArticleService articleService, SectionService sectionService, CategoryService categoryService) {
+        this._articleService = articleService;
+        this._sectionService = sectionService;
+        this._categoryService = categoryService;
+    }
+
     @GetMapping(value = LIST_BY_CATEGORY)
-    public void listAllPublishedArticlesByCategoryId(
+    public ResponseEntity<Response<Page<ArticleResponse>>> listAllPublishedArticlesByCategoryId(
             @PathVariable(CATEGORY_ID_PARAM) Long categoryId,
             @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
             @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
@@ -63,11 +66,11 @@ public class ArticleController {
         PageRequest pageRequest = PageRequest.of(pag, 10, Sort.Direction.valueOf(dir), ord);
         Page<Article> articles = this._articleService.findAllPublishedByCategoryId(categoryId, pageRequest);
 
-        this.listAllArticlesByCategory(categoryId, articles);
+        return this.listAllArticlesByCategory(categoryId, articles);
     }
 
     @GetMapping(value = LIST_BY_SECTION)
-    public void listAllPublishedArticlesBySectionId(
+    public ResponseEntity<Response<Page<ArticleResponse>>> listAllPublishedArticlesBySectionId(
             @PathVariable(SECTION_ID_PARAM) Long sectionId,
             @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
             @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
@@ -78,7 +81,7 @@ public class ArticleController {
         PageRequest pageRequest =  PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
         Page<Article> articles = this._articleService.findAllPublishedBySectionId(sectionId, pageRequest);
 
-        this.listAllArticlesBySection(sectionId, articles);
+        return this.listAllArticlesBySection(sectionId, articles);
     }
 
     @GetMapping(value = SEARCH)
@@ -97,7 +100,7 @@ public class ArticleController {
 
     @GetMapping(value = PRIVATE_LIST_BY_CATEGORY)
     @PreAuthorize(ONLY_ADMIN)
-    public void listAllArticlesByCategoryId(
+    public ResponseEntity<Response<Page<ArticleResponse>>> listAllArticlesByCategoryId(
             @PathVariable(CATEGORY_ID_PARAM) Long categoryId,
             @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
             @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
@@ -108,12 +111,12 @@ public class ArticleController {
         PageRequest pageRequest =  PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
         Page<Article> articles = this._articleService.findAllByCategoryId(categoryId, pageRequest);
 
-        this.listAllArticlesByCategory(categoryId, articles);
+        return this.listAllArticlesByCategory(categoryId, articles);
     }
 
     @GetMapping(value = PRIVATE_LIST_BY_SECTION )
     @PreAuthorize(ONLY_ADMIN)
-    public void listAllArticlesBySectionId(
+    public ResponseEntity<Response<Page<ArticleResponse>>> listAllArticlesBySectionId(
             @PathVariable(SECTION_ID_PARAM) Long sectionId,
             @RequestParam(value = PAGE_PARAM, defaultValue = "0") int pag,
             @RequestParam(value = ORDERING_PARAM, defaultValue = "title") String ord,
@@ -124,7 +127,7 @@ public class ArticleController {
         PageRequest pageRequest =  PageRequest.of(pag, this.qttPerPage, Sort.Direction.valueOf(dir), ord);
         Page<Article> articles = this._articleService.findAllBySectionId(sectionId, pageRequest);
 
-        this.listAllArticlesBySection(sectionId, articles);
+        return this.listAllArticlesBySection(sectionId, articles);
     }
 
     @GetMapping(value = FIND_BY_ARTICLE_ID)
@@ -341,8 +344,8 @@ public class ArticleController {
             StatusEnum.valueOf(articleDto.getStatus());
 
             boolean isSectionIdPresent = articleDto.getSectionId().isPresent();
-            boolean isSectionNotPresent = !this._sectionService.findById(articleDto.getSectionId().get()).isPresent();
-            if (isSectionIdPresent && isSectionNotPresent) {
+            boolean isSectionNotPresent = isSectionIdPresent && !this._sectionService.findById(articleDto.getSectionId().get()).isPresent();
+            if (isSectionNotPresent) {
                 Long sectionId = articleDto.getSectionId().get();
                 BindResultUtils.bindErrorMessage(result, "section", "Nonexistent section id " + sectionId);
             }

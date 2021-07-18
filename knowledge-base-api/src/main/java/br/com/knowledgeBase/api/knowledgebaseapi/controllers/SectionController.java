@@ -20,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,14 +35,17 @@ import java.util.Optional;
 public class SectionController {
     private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
 
-    @Autowired
-    private SectionService _sectionService;
+    private final SectionService _sectionService;
 
-    @Autowired
-    private CategoryService _categoryService;
+    private final CategoryService _categoryService;
 
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
+
+    public SectionController(SectionService sectionService, CategoryService categoryService) {
+        this._sectionService = sectionService;
+        this._categoryService = categoryService;
+    }
 
     @GetMapping(value = LIST)
     public ResponseEntity<Response<Page<SectionResponse>>> index(

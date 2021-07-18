@@ -28,8 +28,11 @@ import java.util.List;
 public class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(SectionController.class);
 
-    @Autowired
-    private UserService _userService;
+    private final UserService _userService;
+
+    public UserController(UserService userService) {
+        this._userService = userService;
+    }
 
     @PostMapping(CREATE)
     @PreAuthorize(ONLY_ADMIN)

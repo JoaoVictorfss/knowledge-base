@@ -36,8 +36,11 @@ import java.util.regex.Pattern;
 public class TagController {
     private static final Logger LOG = LoggerFactory.getLogger(TagController.class);
 
-    @Autowired
-    private TagService _tagService;
+    private final TagService _tagService;
+
+    public TagController(TagService tagService) {
+        this._tagService = tagService;
+    }
 
     @PostMapping(CREATE)
     @PreAuthorize(ONLY_ADMIN)

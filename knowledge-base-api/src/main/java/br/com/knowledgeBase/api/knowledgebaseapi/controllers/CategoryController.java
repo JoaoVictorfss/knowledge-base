@@ -33,11 +33,14 @@ import java.util.Optional;
 public class CategoryController {
     private static final Logger LOG = LoggerFactory.getLogger(CategoryController.class);
 
-    @Autowired
-    private CategoryService _categoryService;
+    private final CategoryService _categoryService;
 
     @Value("${pagination.qtt_per_page}")
     private int qttPerPage;
+
+    public CategoryController(CategoryService categoryService) {
+        this._categoryService = categoryService;
+    }
 
     @GetMapping(value = LIST)
     public ResponseEntity<Response<Page<CategoryResponse>>> index(
